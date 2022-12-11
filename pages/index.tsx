@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import AcceptanceModal from "./acceptance";
 export default function Home() {
   const date = new Date();
-  let modalRef = useRef(null);
+  let modalRef = useRef<any>(null);
  const [open, setOpen] = useState(false);
 
   const openModal = () => {

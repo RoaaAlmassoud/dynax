@@ -1,10 +1,11 @@
 import { useState, forwardRef, useImperativeHandle } from "react";
 import { Modal, Button, Form, InputGroup } from "react-bootstrap";
 const WaitingModal = forwardRef((props, ref) => {
+  console.log(props)
   const [show, setShow] = useState(false);
 
   const handleClose = () => {
-    props.handleWaittingModal(false);
+    props.handleWaitingModal(false);
     setShow(false);
   };
   const handleShow = () => setShow(true);

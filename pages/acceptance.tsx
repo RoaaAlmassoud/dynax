@@ -2,10 +2,10 @@ import { useState, forwardRef, useImperativeHandle, useRef } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import WaitingModal from "./waiting";
 const AcceptanceModal = forwardRef((props, ref) => {
-  let waitingRef = useRef(null);
+  let waitingRef = useRef<any>(null);
   const [show, setShow] = useState(false);
   const [waitingShow, setWaitingShow] = useState(false);
-  const handleWaittingModal = (): void => setWaitingShow(!waitingShow);
+  handleWaitingModal: () => setWaitingShow(!waitingShow);
   const handleClose = () => {
     setShow(false);
   };
@@ -13,7 +13,7 @@ const AcceptanceModal = forwardRef((props, ref) => {
 
   const openModal = () => {
     if (waitingRef.current) {
-      handleWaittingModal();
+      handleWaitingModal();
       waitingRef.current.handleShow();
     }
   };
@@ -62,7 +62,7 @@ const AcceptanceModal = forwardRef((props, ref) => {
       </Modal>
       <WaitingModal
         ref={waitingRef}
-        handleWaittingModal={handleWaittingModal}
+        handleWaitingModal={handleWaitingModal}
       />
     </>
   );

@@ -5,15 +5,15 @@ const AcceptanceModal = forwardRef((props, ref) => {
   let waitingRef = useRef<any>(null);
   const [show, setShow] = useState(false);
   const [waitingShow, setWaitingShow] = useState(false);
-  handleWaitingModal: () => setWaitingShow(!waitingShow);
+  const handleWaitingModal = () => setWaitingShow(!waitingShow);
   const handleClose = () => {
     setShow(false);
   };
   const handleShow = () => setShow(true);
 
   const openModal = () => {
+    handleWaitingModal();
     if (waitingRef.current) {
-      handleWaitingModal();
       waitingRef.current.handleShow();
     }
   };
@@ -60,12 +60,9 @@ const AcceptanceModal = forwardRef((props, ref) => {
           </Form>
         </Modal.Body>
       </Modal>
-      <WaitingModal
-        ref={waitingRef}
-        handleWaitingModal={handleWaitingModal}
-      />
+      <WaitingModal ref={waitingRef} handleWaitingModal={handleWaitingModal} />
     </>
   );
 });
-AcceptanceModal.displayName = 'AcceptanceModal';
+AcceptanceModal.displayName = "AcceptanceModal";
 export default AcceptanceModal;

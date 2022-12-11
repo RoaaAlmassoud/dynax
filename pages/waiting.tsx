@@ -1,14 +1,23 @@
 import { useState, forwardRef, useImperativeHandle } from "react";
 import { Modal, Button, Form, InputGroup } from "react-bootstrap";
 const WaitingModal = forwardRef((props, ref) => {
-  console.log(props)
   const [show, setShow] = useState(false);
-
   const handleClose = () => {
-    props.handleWaitingModal(false);
+    let acceptanceElement = document.getElementsByClassName("acceptance-modal");
+    if (acceptanceElement) {
+      acceptanceElement[0].classList.remove("without-z");
+      acceptanceElement[0].classList.add("with-z");
+    }
     setShow(false);
   };
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    let acceptanceElement = document.getElementsByClassName("acceptance-modal");
+    if (acceptanceElement) {
+      acceptanceElement[0].classList.remove("with-z");
+      acceptanceElement[0].classList.add("without-z");
+    }
+    setShow(true);
+  };
 
   useImperativeHandle(ref, () => ({
     handleShow,
@@ -53,5 +62,6 @@ const WaitingModal = forwardRef((props, ref) => {
     </Modal>
   );
 });
-WaitingModal.displayName = 'WaitingModal';
+
+WaitingModal.displayName = "WaitingModal";
 export default WaitingModal;

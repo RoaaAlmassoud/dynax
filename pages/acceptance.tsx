@@ -5,28 +5,28 @@ const AcceptanceModal = forwardRef((props, ref) => {
   let waitingRef = useRef<any>(null);
   const [show, setShow] = useState(false);
   const [waitingShow, setWaitingShow] = useState(false);
-  const handleWaitingModal = () => setWaitingShow(!waitingShow);
+
   const handleClose = () => {
     setShow(false);
   };
   const handleShow = () => setShow(true);
 
   const openModal = () => {
-    handleWaitingModal();
     if (waitingRef.current) {
       waitingRef.current.handleShow();
     }
   };
 
   useImperativeHandle(ref, () => ({
-    handleShow,
+    handleShow
   }));
   return (
     <>
       <Modal
+      id='accept'
         show={show}
         onHide={handleClose}
-        className={`${waitingShow ? "without-z" : "with-z"} acceptance-modal`}
+        className={`acceptance-modal`}
       >
         <Modal.Header closeButton>
           <Modal.Title>利用規約</Modal.Title>
@@ -60,9 +60,11 @@ const AcceptanceModal = forwardRef((props, ref) => {
           </Form>
         </Modal.Body>
       </Modal>
-      <WaitingModal ref={waitingRef} handleWaitingModal={handleWaitingModal} />
+      <WaitingModal
+      ref={waitingRef}/>
     </>
   );
 });
+
 AcceptanceModal.displayName = "AcceptanceModal";
 export default AcceptanceModal;

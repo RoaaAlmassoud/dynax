@@ -67,5 +67,5 @@ const AcceptanceModal = forwardRef((props, ref) => {
     </>
   );
 });
-WaitingModal.displayName = 'AcceptanceModal';
+AcceptanceModal.displayName = 'AcceptanceModal';
 export default AcceptanceModal;

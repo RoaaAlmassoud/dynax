@@ -52,5 +52,5 @@ const WaitingModal = forwardRef((props, ref) => {
     </Modal>
   );
 });
-
+WaitingModal.displayName = 'WaitingModal';
 export default WaitingModal;

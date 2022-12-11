@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "../styles/Home.module.css";
 import { Form, ListGroup, Row, Col, Button } from "react-bootstrap";
+import Link from 'next/link';
 export default function Login() {
   const [open, setOpen] = useState(false);
   function clicked() {
@@ -39,10 +40,10 @@ export default function Login() {
           </li>
         </ul>
         <p className="home-btn">
-          <a href="/">
+          <Link href="/">
             <img src="/images/home.svg" alt="" />
             トップページに戻る
-          </a>
+          </Link>
         </p>
       </div>
     </section>

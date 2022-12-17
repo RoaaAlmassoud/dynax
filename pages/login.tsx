@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "../styles/Home.module.css";
+import styles from "../styles/Login.module.css";
 import { Form, ListGroup, Row, Col, Button } from "react-bootstrap";
 import Link from 'next/link';
 export default function Login() {
@@ -9,7 +9,7 @@ export default function Login() {
   }
   return (
     <section className={styles.login}>
-      <div className="inner">
+      <div className="inner under">
         <h2>申込者ログイン</h2>
         <div className="login-container">
           <Form className="login-form">

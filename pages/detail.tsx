@@ -1,8 +1,13 @@
-import {Table, Button} from "react-bootstrap"
-import styles from  "../styles/Home.module.css";
-const Reservation = () => {
+import {Table, Button, Modal} from "react-bootstrap"
+import styles from  "../styles/Detail.module.css";
+import {useState} from 'react';
+const Detail = () => {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
     return (    
-    <section className={styles.reservation}>
+    <section className={styles.detail}>
       <div className="inner">
         <h2>予約詳細</h2>
         <div className="section-box">
@@ -45,9 +50,24 @@ const Reservation = () => {
             </tbody>
           </Table>
           <div className="actions flexbox">
-            <Button>予約キャンセル</Button>
+            <Button onClick={handleShow}>予約キャンセル</Button>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>予約キャンセル</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>この予約をキャンセルしますが、よろしいですか？</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+          いいえ
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+          はい
+          </Button>
+        </Modal.Footer>
+      </Modal>
             <Button>予約変更</Button>
-            <Button>画面印刷</Button>
+            <Button onClick={() => window.print()}>画面印刷</Button>
           </div>
         </div>
       </div>
@@ -55,4 +75,4 @@ const Reservation = () => {
      );
 }
  
-export default Reservation;
+export default Detail;

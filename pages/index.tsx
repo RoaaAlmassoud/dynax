@@ -2,15 +2,15 @@ import Head from "next/head";
 import { Form, ListGroup, Row, Col, Button } from "react-bootstrap";
 import styles from "../styles/Home.module.css";
 import { useRef, useState } from "react";
-import AcceptanceModal from "./acceptance";
+import AcceptanceModal from "../components/acceptance";
 export default function Home() {
   const date = new Date();
   let modalRef = useRef<any>(null);
- const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const openModal = () => {
     if (modalRef.current) {
-        modalRef.current.handleShow();
+      modalRef.current.handleShow();
     }
   };
   return (
@@ -18,17 +18,14 @@ export default function Home() {
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@100;300;400;500;700;900&display=swap"
-          rel="stylesheet"
-        />
+
         <link
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css"
           rel="stylesheet"
         ></link>
       </Head>
       <main className={styles.main}>
-        <div className={`${open? 'open':''} page-nav pc`}>
+        <div className={`${open ? "open" : ""} page-nav pc`}>
           <p className="nav-txt1">STEP</p>
           <ul>
             <li>
@@ -52,9 +49,11 @@ export default function Home() {
               </a>
             </li>
           </ul>
-          <p onClick={() => setOpen(!open)} className="nav-btn">　</p>
+          <p onClick={() => setOpen(!open)} className="nav-btn">
+            　
+          </p>
         </div>
-        <section className="sec1" id="sec1">
+        <section className="first-section" id="sec1">
           <div className="inner">
             <Form>
               <Form.Group className="d-flex align-items-baseline">
@@ -142,7 +141,7 @@ export default function Home() {
             </Form>
           </div>
         </section>
-        <section className="sec2 position-now" id="sec2">
+        <section className="second-section position-now" id="sec2">
           <div className="inner">
             <h2>
               <img src="/images/h2-icon1.svg" alt="施設選択" />
@@ -170,7 +169,7 @@ export default function Home() {
             </p>
           </div>
         </section>
-        <section className="sec3 position-now" id="sec3">
+        <section className="third-section position-now" id="sec3">
           <div className="inner">
             <h2>
               <img src="images/h2-icon2.svg" alt="宿泊希望日" />
@@ -192,7 +191,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="sec4 position-now" id="sec4">
+        <section className="fourth-section position-now" id="sec4">
           <div className="inner">
             <h2>
               <img src="/images/h2-icon3.svg" alt="基本情報" />
@@ -243,6 +242,11 @@ export default function Home() {
                       className="value"
                     />
                   </Form.Group>
+                  <Form.Group
+                    as={Col}
+                    controlId="formPlaintextEmail"
+                    className="m-0 pc"
+                  ></Form.Group>
                 </Row>
                 <Row>
                   <Form.Group
@@ -262,6 +266,11 @@ export default function Home() {
                       <option value="4">5</option>
                     </Form.Select>
                   </Form.Group>
+                  <Form.Group
+                    as={Col}
+                    className="m-0 pc"
+                    controlId="formPlaintextEmail"
+                  ></Form.Group>
                 </Row>
                 <Row>
                   <Form.Group
@@ -326,7 +335,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-      <AcceptanceModal ref={modalRef} />
+        <AcceptanceModal ref={modalRef} />
       </main>
     </div>
   );

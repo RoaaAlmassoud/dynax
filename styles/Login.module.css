@@ -1,0 +1,102 @@
+.login :global(h2) {
+  border-bottom: none;
+}
+.login :global(.login-container) {
+  max-width: 720px;
+  padding: 40px;
+  border-radius: 10px;
+  margin: 0 auto 30px;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgb(0 0 0 / 10%);
+}
+
+.login :global(.login-container .login-form) {
+  max-width: 430px;
+  margin: 0 auto 20px;
+}
+
+.login :global(.login-container .login-form > div) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.login :global(.login-container .login-form > div .form-label) {
+  width: 30%;
+  margin-bottom: 0;
+}
+
+.login :global(.login-container .login-form > div .form-control) {
+  width: 60%;
+  vertical-align: middle;
+}
+
+.login :global(.inner .link) {
+  max-width: 720px;
+  margin: 0 auto 100px;
+}
+
+.login :global(.inner .link .link1) {
+  color: var(--blue);
+}
+
+.login :global(.inner .link .link1 img) {
+  margin: 0 7px 4px 0;
+}
+
+.login :global(.inner .home-btn) {
+  text-align: center;
+}
+
+.login :global(.inner .home-btn a) {
+  background-color: #999999;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.login :global(.inner .home-btn a img) {
+  margin: 0 5px 4px 0;
+}
+
+@media screen and (max-width: 640px) {
+    .login :global(.login-container) {
+        padding: 20px 15px;
+    }
+
+    .login :global(.login-container .login-form){
+        margin-bottom: 0;
+    }
+
+    .login :global(.login-container .login-form > div .form-label) {
+        width: 25%;
+    }
+
+    .login :global(.login-container .login-form > div .form-control) {
+        width: 75%;
+    }
+
+    .login :global(.login-container .login-form .actions) {
+        width: 60%;
+        margin: auto;
+        flex-wrap: wrap;
+    }
+
+    .login :global(.login-container .login-form .actions button) {
+        width: 100%;
+        margin-right: 0 !important;
+        font-size: 16px;
+        padding: 9.5px 0;
+    }
+
+    .login :global(.login-container .login-form .actions button:first-child) {
+        order: 2;
+    }
+
+    .login :global(.login-container .login-form .actions button:last-child) {
+        margin-bottom: 10px;
+    }
+}

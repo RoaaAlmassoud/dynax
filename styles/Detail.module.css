@@ -1,0 +1,155 @@
+.detail :global(.section-box) {
+  border-radius: 10px;
+}
+
+.detail :global(h2) {
+  margin-top: 55px;
+  padding: 0;
+  border: none;
+  letter-spacing: 0.05em;
+}
+
+.detail :global(h3) {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--blue);
+  border-bottom: solid 1px var(--blue);
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+}
+
+.detail :global(table) {
+  table-layout: fixed;
+  margin-bottom: 30px;
+}
+.detail :global(tr) {
+  padding-bottom: 5px;
+  display: block;
+}
+.detail :global(th) {
+  background-color: #e2f2ff;
+  border-bottom: solid 2px #e2f2ff;
+  width: 200px;
+  text-align: center;
+  padding: 10px 0;
+  vertical-align: middle;
+}
+.detail :global(td) {
+  border-bottom: solid 2px #e2f2ff;
+  width: 310px;
+  padding: 10px 0 10px 15px;
+}
+
+.detail :global(td:nth-child(2)) {
+  border-right: solid 10px #fff;
+}
+
+.detail :global(.actions button:first-child) {
+  width: 220px;
+  background-color: var(--orange);
+}
+
+.detail :global(.actions button:nth-child(2)) {
+  width: 220px;
+  background-color: #9cbc59;
+}
+
+.detail :global(.actions button:last-child) {
+  width: 100px;
+  background-color: var(--gray);
+}
+
+@media print {
+  .header,
+  .footer {
+    display: none;
+  }
+
+  .container :global(.header .inner) {
+    padding: 0 1cm;
+  }
+
+  .detail :global(.inner) {
+    padding: 0 1cm !important;
+    margin: auto !important;
+  }
+
+  .container :global(footer) {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+  }
+
+  .container :global(.totop) {
+    display: none;
+  }
+  .detail {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .detail :global(th) {
+    width: 4cm;
+  }
+  .detail :global(td) {
+    width: 7cm;
+  }
+
+  .detail :global(.actions) {
+    display: none;
+  }
+
+  @page {
+    margin: 0;
+  }
+}
+
+@page {
+  margin: 0;
+}
+
+@media screen and (max-width: 1024px) {
+  .detail :global(th) {
+    width: auto;
+    min-width: 200px;
+  }
+
+  .detail :global(td) {
+    width: auto;
+    min-width: 310px;
+  }
+}
+@media screen and (max-width: 640px) {
+  .detail :global(.section-box) {
+    padding: 20px 15px;
+  }
+
+  .detail :global(tr) {
+    display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 0;
+  }
+  .detail :global(th) {
+    font-size: 14px;
+    width: 30%;
+    min-width: auto;
+    margin-bottom: 5px;
+  }
+
+  .detail :global(td) {
+    font-size: 14px;
+    width: 70%;
+    min-width: auto;
+  }
+
+  .detail :global(.actions){
+    width: 60%;
+    margin: auto;
+    justify-content: center;
+  }
+
+  .detail :global(.actions button){
+    width: 100% !important;
+    margin-bottom: 10px;
+  }
+}

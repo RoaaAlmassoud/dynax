@@ -82,7 +82,7 @@
   z-index: 20;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   transform: translateX(73%);
-  transition: ease .4s;
+  transition: ease 0.4s;
 }
 
 .main :global(.page-nav.open) {
@@ -126,8 +126,8 @@
   font-size: 14px;
 }
 
-.main :global(.page-nav li a:active){
-  color: var(--blue)
+.main :global(.page-nav li a:active) {
+  color: var(--blue);
 }
 .main :global(.page-nav li a:active .step-number) {
   background-color: var(--blue);
@@ -175,129 +175,314 @@
   display: none;
 }
 
-.login :global(h2){
-  border-bottom: none;
-}
-.login :global(.login-container) {
-  max-width: 720px;
-  padding: 40px;
-  border-radius: 10px;
-  margin: 0 auto 30px;
+/*Section-1*/
+.main :global(.first-section .inner) {
   background-color: #fff;
-  box-shadow: 0 0 5px rgb(0 0 0 / 10%);
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  padding: 20px 90px;
 }
 
-.login :global(.login-container .login-form){
-  max-width: 430px;
+.main :global(.first-section select) {
+  display: inline;
+  width: inherit;
+  margin-right: 6px;
+  border-radius: 0.25rem;
+}
+
+.main :global(.first-section form > div) {
+  padding: 10px 0;
+}
+.main :global(.first-section form > div:last-child) {
+  padding: 8px 0 5px;
+}
+
+.main :global(.first-section .form-label) {
+  color: var(--blue);
+  font-size: 20px;
+  width: 100px;
+  font-weight: 600;
+}
+/*End of section-1*/
+
+/*Section-2*/
+.main :global(.second-section .checkbox) {
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+.main :global(.second-section .checkbox li) {
+  position: relative;
+  border: solid 1px var(--blue);
+  background-color: #fff;
+  width: 23.5%;
+  text-align: center;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  margin: 0 2% 20px 0;
+  color: var(--blue);
+  font-size: 20px;
+}
+.main :global(.second-section .checkbox li:nth-child(4n)) {
+  margin: 0 0 20px 0;
+}
+.main :global(.second-section .checkbox li.hotel-close:after) {
+  content: "休館中";
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 26px;
+  font-weight: 500;
+  cursor: default;
+}
+.main :global(.second-section .checkbox li img) {
+  width: 100%;
+  max-width: 235px;
+  margin-bottom: 5px;
+}
+.main :global(.second-section .disabled_checkbox) {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  transform: scale(2);
+  display: none;
+}
+.main :global(.second-section .checkbox li.checked) {
+  border: 6px solid var(--blue);
+  box-sizing: border-box;
+  margin-bottom: 18px;
+}
+.main :global(.second-section .checkbox li.checked .disabled_checkbox) {
+  display: block;
+}
+.main :global(.second-section .next) {
+  width: 100%;
+  text-align: center;
+}
+/*End of section-2*/
+/* Section-3 */
+.main :global(.third-section .submit) {
+  text-align: center;
+}
+.main :global(.third-section .calendar-submit) {
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.3);
+  text-align: center;
+  padding: 25px 0;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+.main :global(.third-section .submit input),
+.main :global(.third-section .submit button) {
+  border: none;
+  background-color: var(--blue);
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  width: 350px;
+  border-radius: 5px;
+  padding: 15px 0;
+  background-image: url(../public/images/arrow1.svg);
+  background-repeat: no-repeat;
+  background-position: 90% 50%;
+  letter-spacing: 0.08em;
+}
+/*End of section-3*/
+/* section4 */
+.main :global(.fourth-section .message-box) {
+  max-width: 840px;
+  margin: 0 auto 20px;
+}
+.main :global(.fourth-section .btn-box) {
+  max-width: 840px;
   margin: 0 auto 20px;
 }
 
-.login :global(.login-container .login-form>div){
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 0;
+.main :global(.fourth-section .basic-info-form .row) {
+  width: 100%;
+  border-bottom: solid 1px #c6e6ff;
+  margin: 0;
 }
 
-.login :global(.login-container .login-form>div .form-label){
-  width: 30%;
-  margin-bottom: 0;
-}
-
-.login :global(.login-container .login-form>div .form-control){
-  width: 60%;
-  vertical-align: middle;
-}
-
-.login :global(.inner .link){
-  max-width: 720px;
-  margin: 0 auto 100px;
-}
-
-.login :global(.inner .link .link1){
-  color: var(--blue);
-}
-
-.login :global(.inner .link .link1 img){
-  margin: 0 7px 4px 0;
-}
-
-.login :global(.inner .home-btn){
-  text-align: center;
-}
-
-.login :global(.inner .home-btn a){
-  background-color: #999999;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.login :global(.inner .home-btn a img){
-  margin: 0 5px 4px 0;
-}
-
-/*Reservation*/
-.reservation :global(.section-box){
-  border-radius: 10px;
-}
-
-.reservation :global(h2){
-  margin-top: 55px;
+.main :global(.fourth-section .basic-info-form .row .col) {
+  width: 48%;
   padding: 0;
-  border: none;
-  letter-spacing: 0.05em;
+  display: flex;
+  flex: 1;
 }
 
-.reservation :global(h3){
-  font-size: 20px;
-  font-weight: bold;
+.main :global(.fourth-section .basic-info-form .row .col:first-child) {
+  margin-right: 20px;
+}
+
+.main :global(.fourth-section .basic-info-form .row .col:last-child) {
+  margin-left: 20px;
+}
+
+.main :global(.fourth-section .basic-info-form select),
+.main :global(.fourth-section .basic-info-form input) {
+  display: inline;
+  margin: 10px 0;
+  border-radius: 0.25rem;
+}
+
+.main :global(.fourth-section .basic-info-form .number-room-select) {
+  width: 35%;
+}
+
+.main :global(.fourth-section .basic-info-form .key) {
   color: var(--blue);
-  border-bottom: solid 1px var(--blue);
-  padding-bottom: 5px;
-  margin-bottom: 15px;
+  font-weight: 600;
+  font-size: 18px;
+  width: 28%;
+  padding: 15px 0;
+  vertical-align: middle;
+  margin-bottom: 0;
+  margin: auto 0;
 }
 
-.reservation :global(table){
-  table-layout: fixed;
-  margin-bottom: 30px;
-}
-.reservation :global(tr){
-  padding-bottom: 5px;
-  display: block;
-}
-.reservation :global(th){
-  background-color: #E2F2FF;
-  border-bottom: solid 2px #E2F2FF;
-  width: 200px;
-  text-align: center;
+.main :global(.fourth-section .basic-info-form .value) {
+  width: 76%;
   padding: 10px 0;
   vertical-align: middle;
 }
-.reservation :global(td){
-  border-bottom: solid 2px #E2F2FF;
-  width: 310px;
-  padding: 10px 0 10px 15px;
+
+.main :global(.fourth-section .basic-info-form .name-group input) {
+  width: 34.5%;
+  margin-right: 5px;
 }
 
-.reservation :global(td:nth-child(2)){
-  border-right: solid 10px #fff;
+.main :global(.fourth-section .basic-info-form .one-input input) {
+  width: 70%;
 }
 
-.reservation :global(.actions button:first-child){
-  width: 220px;
-  background-color: var(--orange);
+.main :global(.fourth-section .basic-info-form button) {
+  padding: 8px 50px;
+  width: auto;
+  margin: 30px auto 0px;
+}
+/*End of section-4*/
+
+/*Media Query*/
+@media screen and (max-width: 640px) {
+  /*Layout*/
+  .container :global(.header .inner) {
+    height: auto;
+    padding: 10px 15px 10px;
+  }
+
+  .container :global(.header .inner h1) {
+    align-items: center;
+    font-size: 3.5vw;
+  }
+
+  .container :global(.header .inner h1 img) {
+    width: 20vw;
+    max-width: 138px;
+    margin: 0 10px -4px 0;
+  }
+
+  .container :global(.header-user) {
+    width: 38%;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .container :global(.header-user button) {
+    font-size: 3.5vw !important;
+    padding: 1.5vw 1.5vw 1.5vw 7.5vw;
+    -webkit-background-size: 5vw;
+    background-size: 5vw;
+    margin: 1vw 0;
+  }
+  /*End of layout*/
+
+  /*Index*/
+  .main :global(.page-nav.pc) {
+    display: none;
+  }
+
+  .main :global(section) {
+    padding: 20px 0;
+  }
+
+  .main :global(.section-box) {
+    padding: 20px 15px;
 }
 
-.reservation :global(.actions button:nth-child(2)){
-  width: 220px;
-  background-color: #9cbc59;
-}
+  .main :global(.first-section) {
+    padding: 20px 15px;
+  }
+  .main :global(.first-section .inner) {
+    padding: 5px 0 5px 15px;
+  }
 
-.reservation :global(.actions button:last-child){
-  width: 100px;
-  background-color: var(--gray);
-}
+  .main :global(.second-section .checkbox) {
+    margin-bottom: 20px;
+  }
 
+  .main :global(.second-section .checkbox li) {
+    width: 49%;
+    margin: 0 2% 10px 0;
+  }
+  .main :global(.second-section .next img) {
+    width: 15%;
+    max-width: 74px;
+  }
+
+  .main :global(.third-section .calendar-submit) {
+    margin-left: -15px;
+  }
+
+  .main :global(.fourth-section .basic-info-form .row) {
+    display: inline-block;
+    border-bottom: none;
+    text-align: center;
+  }
+  .main :global(.fourth-section .basic-info-form .row .col) {
+    border-top: solid 1px #c6e6ff;
+    width: 100%;
+  }
+
+  .main :global(.fourth-section .basic-info-form .row .col.pc) {
+    display: none;
+  }
+
+  .main :global(.fourth-section .basic-info-form .row .col:last-child) {
+    margin-left: 0px;
+  }
+
+  .main :global(.fourth-section .basic-info-form .key) {
+    width: 25%;
+    padding: 10px 0;
+    font-size: 16px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .main :global(.fourth-section .basic-info-form .value) {
+    width: 75%;
+    margin: 0;
+    line-height: inherit;
+  }
+  .main :global(.fourth-section .basic-info-form .name-group input) {
+    width: 37%;
+    height: fit-content;
+  }
+
+  .main :global(.fourth-section .basic-info-form .one-input input) {
+    width: 75%;
+    height: fit-content;
+  }
+
+}

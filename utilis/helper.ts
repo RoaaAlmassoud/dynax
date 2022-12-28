@@ -1,0 +1,30 @@
+export function getDay(date: Date){
+    const dateObject = new Date(date)
+    return {
+        dayNumber: dateObject.getDate(),
+        dayName: dateObject.toLocaleDateString('ja-JP', {weekday: 'short'}),
+        month: dateObject.getMonth(),
+        year: dateObject.getFullYear()
+    }
+}
+
+export function previousDate(date: Date){
+    const dateObject = new Date(date)
+    let previousYear =  dateObject.getMonth()+1 === 1?dateObject.getFullYear()-1:dateObject.getFullYear()
+    let previousMonth = dateObject.getMonth() +1 === 1? 12:dateObject.getMonth()
+    return {
+        previousYear: previousYear,
+        previousMonth: previousMonth
+    }
+}
+
+export function nextDate(date: Date){
+    const dateObject = new Date(date)
+    let nextYear =  dateObject.getMonth()+1 === 12?dateObject.getFullYear()+1:dateObject.getFullYear()
+    let nextMonth = dateObject.getMonth() +1 === 12? 1:dateObject.getMonth()+1
+
+    return {
+        nextYear: nextYear,
+        nextMonth: nextMonth
+    }
+}

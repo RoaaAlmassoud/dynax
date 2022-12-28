@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 
 const Reserved = () => {
   const close = () => {
-    console.log("window: ", window);
     window.close();
   };
 

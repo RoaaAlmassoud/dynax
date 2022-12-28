@@ -206,6 +206,57 @@
 /*End of section-1*/
 
 /*Section-2*/
+.main :global(.summary-section) {
+  padding: 40px;
+  border-radius: 10px;
+  margin: 0 auto 30px;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgb(0 0 0 / 10%);
+}
+.main :global(.summary-section .summary-detail) {
+  max-width: 600px;
+  margin: auto;
+}
+.main :global(.summary-section .summary-detail) {
+  max-width: 600px;
+  margin: auto;
+  text-align: center;
+}
+
+.main :global(.summary-section .summary-detail .key) {
+  background-color: #e2f2ff;
+  color:  var(--gray);
+  border-bottom: solid 2px #e2f2ff;
+  width: 200px;
+  text-align: center;
+  padding: 10px 0;
+  vertical-align: middle;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+.main :global(.summary-section .summary-detail .value) {
+  border-bottom: solid 2px #e2f2ff;
+  width: 310px;
+  padding: 10px 0 10px 15px;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.main :global(.summary-section .summary-detail button) {
+  margin: auto;
+  text-align: center;
+  background-color: var(--gray);
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 5px;
+  letter-spacing: 0.03em;
+  padding: 12px 50px;
+  border: none;
+  margin-top: 20px;
+}
 .main :global(.second-section .checkbox) {
   justify-content: flex-start;
   margin-bottom: 10px;
@@ -269,8 +320,189 @@
 }
 /*End of section-2*/
 /* Section-3 */
+.main :global(.third-section .status-colors) {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgb(0 0 0 / 10%);
+  padding: 20px;
+  margin-bottom: 40px;
+}
+
+.main :global(.third-section .status-colors li) {
+  display: flex;
+  justify-content: center;
+}
+.main :global(.third-section .status-colors .status-color) {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border: solid 1px #dddddd;
+  margin-right: 5px;
+}
+.main :global(.third-section .switch-month) {
+  align-items: center;
+  margin-bottom: 15px;
+}
+.main :global(.third-section .switch-month button) {
+  background-repeat: no-repeat;
+  background-color: transparent;
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+}
+.main :global(.third-section .switch-month .previous-btn) {
+  background-image: url(../public/images/bg-arrow1.svg);
+  padding: 8px 12px 8px 27px;
+}
+
+.main :global(.third-section .switch-month .next-btn) {
+  background-image: url(../public/images/bg-arrow2.svg);
+  padding: 8px 22px 8px 28px;
+}
+
+.main :global(.third-section .switch-month p) {
+  font-size: 18px;
+  color: var(--blue);
+}
+
 .main :global(.third-section .submit) {
   text-align: center;
+}
+
+.main :global(.third-section .calendar-section) {
+  background-color: #fff;
+  box-shadow: 0 0 5px rgb(0 0 0 / 10%);
+  padding: 20px;
+  margin-bottom: 40px;
+}
+.main :global(.third-section .calendar-section h3) {
+  color: var(--blue);
+  font-weight: 600;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+.main :global(.third-section .calendar-section .calendar-table) {
+  margin-bottom: 10px;
+}
+
+.main :global(.third-section .calendar-section .calendar-table th) {
+  text-align: center;
+  background-color: #eee;
+  border: solid 1px #dddddd;
+  vertical-align: middle;
+  padding: 7px 0;
+  border-bottom-color: black;
+}
+
+.main :global(.third-section .calendar-section .calendar-table .room-type) {
+  width: 215px;
+}
+.main :global(.third-section .calendar-section .calendar-table .room-number) {
+  width: 65px;
+}
+.main :global(.third-section .calendar-section .calendar-table .day) {
+  font-weight: 600;
+  line-height: 1;
+  width: 35px;
+  position: relative;
+}
+
+.main
+  :global(
+    .third-section
+      .calendar-section
+      .calendar-table
+      .day.with-before
+      .header-text
+  ) {
+  position: absolute;
+  top: -29px;
+  left: -1px;
+  width: 97px;
+  border: solid 1px #ddd;
+  border-radius: 5px 5px 0 0;
+  display: block;
+  font-size: 13px;
+  padding: 7px 0;
+  font-weight: 600;
+}
+
+.main :global(.third-section .calendar-section .calendar-table .day.saturday) {
+  color: #005ac3;
+  border-bottom-color: #005ac3;
+}
+
+.main :global(.third-section .calendar-section .calendar-table .day.sunday) {
+  color: #d90000;
+  border-bottom-color: #d90000;
+}
+
+.main
+  :global(.third-section .calendar-section .calendar-table .day .day-number) {
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.main :global(.third-section .calendar-section .calendar-table .day .day-name) {
+  font-weight: 400;
+  font-size: 10px;
+}
+
+.main
+  :global(
+    .third-section
+      .calendar-section
+      .calendar-table
+      .calendar-body
+      tr
+      td:first-child
+  ) {
+  text-align: left;
+}
+
+.main
+  :global(
+    .third-section .calendar-section .calendar-table .calendar-body tr td
+  ) {
+  border: solid 1px #dddddd;
+  vertical-align: middle;
+  text-align: center;
+  position: relative;
+}
+.main
+  :global(
+    .third-section .calendar-section .calendar-table .calendar-body tr td.gray
+  ) {
+  background-color: #dddddd;
+}
+
+.main
+  :global(
+    .third-section .calendar-section .calendar-table .calendar-body tr td.blue
+  ) {
+  background-color: #43b9e3;
+}
+
+.main :global(.third-section .calendar-section .switch-week) {
+  margin-left: 285px;
+}
+
+.main :global(.third-section .switch-week button) {
+  background-repeat: no-repeat;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+}
+.main :global(.third-section .switch-week .previous-btn) {
+  background-image: url(../public/images/bg-arrow3.svg);
+  padding: 3px 7px 3px 15px;
+}
+
+.main :global(.third-section .switch-week .next-btn) {
+  background-image: url(../public/images/bg-arrow4.svg);
+  padding: 3px 15px 3px 7px;
 }
 .main :global(.third-section .calendar-submit) {
   width: 100vw;
@@ -417,7 +649,7 @@
 
   .main :global(.section-box) {
     padding: 20px 15px;
-}
+  }
 
   .main :global(.first-section) {
     padding: 20px 15px;
@@ -484,5 +716,4 @@
     width: 75%;
     height: fit-content;
   }
-
 }

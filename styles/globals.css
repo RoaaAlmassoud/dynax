@@ -369,6 +369,25 @@ section .inner.under h2 {
   letter-spacing: 0.05em;
 }
 
+.color1{
+  background-color: #D1F3FF;
+}
+.color2{
+  background-color: #8AD4EF;
+}
+.color3{
+  background-color: #43B9E3;
+}
+.color4{
+  background-color: #FFE3D1;
+}
+.color5{
+  background-color: #FFC098;
+}
+.color6{
+  background-color: #FF9C5D;
+}
+
 @media screen and (min-width: 1080px) {
   .calendar-submit {
     margin-left: calc((100vw - 1065px) / -2);

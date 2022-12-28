@@ -28,3 +28,7 @@ export function nextDate(date: Date){
         nextMonth: nextMonth
     }
 }
+
+export function unique () {
+    return Math.random().toString().substring(2, 8);
+}

@@ -1,6 +1,7 @@
 import { Form } from "react-bootstrap";
 import React from "react";
 import { years, months } from "./data/data";
+import { unique } from "../utilis/helper";
 
 const DateForm = (props: any) => {
   let date = props.date;
@@ -33,7 +34,7 @@ const DateForm = (props: any) => {
           onChange={(event) => handleChange(event, "year")}
         >
           {years.map((year, index) => {
-            return <option value={year.value}>{year.name}</option>;
+            return <option key={unique()} value={year.value}>{year.name}</option>;
           })}
         </Form.Select>
 
@@ -44,7 +45,7 @@ const DateForm = (props: any) => {
         >
           {months.map((month, index) => {
             return (
-              <option value={month.value} selected={date.month === month.value}>
+              <option  key={unique()} value={month.value} selected={date.month === month.value}>
                 {month.name}
               </option>
             );
@@ -58,7 +59,7 @@ const DateForm = (props: any) => {
         >
           {days.map((day, index) => {
             return (
-              <option value={day.value} selected={date.day === day.value}>
+              <option  key={unique()} value={day.value} selected={date.day === day.value}>
                 {day.name}
               </option>
             );

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { propTypes } from "react-bootstrap/esm/Image";
 import AcceptanceModal from "../components/acceptance";
-import { getDay, previousDate, nextDate } from "../utilis/helper";
+import { getDay, previousDate, nextDate, unique } from "../utilis/helper";
 const Calendar = ({
   date,
   data,
@@ -46,7 +46,6 @@ const Calendar = ({
 
   let modalRef = useRef<any>(null);
   const openModal = () => {
-    
     if (modalRef.current) {
       modalRef.current.handleShow();
     }
@@ -55,18 +54,22 @@ const Calendar = ({
   const renderDay = (day: any, type: any) => {
     switch (day.status_type) {
       case 1:
-        return <td className="gray">休</td>;
+        return (
+          <td key={unique()} className="gray">
+            休
+          </td>
+        );
         break;
       case 2:
       case 3:
-        return <td className="gray"></td>;
+        return <td key={unique()} className="gray"></td>;
         break;
       default:
         const availableNumber = day.rsv_frames.find(
           (a: any) => a.roomtype_id === type.id
         );
         return (
-          <td className="blue">
+          <td key={unique()} className="blue">
             {availableNumber.applied_number / availableNumber.num_frames}
           </td>
         );
@@ -78,6 +81,7 @@ const Calendar = ({
     let dayBeforeText = checkDay(dayData, index);
     return (
       <th
+      key={unique()}
         className={`day ${
           dayData.dayName === "土"
             ? "saturday"

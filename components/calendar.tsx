@@ -179,7 +179,7 @@ const Calendar = ({
               ? data.room_types
                 ? data.room_types.map((type: any) => {
                     return (
-                      <tr>
+                      <tr key={unique()}>
                         <td>{type.name}</td>
                         <td>{type.num_rooms}</td>
                         {currentCalendar.calendar.map((day: any) => {

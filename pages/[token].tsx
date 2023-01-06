@@ -378,7 +378,7 @@ export default Home;
 
 export const getServerSideProps = async () => {
   const response = await axios.get(
-    `http://194.163.169.47/api/calendar?facility_id=1`
+    `https://arubaito.online/api/calendar?facility_id=1`
   );
   return {
     props: {

@@ -2,17 +2,19 @@ import axios from 'axios';
 import * as https from "https";
 import {getResponseData} from '../../utilis/helper'
 type Methods = "head" | "options" | "put" | "post" | "patch" | "delete" | "get";
-
+const httpsAgent =  new https.Agent({
+    rejectUnauthorized: false,
+  })
 export default class AxiosApi {
     
-    static ApiURL = "https://194.163.169.47/api/";
+    static ApiURL = "https://arubaito.online/api/";
     
     static call = async (requestBody:any, path:string, method:Methods, header:string) => {
         let url = path ? `${this.ApiURL}${path}` : this.ApiURL;
         // let accessToken = localStorage.getItem('api_token');
         let headers = {
             "Content-Type": "application/json",
-            //"remember-token":localStorage.getItem("token") ? localStorage.getItem("token") : ""
+            "remember-token":localStorage.getItem("token") ? localStorage.getItem("token") : ""
 
         };
 
@@ -33,9 +35,7 @@ export default class AxiosApi {
                         : requestBody, {
                     headers: headers,
                     timeout: 1200000, 
-                    httpsAgent: new https.Agent({
-                        rejectUnauthorized: false,
-                    }),
+                     httpsAgent: httpsAgent,
                 }
                 // , {crossDomain: true}
                 );

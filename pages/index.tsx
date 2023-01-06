@@ -6,8 +6,11 @@ import DateForm from "../components/date-form";
 import Calendar from "../components/calendar";
 import UserForm from "../components/user-form";
 import axios from "axios";
+import * as https from "https";
 import { getDay, previousDate, nextDate } from "../utilis/helper";
-
+const httpsAgent =  new https.Agent({
+  rejectUnauthorized: false,
+})
 const Home = ({ data }: any) => {
   console.log("data: ", data);
   let sortedData: any;
@@ -352,7 +355,8 @@ export default Home;
 
 export const getServerSideProps = async () => {
   const response = await axios.get(
-    `http://194.163.169.47/api/calendar?facility_id=1`
+    `https://194.163.169.47/api/calendar?facility_id=1`, 
+   {httpsAgent}
   );
   console.log("response: ", response);
   return {

@@ -2,6 +2,7 @@ import { useState, forwardRef, useImperativeHandle } from "react";
 import { Modal, Button, Form, InputGroup } from "react-bootstrap";
 const WaitingModal = forwardRef((props, ref) => {
   const [show, setShow] = useState(false);
+  const [email,setEmail] = useState('')
   const handleClose = () => {
     let acceptanceElement = document.getElementsByClassName("acceptance-modal");
     if (acceptanceElement) {
@@ -10,12 +11,14 @@ const WaitingModal = forwardRef((props, ref) => {
     }
     setShow(false);
   };
-  const handleShow = () => {
+  const handleShow = (daySelected: number, email: string) => {
+    console.log('daySelected in waiting: ', daySelected)
     let acceptanceElement = document.getElementsByClassName("acceptance-modal");
     if (acceptanceElement) {
       acceptanceElement[0].classList.remove("with-z");
       acceptanceElement[0].classList.add("without-z");
     }
+    setEmail(email)
     setShow(true);
   };
 
@@ -44,6 +47,8 @@ const WaitingModal = forwardRef((props, ref) => {
                 placeholder=""
                 aria-label="email"
                 aria-describedby="basic-addon1"
+                readOnly
+                value={email}
               />
             </InputGroup>
             <Form.Text id="emailHelpBlock">

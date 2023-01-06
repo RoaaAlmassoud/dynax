@@ -1,15 +1,20 @@
 import Head from "next/head";
-import { Button } from "react-bootstrap";
+import { Form, ListGroup, Row, Col, Button } from "react-bootstrap";
 import styles from "../styles/Home.module.css";
 import { useEffect, useRef, useState } from "react";
 import DateForm from "../components/date-form";
 import Calendar from "../components/calendar";
-import UserForm from "../components/user-form";
 import axios from "axios";
 import { getDay, previousDate, nextDate } from "../utilis/helper";
+import { useRouter } from "next/router";
+import AxiosApi from "./api/axios-api";
+import UserForm from "../components/user-form";
 
 const Home = ({ data }: any) => {
-  console.log("data: ", data);
+  const router = useRouter();
+  const { token } = router.query;
+  let rememberToken= token?.toString();
+ 
   let sortedData: any;
   let current;
   let firstCalendarItem;
@@ -59,6 +64,15 @@ const Home = ({ data }: any) => {
   const [firstSectionSummary, setFirstSectionSummary] = useState(false);
   const [secondSectionSummary, setSecondSectionSummary] = useState(false);
 
+  const [info, setInfo] = useState({
+    facilityName: "",
+    usedDate: "",
+    fullUsedDate:"",
+    roomType: "",
+    openings: 1,
+    email: ""
+  });
+
   const updateDate = (field: string, value: string) => {
     if (field === "month") {
       setDate({ ...date, [field]: parseInt(value), day: 1 });
@@ -66,6 +80,34 @@ const Home = ({ data }: any) => {
       setDate({ ...date, [field]: parseInt(value), month: 1, day: 1 });
     } else {
       setDate({ ...date, [field]: parseInt(value) });
+    }
+  };
+
+  const getReservation = async () => {
+     localStorage.setItem("token", rememberToken ? rememberToken : "");
+    let reservationInformation = await AxiosApi.call(
+      {},
+      "reservation",
+      "get",
+      ""
+    );
+    if (reservationInformation.data) {
+      let resData = reservationInformation.data.reservation.rsvdates[0];
+      let usedDate = getDay(resData.date);
+      let info = {
+        facilityName: "施設選択", //reservationInformation.data.reservation.facility.name
+        usedDate: `${usedDate.year}/${usedDate.month + 1}/${
+          usedDate.dayNumber
+        }`,
+        fullUsedDate: `${usedDate.year}年${usedDate.month + 1}月${
+          usedDate.dayNumber
+        }日`,
+        roomType: resData.rsvroomtype.room_type.name,
+        openings: resData.rsvFrames.openings,
+        email: reservationInformation.data.user.mail,
+      };
+      setInfo(info);
+    } else {
     }
   };
 
@@ -148,49 +190,50 @@ const Home = ({ data }: any) => {
   };
 
   useEffect(() => {
-    let pageElement = document.getElementById("page-nav");
-    let navLink: any;
-    if (pageElement) navLink = pageElement.getElementsByTagName("a");
-    if (navLink) {
-      let contentsArr = new Array();
-      for (let i = 0; i < navLink?.length; i++) {
-        let targetContents = navLink[i].getAttribute("href")?.substring(1);
-        if (targetContents) {
-          let element =
-            targetContents && document.getElementById(targetContents)
-              ? document.getElementById(targetContents)
-              : null;
-          if (element) {
-            let targetContentsTop = element.offsetTop;
-            let targetContentsBottom =
-              targetContentsTop + element.offsetHeight - 1;
-            contentsArr[i] = [targetContentsTop, targetContentsBottom];
-          }
-        }
-      }
-      function currentCheck() {
-        let windowScrolltop = window.scrollY;
-        for (let i = 0; i < contentsArr.length; i++) {
-          if (
-            contentsArr[i][0] <= windowScrolltop &&
-            contentsArr[i][1] >= windowScrolltop
-          ) {
-            let activeElement = document.getElementsByClassName("active");
-            if (activeElement[0]) {
-              activeElement[0].classList.remove("active");
-            }
-            if (navLink[i]) {
-              navLink[i].classList.add("active");
-            }
+    getReservation();
+    // let navLink = document
+    //   .getElementById("page-nav")
+    //   ?.getElementsByTagName("a");
+    // if (navLink) {
+    //   let contentsArr = new Array();
+    //   for (let i = 0; i < navLink?.length; i++) {
+    //     let targetContents = navLink[i].getAttribute("href")?.substring(1);
+    //     if (targetContents) {
+    //       let element =
+    //         targetContents && document.getElementById(targetContents)
+    //           ? document.getElementById(targetContents)
+    //           : null;
+    //       if (element) {
+    //         let targetContentsTop = element.offsetTop;
+    //         let targetContentsBottom =
+    //           targetContentsTop + element.offsetHeight - 1;
+    //         contentsArr[i] = [targetContentsTop, targetContentsBottom];
+    //       }
+    //     }
+    //   }
+    //   function currentCheck() {
+    //     let windowScrolltop = window.scrollY;
+    //     for (let i = 0; i < contentsArr.length; i++) {
+    //       if (
+    //         contentsArr[i][0] <= windowScrolltop &&
+    //         contentsArr[i][1] >= windowScrolltop
+    //       ) {
+    //         let activeElement = document.getElementsByClassName("active");
+    //         if (activeElement[0]) {
+    //           activeElement[0].classList.remove("active");
+    //         }
+    //         if (navLink[i]) {
+    //           navLink[i].classList.add("active");
+    //         }
 
-            i == contentsArr.length;
-          }
-        }
-      }
-      window.onscroll = function () {
-        currentCheck();
-      };
-    }
+    //         i == contentsArr.length;
+    //       }
+    //     }
+    //   }
+    //   window.onscroll = function () {
+    //     currentCheck();
+    //   };
+    // }
   }, []);
 
   return (
@@ -233,103 +276,87 @@ const Home = ({ data }: any) => {
             　
           </p>
         </div>
-        {firstSectionSummary || secondSectionSummary ? null : (
-          <section className="first-section" id="date">
+        {info ? (
+          <section className="third-section position-now" id="calendar">
             <div className="inner">
-              <DateForm date={date} updateDate={updateDate} />
-            </div>
-          </section>
-        )}
-        {secondSectionSummary ? null : (
-          <section className="second-section position-now" id="facilities">
-            <div className="inner">
-              <h2>
-                <img src="/images/h2-icon1.svg" alt="施設選択" />
-                施設選択
-              </h2>
-              {firstSectionSummary ? (
-                <div className="summary-section">
-                  <div className="summary-detail">
-                    <div>
-                      <p className="key">利用日</p>
-                      <p className="value">{`${date.year}年${date.month}月${date.day}日 日日`}</p>
-                    </div>
-                    <Button>ここからやり直す</Button>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <form action="">
-                    <ul className="checkbox flexbox">
-                      <li className="hotel-open checked">
-                        <img
-                          src="images/img1.jpg"
-                          alt=""
-                          className="thumbnail"
-                        />
-                        <input
-                          className="disabled_checkbox"
-                          type="checkbox"
-                          name="施設"
-                          value="軽井沢"
-                          checked
-                        />
-                        軽井沢
-                      </li>
-                    </ul>
-                  </form>
-                  <p className="next">
-                    <a href="#sec3">
-                      <img
-                        src="images/next.svg"
-                        alt="次へ"
-                        onClick={() => {
-                          setFirstSectionSummary(true);
-                          updateCalendar(date.year, date.month, date.day);
-                        }}
-                      />
-                    </a>
-                  </p>
-                </>
-              )}
-            </div>
-          </section>
-        )}
-
-        <section className="third-section position-now" id="calendar">
-          <div className="inner">
-            <h2>
-              <img src="images/h2-icon2.svg" alt="宿泊希望日" />
-              宿泊希望日
-            </h2>
-            {secondSectionSummary ? (
               <div className="summary-section">
                 <div className="summary-detail">
                   <div>
                     <p className="key">施設</p>
-                    <p className="value">{`xxxx`}</p>
+                    <p className="value">{info.facilityName}</p>
                     <p className="key">利用日</p>
-                    <p className="value">{`xxxx`}</p>
+                    <p className="value">{info.usedDate}</p>
                     <p className="key">コース</p>
-                    <p className="value">{`xxxx`}</p>
+                    <p className="value">{info.roomType}</p>
                   </div>
                   <Button>ここからやり直す</Button>
                 </div>
               </div>
-            ) : current ? (
-              <Calendar
-                date={date}
-                current={currentCalendar}
-                data={data}
-                calendarDate={calendarDate}
-                calendarOperation={calendarOperation}
-                firstCalendarItem={firstItem}
-                lastCalendarItem={lastItem}
-                showSecondSummary={showSecondSummary}
-              />
-            ) : null}
-          </div>
-        </section>
+            </div>
+          </section>
+        ) : (
+          <>
+            <section className="first-section" id="date">
+              <div className="inner">
+                <DateForm date={date} updateDate={updateDate} />
+              </div>
+            </section>
+            <section className="second-section position-now" id="facilities">
+              <div className="inner">
+                <h2>
+                  <img src="/images/h2-icon1.svg" alt="施設選択" />
+                  施設選択
+                </h2>
+                <form action="">
+                  <ul className="checkbox flexbox">
+                    <li className="hotel-open checked">
+                      <img src="images/img1.jpg" alt="" className="thumbnail" />
+                      <input
+                        className="disabled_checkbox"
+                        type="checkbox"
+                        name="施設"
+                        value="軽井沢"
+                        checked
+                      />
+                      軽井沢
+                    </li>
+                  </ul>
+                </form>
+                <p className="next">
+                  <a href="#sec3">
+                    <img
+                      src="images/next.svg"
+                      alt="次へ"
+                      onClick={() => {
+                        setFirstSectionSummary(true);
+                        updateCalendar(date.year, date.month, date.day);
+                      }}
+                    />
+                  </a>
+                </p>
+              </div>
+            </section>
+            <section className="third-section position-now" id="calendar">
+              <div className="inner">
+                <h2>
+                  <img src="images/h2-icon2.svg" alt="宿泊希望日" />
+                  宿泊希望日
+                </h2>
+
+                <Calendar
+                  date={date}
+                  current={currentCalendar}
+                  data={data}
+                  calendarDate={calendarDate}
+                  calendarOperation={calendarOperation}
+                  firstCalendarItem={firstItem}
+                  lastCalendarItem={lastItem}
+                  showSecondSummary={showSecondSummary}
+                />
+              </div>
+            </section>
+          </>
+        )}
 
         <section className="fourth-section position-now" id="basic-information">
           <div className="inner">
@@ -338,7 +365,7 @@ const Home = ({ data }: any) => {
               基本情報
             </h2>
             <div className="section-box">
-              <UserForm />
+              <UserForm info={info} />
             </div>
           </div>
         </section>
@@ -353,7 +380,6 @@ export const getServerSideProps = async () => {
   const response = await axios.get(
     `http://194.163.169.47/api/calendar?facility_id=1`
   );
-  console.log("response: ", response);
   return {
     props: {
       data: response.data.data,

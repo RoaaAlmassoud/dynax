@@ -32,3 +32,23 @@ export function nextDate(date: Date){
 export function unique () {
     return Math.random().toString().substring(2, 8);
 }
+export function getResponseData(response:any) {
+    if (!response) return null;
+    let result = {'data': {}};
+
+    if (response.status === 200) {
+        if(response.data){
+            result['data'] = response.data.data? response.data.data: response;
+        } else {
+            result['data'] = response
+        }
+
+    }
+
+    if (response.status !== 200) {
+        result = response.data;
+
+    }
+
+    return result ? result : null;
+};

@@ -126,10 +126,10 @@
   font-size: 14px;
 }
 
-.main :global(.page-nav li a:active) {
+.main :global(.page-nav li a.active) {
   color: var(--blue);
 }
-.main :global(.page-nav li a:active .step-number) {
+.main :global(.page-nav li a.active .step-number) {
   background-color: var(--blue);
   color: #fff;
 }
@@ -225,7 +225,7 @@
 
 .main :global(.summary-section .summary-detail .key) {
   background-color: #e2f2ff;
-  color:  var(--gray);
+  color: var(--gray);
   border-bottom: solid 2px #e2f2ff;
   width: 200px;
   text-align: center;
@@ -463,12 +463,25 @@
 
 .main
   :global(
+    .third-section
+      .calendar-section
+      .calendar-table
+      .calendar-body
+      tr
+      td.disabled
+  ) {
+  cursor: initial;
+}
+
+.main
+  :global(
     .third-section .calendar-section .calendar-table .calendar-body tr td
   ) {
   border: solid 1px #dddddd;
   vertical-align: middle;
   text-align: center;
   position: relative;
+  cursor: pointer;
 }
 .main
   :global(
@@ -479,9 +492,48 @@
 
 .main
   :global(
+    .third-section
+      .calendar-section
+      .calendar-table
+      .calendar-body
+      tr
+      td.pale.blue
+  ) {
+  background-color: #d1f3ff;
+}
+
+.main
+  :global(
     .third-section .calendar-section .calendar-table .calendar-body tr td.blue
   ) {
+  background-color: #8ad4ef;
+}
+
+.main
+  :global(
+    .third-section
+      .calendar-section
+      .calendar-table
+      .calendar-body
+      tr
+      td.deep.blue
+  ) {
   background-color: #43b9e3;
+}
+
+.main
+  :global(
+    .third-section
+      .calendar-section
+      .calendar-table
+      .calendar-body
+      tr
+      td.selected
+  ) {
+  border: 3px solid var(--blue);
+  box-sizing: border-box;
+  margin-bottom: 18px;
+  padding: 5px;
 }
 
 .main :global(.third-section .calendar-section .switch-week) {
@@ -595,6 +647,15 @@
 
 .main :global(.fourth-section .basic-info-form .one-input input) {
   width: 70%;
+}
+
+.main :global(.was-validated .form-control:invalid),
+.main :global(.was-validated .form-control:valid),
+.main :global(.was-validated .form-select:valid:not([multiple]):not([size])) {
+  background-image: none;
+}
+.main :global(.fourth-section .basic-info-form input.red-border) {
+  border-color: #dc3545;
 }
 
 .main :global(.fourth-section .basic-info-form button) {

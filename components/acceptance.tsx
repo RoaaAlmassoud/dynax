@@ -1,29 +1,68 @@
-import { useState, forwardRef, useImperativeHandle, useRef } from "react";
+import {
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useEffect,
+} from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import WaitingModal from "./waiting";
+import AxiosApi from "../pages/api/axios-api";
 const AcceptanceModal = forwardRef((props, ref) => {
   let waitingRef = useRef<any>(null);
   const [show, setShow] = useState(false);
   const [waitingShow, setWaitingShow] = useState(false);
+  const [daySelected, setDaySelected] = useState(0);
+  const [validated, setValidated] = useState(false);
+  const [email, setEmail] = useState("");
+  const [isLoading, setLoading] = useState(false);
+
+  const handleSubmit = async (event: any) => {
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+      setValidated(true);
+    } else {
+      event.preventDefault();
+      setLoading(true);
+      let response = await AxiosApi.call(
+        {
+          mail: email,
+          rsv_frame_ids: [daySelected],
+        },
+        `accept-conditions`,
+        "post",''
+      );
+      console.log("response: ", response);
+      if (response.data) {
+        setLoading(false);
+        openModal();
+      }
+    }
+  };
 
   const handleClose = () => {
     setShow(false);
   };
-  const handleShow = () => setShow(true);
+  const handleShow = async (daySelected: number) => {
+    setShow(true);
+    setDaySelected(daySelected);
+  };
 
   const openModal = () => {
     if (waitingRef.current) {
-      waitingRef.current.handleShow();
+      waitingRef.current.handleShow(daySelected, email);
     }
   };
 
   useImperativeHandle(ref, () => ({
-    handleShow
+    handleShow,
   }));
   return (
     <>
       <Modal
-      id='accept'
+        id="accept"
         show={show}
         onHide={handleClose}
         className={`acceptance-modal`}
@@ -32,36 +71,46 @@ const AcceptanceModal = forwardRef((props, ref) => {
           <Modal.Title>利用規約</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
+          <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <Form.Group
               className="mb-4"
               controlId="exampleForm.ControlTextarea1"
             >
-              <Form.Control as="textarea" rows={12} />
+              <Form.Control as="textarea" rows={12} readOnly />
             </Form.Group>
             <Form.Group
               className="email d-flex justify-content-center align-items-center mb-4"
               controlId="exampleForm.ControlTextarea1"
             >
               <Form.Label className="m-0 w-25">メールアドレス</Form.Label>
-              <Form.Control className="w-50" />
+              <Form.Control
+                required
+                className="w-50"
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
             </Form.Group>
             <Form.Group className="actions d-flex justify-content-center">
-              <Button className="me-3">クリア</Button>
-              <Button
-                className="py-2"
-                onClick={() => {
-                  openModal();
-                }}
+              <Button className="me-3"
+              onClick={() => setEmail("")}
               >
-                同意して送信
+                クリア</Button>
+              <Button
+                type="submit"
+                className="py-2"
+
+                //  onClick={() => {
+                //    handleSubmit(event);
+                //  }}
+              >
+                {isLoading ? "Processing" : "同意して送信"}
               </Button>
             </Form.Group>
           </Form>
         </Modal.Body>
       </Modal>
-      <WaitingModal
-      ref={waitingRef}/>
+      <WaitingModal ref={waitingRef} />
     </>
   );
 });

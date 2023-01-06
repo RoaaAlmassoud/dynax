@@ -13,6 +13,7 @@ const Calendar = ({
   lastCalendarItem,
   showSecondSummary,
 }: any) => {
+  const [daySelected, setDaySelected] = useState(0);
   let currentCalendar = current ? current : data ? data : null;
   let previousFormate = previousDate(firstCalendarItem.date);
   let nextFormate = nextDate(lastCalendarItem.date);
@@ -32,6 +33,7 @@ const Calendar = ({
         }
       : null
     : null;
+
   let previousMonthText = previousFormate
     ? `${previousFormate.previousYear}年 ${previousFormate.previousMonth}月`
     : "";
@@ -46,31 +48,57 @@ const Calendar = ({
 
   let modalRef = useRef<any>(null);
   const openModal = () => {
+    // showSecondSummary();
     if (modalRef.current) {
-      modalRef.current.handleShow();
+      modalRef.current.daySelected = daySelected;
+      console.log("modalRef.current: ", modalRef.current);
+      modalRef.current.handleShow(daySelected);
     }
-    showSecondSummary();
+  };
+  const dayClicked = (day: any, frame: any) => {
+    setDaySelected(frame.id);
   };
   const renderDay = (day: any, type: any) => {
     switch (day.status_type) {
       case 1:
-        return (
-          <td key={unique()} className="gray">
-            休
-          </td>
-        );
-        break;
+      // return (
+      //   <td key={unique()} className="gray">
+      //     休
+      //   </td>
+      // );
+      // break;
       case 2:
       case 3:
-        return <td key={unique()} className="gray"></td>;
-        break;
-      default:
+        // return <td key={unique()} className="gray"></td>;
+        // break;
+
         const availableNumber = day.rsv_frames.find(
           (a: any) => a.roomtype_id === type.id
         );
+        let color = "blue";
+        if (availableNumber.openings === availableNumber.num_frames) {
+          color = "pale blue";
+        } else {
+          let rate =
+            (availableNumber.fixed_number / availableNumber.num_frames) * 100;
+          if (rate > 0 && rate < 49) {
+            color = "pale blue";
+          } else if (rate >= 50 && rate <= 99) {
+            color = "blue";
+          } else {
+            color = "deep blue";
+          }
+        }
         return (
-          <td key={unique()} className="blue">
-            {availableNumber.applied_number / availableNumber.num_frames}
+          <td
+            key={unique()}
+            className={`${color} ${
+              daySelected === availableNumber.id ? "selected" : ""
+            }
+            ${availableNumber.openings === 0 ? "disabled" : ""}`}
+            onClick={() => dayClicked(day, availableNumber)}
+          >
+            {availableNumber.openings}
           </td>
         );
     }
@@ -81,7 +109,7 @@ const Calendar = ({
     let dayBeforeText = checkDay(dayData, index);
     return (
       <th
-      key={unique()}
+        key={unique()}
         className={`day ${
           dayData.dayName === "土"
             ? "saturday"
@@ -121,15 +149,6 @@ const Calendar = ({
         <li>
           <span className="status-color color3"></span>先着順：満室
         </li>
-        <li>
-          <span className="status-color color4"></span>抽選：狙い目
-        </li>
-        <li>
-          <span className="status-color color5"></span>抽選：人気
-        </li>
-        <li>
-          <span className="status-color color6"></span>抽選：混雑
-        </li>
       </ul>
       <div className="flexbox switch-month">
         <Button
@@ -137,8 +156,10 @@ const Calendar = ({
           onClick={() => calenderOperation("pre-month")}
           disabled={
             minDate
-              ? previousFormate.previousYear === minDate.year &&
-                previousFormate.previousMonth < minDate.month
+              ? previousFormate.previousYear < minDate.year
+                ? true
+                : previousFormate.previousYear === minDate.year &&
+                  previousFormate.previousMonth < minDate.month
               : false
           }
         >

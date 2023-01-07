@@ -19,8 +19,10 @@ const DateForm = (props: any) => {
     field: string
   ) => {
     let value: string = event.target.value;
+    console.log('value: ', value, typeof value)
     date = { ...date, [field]: parseInt(value) };
-    props.updateDate(field, value);
+    console.log('ate: ', date)
+    props.updateDate(field, parseInt(value));
   };
 
   return (
@@ -34,7 +36,7 @@ const DateForm = (props: any) => {
           onChange={(event) => handleChange(event, "year")}
         >
           {years.map((year, index) => {
-            return <option key={unique()} value={year.value}>{year.name}</option>;
+            return <option key={unique()} value={year.value} selected={date.year === year.value}>{year.name}</option>;
           })}
         </Form.Select>
 

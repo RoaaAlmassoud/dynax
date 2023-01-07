@@ -12,7 +12,6 @@ const httpsAgent =  new https.Agent({
   rejectUnauthorized: false,
 })
 const Home = ({ data }: any) => {
-  console.log("data: ", data);
   let sortedData: any;
   let current;
   let firstCalendarItem;
@@ -66,7 +65,8 @@ const Home = ({ data }: any) => {
     if (field === "month") {
       setDate({ ...date, [field]: parseInt(value), day: 1 });
     } else if (field === "year") {
-      setDate({ ...date, [field]: parseInt(value), month: 1, day: 1 });
+      console.log('in year: ', value, typeof value)
+      setDate({ year: parseInt(value), month: 1, day: 1 });
     } else {
       setDate({ ...date, [field]: parseInt(value) });
     }
@@ -128,6 +128,7 @@ const Home = ({ data }: any) => {
   };
 
   const calendarOperation = (operation: string) => {
+    console.log('operation: ', operation)
     switch (operation) {
       case "pre-month":
         let previousMonth = previousDate(firstItem.date);
@@ -139,7 +140,11 @@ const Home = ({ data }: any) => {
         break;
       case "next-month":
         let nextMonth = nextDate(lastItem.date);
-        updateCalendar(nextMonth.nextYear, nextMonth.nextMonth, 1);
+        console.log('nextMonth: ', nextMonth)
+        let nextMonthNum =   getDay(firstItem.date).month === getDay(lastItem.date).month? 
+        nextMonth.nextMonth + 1
+        : nextMonth.nextMonth;
+        updateCalendar(nextMonth.nextYear, nextMonthNum, 1);
         break;
       case "pre-week":
         updateCalendar(date.year, date.month, date.day, "pre-week");
@@ -358,7 +363,6 @@ export const getServerSideProps = async () => {
     `https://arubaito.online/api/calendar?facility_id=1`, 
    {httpsAgent}
   );
-  console.log("response: ", response);
   return {
     props: {
       data: response.data.data,

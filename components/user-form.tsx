@@ -45,7 +45,6 @@ const UserForm = (props: any) => {
         "post",
         ""
       );
-      console.log("response: ", response);
       if (response.data) {
         setLoading(false);
       }

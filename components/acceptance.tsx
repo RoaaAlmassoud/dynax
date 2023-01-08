@@ -34,7 +34,6 @@ const AcceptanceModal = forwardRef((props, ref) => {
         `accept-conditions`,
         "post",''
       );
-      console.log("response: ", response);
       if (response.data) {
         setLoading(false);
         openModal();

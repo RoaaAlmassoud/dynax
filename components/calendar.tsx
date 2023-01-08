@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { propTypes } from "react-bootstrap/esm/Image";
 import AcceptanceModal from "../components/acceptance";
 import { getDay, previousDate, nextDate, unique } from "../utilis/helper";
+import WindowSize from "./window-size";
 const Calendar = ({
   date,
   data,
@@ -13,10 +14,30 @@ const Calendar = ({
   lastCalendarItem,
   showSecondSummary,
 }: any) => {
+  const size = WindowSize();
   const [daySelected, setDaySelected] = useState(0);
-  let currentCalendar = current ? current : data ? data : null;
-  let previousFormate = previousDate(firstCalendarItem.date);
-  let nextFormate = nextDate(lastCalendarItem.date);
+  let sliceNumber = size.width > 640 ? 21 : 7;
+  let currentCalendar = current
+    ? current.calendar
+      ? { ...current, calendar: current.calendar.slice(0, sliceNumber) }
+      : data
+      ? data.calendar
+        ? { ...current, calendar: data.calendar.slice(0, sliceNumber) }
+        : null
+      : null
+    : null;
+  firstCalendarItem = currentCalendar.calendar
+    ? currentCalendar.calendar[0]
+    : null;
+
+  lastCalendarItem = currentCalendar.calendar
+      ? currentCalendar.calendar[currentCalendar.calendar.length - 1]
+      : null;
+
+  let previousFormate = firstCalendarItem
+    ? previousDate(firstCalendarItem.date)
+    : null;
+  let nextFormate = lastCalendarItem ? nextDate(lastCalendarItem.date) : null;
   let minDate = data
     ? data.calendar
       ? {
@@ -38,10 +59,12 @@ const Calendar = ({
     ? `${previousFormate.previousYear}年 ${previousFormate.previousMonth}月`
     : "";
 
-  let monthText =
-    getDay(firstCalendarItem.date).month === getDay(lastCalendarItem.date).month
+  let monthText = nextFormate
+    ? getDay(firstCalendarItem.date).month ===
+      getDay(lastCalendarItem.date).month
       ? nextFormate.nextMonth + 1
-      : nextFormate.nextMonth;
+      : nextFormate.nextMonth
+    : "";
   let nextMonthText = nextFormate
     ? `${nextFormate.nextYear}年 ${monthText}月`
     : "";
@@ -78,11 +101,10 @@ const Calendar = ({
         );
 
         let color = "blue";
-        if (availableNumber.openings === availableNumber.num_frames) {
+        if (availableNumber.openings === type.num_rooms) {
           color = "pale blue";
         } else {
-          let rate =
-            (availableNumber.fixed_number / availableNumber.num_frames) * 100;
+          let rate = (availableNumber.fixed_number / type.num_rooms) * 100;
           if (rate > 0 && rate < 49) {
             color = "pale blue";
           } else if (rate >= 50 && rate <= 99) {
@@ -123,9 +145,13 @@ const Calendar = ({
         } ${dayBeforeText}`}
       >
         {dayBeforeText ? (
-          <div className="header-text">{`${dayData.year}年${
-            dayData.month + 1
-          }月`}</div>
+          size.width > 640 ? (
+            <div className="header-text">{`${dayData.year}年${
+              dayData.month + 1
+            }月`}</div>
+          ) : (
+            <span className="month-sp">{`${dayData.month + 1}/`}</span>
+          )
         ) : null}
         <p className="day-number">{dayData.dayNumber}</p>
         <p className="day-name"> {dayData.dayName}</p>
@@ -155,13 +181,13 @@ const Calendar = ({
         </li>
       </ul>
       {currentCalendar.calendar ? (
-        <>
+        <div className={`${size.width <= 640 ? "calendar-sp" : ""}`}>
           <div className="flexbox switch-month">
             <Button
               className="previous-btn"
               onClick={() => calenderOperation("pre-month")}
               disabled={
-                minDate
+                minDate && previousFormate
                   ? previousFormate.previousYear < minDate.year
                     ? true
                     : previousFormate.previousYear === minDate.year &&
@@ -176,7 +202,7 @@ const Calendar = ({
               className="next-btn"
               onClick={() => calenderOperation("next-month")}
               disabled={
-                maxDate
+                maxDate && nextFormate
                   ? nextFormate.nextYear === maxDate.year &&
                     monthText > maxDate.month
                   : false
@@ -190,8 +216,13 @@ const Calendar = ({
             <Table className="calendar-table">
               <thead>
                 <tr>
-                  <th className="room-type">部屋タイプ</th>
-                  <th className="room-number">部屋数</th>
+                  {size.width > 640 ? (
+                    <>
+                      <th className="room-type">部屋タイプ</th>
+                      <th className="room-number">部屋数</th>
+                    </>
+                  ) : null}
+
                   {data
                     ? data.calendar
                       ? currentCalendar.calendar
@@ -209,18 +240,38 @@ const Calendar = ({
                 {data
                   ? data.room_types
                     ? data.room_types.map((type: any) => {
-                        return (
-                          <tr key={unique()}>
-                            <td>{type.name}</td>
-                            <td>{type.num_rooms}</td>
-                            {currentCalendar.calendar
-                              ? currentCalendar.calendar.map((day: any) => {
-                                  let t = getDay(day.date);
-                                  return renderDay(day, type);
-                                })
-                              : null}
-                          </tr>
-                        );
+                        if (size.width > 640)
+                          return (
+                            <tr key={unique()}>
+                              <td>{type.name}</td>
+                              <td>{type.num_rooms}</td>
+                              {currentCalendar.calendar
+                                ? currentCalendar.calendar.map((day: any) => {
+                                    let t = getDay(day.date);
+                                    return renderDay(day, type);
+                                  })
+                                : null}
+                            </tr>
+                          );
+                        else
+                          return (
+                            <>
+                              <tr key={unique()} className={"type-row"}>
+                                <td colSpan={4}>{type.name}</td>
+                                <td
+                                  colSpan={3}
+                                >{`部屋数：${type.num_rooms}部屋`}</td>
+                              </tr>
+                              <tr key={unique()} className={"opening-number"}>
+                                {currentCalendar.calendar
+                                  ? currentCalendar.calendar.map((day: any) => {
+                                      let t = getDay(day.date);
+                                      return renderDay(day, type);
+                                    })
+                                  : null}
+                              </tr>
+                            </>
+                          );
                       })
                     : null
                   : null}
@@ -260,7 +311,7 @@ const Calendar = ({
             </button>
           </p>
           <AcceptanceModal ref={modalRef} />
-        </>
+        </div>
       ) : null}
     </>
   );

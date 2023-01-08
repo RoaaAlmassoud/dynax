@@ -12,7 +12,6 @@ const WaitingModal = forwardRef((props, ref) => {
     setShow(false);
   };
   const handleShow = (daySelected: number, email: string) => {
-    console.log('daySelected in waiting: ', daySelected)
     let acceptanceElement = document.getElementsByClassName("acceptance-modal");
     if (acceptanceElement) {
       acceptanceElement[0].classList.remove("with-z");

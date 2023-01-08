@@ -19,15 +19,13 @@ const DateForm = (props: any) => {
     field: string
   ) => {
     let value: string = event.target.value;
-    console.log('value: ', value, typeof value)
     date = { ...date, [field]: parseInt(value) };
-    console.log('ate: ', date)
     props.updateDate(field, parseInt(value));
   };
 
   return (
     <Form>
-      <Form.Group className="d-flex align-items-baseline">
+      <Form.Group className="d-flex align-items-baseline date-form">
         <Form.Label>利用日</Form.Label>
         <Form.Select
           className="mr-2 year form-select"

@@ -5,17 +5,20 @@ import { useEffect, useRef, useState } from "react";
 import DateForm from "../components/date-form";
 import Calendar from "../components/calendar";
 import UserForm from "../components/user-form";
+import WindowSize from "../components/window-size";
 import axios from "axios";
 import * as https from "https";
 import { getDay, previousDate, nextDate } from "../utilis/helper";
-const httpsAgent =  new https.Agent({
+const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
-})
+});
 const Home = ({ data }: any) => {
+  const size = WindowSize();
   let sortedData: any;
   let current;
   let firstCalendarItem;
   let lastCalendarItem;
+ 
   if (data) {
     if (data.calendar) {
       sortedData = data.calendar.sort(
@@ -25,7 +28,10 @@ const Home = ({ data }: any) => {
     }
     current = data
       ? data.calendar
-        ? { ...data, calendar: data.calendar.slice(0, 21) }
+        ? {
+            ...data,
+            // calendar: data.calendar.slice(0, sliceNumber)
+          }
         : null
       : null;
 
@@ -48,6 +54,7 @@ const Home = ({ data }: any) => {
     year: currentDate.getFullYear(),
     month: currentDate.getMonth() + 1,
     day: currentDate.getDate(),
+    fullDay: currentDate.toLocaleDateString("ja-JP", { weekday: "long" }),
   });
   const [calendarDate, setCalendarDate] = useState({
     year: currentDate.getFullYear(),
@@ -60,15 +67,37 @@ const Home = ({ data }: any) => {
 
   const [firstSectionSummary, setFirstSectionSummary] = useState(false);
   const [secondSectionSummary, setSecondSectionSummary] = useState(false);
+  
 
   const updateDate = (field: string, value: string) => {
     if (field === "month") {
-      setDate({ ...date, [field]: parseInt(value), day: 1 });
+      let dayFull = new Date(
+        date.year,
+        parseInt(value) - 1,
+        1
+      ).toLocaleDateString("ja-JP", { weekday: "long" });
+
+      setDate({ ...date, [field]: parseInt(value), day: 1, fullDay: dayFull });
     } else if (field === "year") {
-      console.log('in year: ', value, typeof value)
-      setDate({ year: parseInt(value), month: 1, day: 1 });
+      let dayFull = new Date(
+        parseInt(value),
+        date.month - 1,
+        1
+      ).toLocaleDateString("ja-JP", { weekday: "long" });
+      setDate({
+        ...date,
+        year: parseInt(value),
+        month: 1,
+        day: 1,
+        fullDay: dayFull,
+      });
     } else {
-      setDate({ ...date, [field]: parseInt(value) });
+      let dayFull = new Date(
+        date.year,
+        date.month - 1,
+        parseInt(value)
+      ).toLocaleDateString("ja-JP", { weekday: "long" });
+      setDate({ ...date, [field]: parseInt(value), fullDay: dayFull });
     }
   };
 
@@ -92,10 +121,14 @@ const Home = ({ data }: any) => {
     if (operation) {
       if (operation === "pre-week") {
         startedIndex = data.calendar.indexOf(firstItem);
-        newCalendar = data.calendar.slice(startedIndex - 7, startedIndex + 14);
+        let startSlice = size.width > 640? startedIndex - 7: startedIndex - 7;
+        let endSlice = size.width > 640? startedIndex + 14: startedIndex +7;
+        newCalendar = data.calendar.slice(startSlice, endSlice);
       } else if (operation === "next-week") {
         startedIndex = data.calendar.indexOf(firstItem);
-        newCalendar = data.calendar.slice(startedIndex + 7, startedIndex + 27);
+        let startSlice = size.width > 640? startedIndex + 7: startedIndex + 7;
+        let endSlice = size.width > 640? startedIndex + 27: startedIndex +20;
+        newCalendar = data.calendar.slice(startSlice, endSlice);
       }
     } else {
       let startDate = data.calendar.find((a: any) => {
@@ -128,7 +161,6 @@ const Home = ({ data }: any) => {
   };
 
   const calendarOperation = (operation: string) => {
-    console.log('operation: ', operation)
     switch (operation) {
       case "pre-month":
         let previousMonth = previousDate(firstItem.date);
@@ -140,10 +172,10 @@ const Home = ({ data }: any) => {
         break;
       case "next-month":
         let nextMonth = nextDate(lastItem.date);
-        console.log('nextMonth: ', nextMonth)
-        let nextMonthNum =   getDay(firstItem.date).month === getDay(lastItem.date).month? 
-        nextMonth.nextMonth + 1
-        : nextMonth.nextMonth;
+        let nextMonthNum =
+          getDay(firstItem.date).month === getDay(lastItem.date).month
+            ? nextMonth.nextMonth + 1
+            : nextMonth.nextMonth;
         updateCalendar(nextMonth.nextYear, nextMonthNum, 1);
         break;
       case "pre-week":
@@ -204,7 +236,7 @@ const Home = ({ data }: any) => {
   return (
     <div>
       <Head>
-      {/* <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/> */}
+        {/* <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/> */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
 
@@ -261,9 +293,16 @@ const Home = ({ data }: any) => {
                   <div className="summary-detail">
                     <div>
                       <p className="key">利用日</p>
-                      <p className="value">{`${date.year}年${date.month}月${date.day}日 日日`}</p>
+                      <p className="value">{`${date.year}年${date.month}月${date.day}日 ${date.fullDay}`}</p>
                     </div>
-                    <Button>ここからやり直す</Button>
+                    <Button
+                      onClick={() => {
+                        setFirstSectionSummary(false);
+                        // updateCalendar(date.year, date.month, date.day);
+                      }}
+                    >
+                      ここからやり直す
+                    </Button>
                   </div>
                 </div>
               ) : (
@@ -358,10 +397,11 @@ const Home = ({ data }: any) => {
 
 export default Home;
 
+
 export const getServerSideProps = async () => {
   const response = await axios.get(
-    `https://arubaito.online/api/calendar?facility_id=1`, 
-   {httpsAgent}
+    `https://arubaito.online/api/calendar?facility_id=1`,
+    { httpsAgent }
   );
   return {
     props: {

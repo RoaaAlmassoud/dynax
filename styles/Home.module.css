@@ -480,6 +480,7 @@
   border: solid 1px #dddddd;
   vertical-align: middle;
   text-align: center;
+  letter-spacing: normal;
   position: relative;
   cursor: pointer;
 }
@@ -719,6 +720,10 @@
     padding: 5px 0 5px 15px;
   }
 
+  .main :global(.first-section .date-form) {
+    display: table-cell !important;
+  }
+
   .main :global(.second-section .checkbox) {
     margin-bottom: 20px;
   }
@@ -777,4 +782,182 @@
     width: 75%;
     height: fit-content;
   }
+
+  .main :global(.summary-section) {
+    padding: 20px;
+  }
+
+  .main :global(.summary-section .summary-detail .key) {
+    width: 35%;
+  }
+
+  .main :global(.summary-section .summary-detail .value) {
+    width: 65%;
+    /* padding: 0px 0 0px 15px; */
+  }
+
+  .main :global(.summary-section .summary-detail button) {
+    padding: 12px 30px;
+  }
+
+  .main :global(.third-section .status-colors) {
+    padding: 10px;
+    justify-content: flex-start;
+  }
+
+  .main :global(.third-section .status-colors li) {
+    font-size: 2.7vw;
+    text-align: left;
+    align-items: center;
+    margin: 0 10px 10px 0;
+    justify-content: flex-start;
+    letter-spacing: 0;
+    align-items: center;
+  }
+
+  .main :global(.third-section .status-colors .status-color) {
+    width: 4vw;
+    height: 4vw;
+    margin-right: 1vw;
+  }
+
+  /*Third section calendar*/
+  .main :global(.third-section .calendar-sp .switch-month p) {
+    display: none;
+  }
+
+  .main :global(.third-section .calendar-sp .switch-month .previous-btn) {
+    padding: 2vw 2vw 2vw 5vw;
+    font-size: 4vw;
+    background-size: contain;
+  }
+
+  .main :global(.third-section .calendar-sp .switch-month .next-btn) {
+    padding: 2vw 5vw 2vw 2vw;
+    font-size: 4vw;
+    background-size: contain;
+  }
+
+  .main
+    :global(
+      .third-section .calendar-sp .calendar-section .calendar-table .day
+    ) {
+    font-size: 5vw;
+    background-color: #fff;
+    vertical-align: bottom;
+    width: 14%;
+    width: calc(100% / 7);
+    border-bottom-color: #ddd;
+    line-height: 0.3;
+  }
+
+  .main
+    :global(
+      .third-section .calendar-sp .calendar-section .calendar-table .room-type
+    ),
+  .main
+    :global(
+      .third-section .calendar-sp .calendar-section .calendar-table .room-number
+    ),
+  .main
+    :global(
+      .third-section
+        .calendar-sp
+        .calendar-section
+        .calendar-table
+        .day.with-before
+        .header-text
+    ) {
+    display: none;
+  }
+
+  .main :global(.third-section .calendar-sp .calendar-body .type-row) {
+    display: table-row;
+  }
+
+  .main
+    :global(
+      .third-section .calendar-sp .calendar-body .type-row td:first-child
+    ) {
+    text-align: left;
+    background-color: #eee;
+    font-weight: 500;
+    border-right: none;
+  }
+
+  .main
+    :global(
+      .third-section .calendar-sp .calendar-body .type-row td:last-child
+    ) {
+    text-align: right;
+    background-color: #eee;
+    font-size: 14px;
+    border-left: none;
+  }
+
+  .main
+    :global(.third-section .calendar-sp .calendar-body tr.opening-number td) {
+    font-size: 20px;
+    text-align: center !important;
+    font-weight: 600;
+  }
+
+  .main
+    :global(
+      .third-section
+        .calendar-sp
+        .calendar-section
+        .calendar-table
+        .day
+        .day-number
+    ) {
+    line-height: 1;
+  }
+
+  .main
+    :global(
+      .third-section
+        .calendar-sp
+        .calendar-section
+        .calendar-table
+        .day
+        .day-name
+    ) {
+    font-size: 3vw;
+    display: block;
+    margin-top: 3px;
+    line-height: 1;
+  }
+
+  .main
+    :global(
+      .third-section
+        .calendar-sp
+        .calendar-section
+        .calendar-table
+        .day.with-before
+        .month-sp
+    ) {
+    font-weight: 600;
+    font-size: 3vw;
+    line-height: 1;
+  }
+
+  .main :global(.third-section .calendar-sp .calendar-section .switch-week) {
+    margin: 0;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .main
+  :global(
+    .third-section .calendar-sp .calendar-section .calendar-table .day
+  ) {
+    font-size: 4vw;
+  }
+
+  .main
+  :global(.third-section .calendar-sp .calendar-body tr.opening-number td) {
+  font-size: 15px;
+}
 }

@@ -2,7 +2,6 @@ let years: { id: number, name: string, value: number}[] = [];
 for(let i=0; i<= 10; i++){
     const currentDate = new Date();
     let year: number = i === 0? currentDate.getFullYear(): years[i-1].value +1;
-    console.log('typeof in y: ', typeof year)
     years.push({
         id: i,
         name: `${year}年`,

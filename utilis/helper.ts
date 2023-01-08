@@ -3,6 +3,8 @@ export function getDay(date: Date){
     return {
         dayNumber: dateObject.getDate(),
         dayName: dateObject.toLocaleDateString('ja-JP', {weekday: 'short'}),
+        dayNameFull: dateObject.toLocaleDateString('ja-JP', {weekday: 'long'}),
+        dayNameFullEng: dateObject.toLocaleDateString('en', {weekday: 'long'}),
         month: dateObject.getMonth(),
         year: dateObject.getFullYear()
     }

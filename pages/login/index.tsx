@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "../styles/Login.module.css";
+import styles from "../../styles/Login.module.css";
 import { Form, ListGroup, Row, Col, Button } from "react-bootstrap";
 import Link from 'next/link';
 export default function Login() {

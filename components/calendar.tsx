@@ -83,19 +83,7 @@ const Calendar = ({
   const renderDay = (day: any, type: any) => {
     const dayData = getDay(day.date);
     switch (day.status_type) {
-      case 1:
-      // return (
-      //   <td key={unique()} className="gray">
-      //     休
-      //   </td>
-      // );
-      // break;
-      case 2:
-      case 3:
-      case 4:
-        // return <td key={unique()} className="gray"></td>;
-        // break;
-
+      case 0:
         const availableNumber = day.rsv_frames.find(
           (a: any) => a.roomtype_id === type.id
         );
@@ -127,6 +115,22 @@ const Calendar = ({
           </td>
         );
         return td;
+        break;
+    
+      case 1:
+           return (
+         <td key={unique()} className="gray">
+    
+         休
+         </td>
+       );
+       break;
+      case 2:
+      case 3:
+         return <td key={unique()} className="gray"></td>;
+         break;
+
+       
     }
   };
 

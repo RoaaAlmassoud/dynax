@@ -369,23 +369,40 @@ section .inner.under h2 {
   letter-spacing: 0.05em;
 }
 
-.color1{
-  background-color: #D1F3FF;
+.color1 {
+  background-color: #d1f3ff;
 }
-.color2{
-  background-color: #8AD4EF;
+.color2 {
+  background-color: #8ad4ef;
 }
-.color3{
-  background-color: #43B9E3;
+.color3 {
+  background-color: #43b9e3;
 }
-.color4{
-  background-color: #FFE3D1;
+.color4 {
+  background-color: #ffe3d1;
 }
-.color5{
-  background-color: #FFC098;
+.color5 {
+  background-color: #ffc098;
 }
-.color6{
-  background-color: #FF9C5D;
+.color6 {
+  background-color: #ff9c5d;
+}
+
+.error-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.error-section img {
+  width: 40px;
+  height: 35px;
+}
+
+.error-section h3 {
+  font-weight: 600;
+  color: red;
+  padding-left: 20px;
+  padding-top: 2px;
 }
 
 @media screen and (min-width: 1080px) {

@@ -2,8 +2,12 @@ import { Button } from "react-bootstrap";
 import styles from "../styles/Reserved.module.css";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { withRouter } from "next/router";
+import { propTypes } from "react-bootstrap/esm/Image";
 
-const Reserved = () => {
+const Reserved = (props: any) => {
+  const code = localStorage.getItem("code") ? localStorage.getItem("code") : "";
+  let data = props.router ? (props.router ? props.router.query : {}) : {};
   const close = () => {
     window.close();
   };
@@ -14,13 +18,13 @@ const Reserved = () => {
         <h2>予約完了</h2>
         <div className="section-box">
           <p className="title-text">
-            手巣戸花子様
+            {data ? data.name : ""}
             <br />
-            先着申し込みを受け付けました。
+            {data ? data.lottery : ""}
           </p>
           <div className="message-box">
             <p className="message-text">
-              ご予約番号は <span>2201080001</span> です。
+              ご予約番号は <span>{data ? data.code : ""}</span> です。
             </p>
           </div>
           <p className="title-text">
@@ -34,17 +38,23 @@ const Reserved = () => {
             </dt>
             <dd>
               <p className="note-text">
-                予約番号は申し込み内容の変更やキャンセルする際に必要となりますので、控える様お願い致します。
+                {/* 予約番号は申し込み内容の変更やキャンセルする際に必要となりますので、控える様お願い致します。
                 <br />
-                尚、確認メールが何らかの問題で届かない場合がございます。2日以上たってメールが届かない場合、申込みが成立していないことがありますので雪見荘までご連絡ください。
+                尚、確認メールが何らかの問題で届かない場合がございます。2日以上たってメールが届かない場合、申込みが成立していないことがありますので雪見荘までご連絡ください。 */}
+                {data ? data.notes : ""}
               </p>
               <p className="detail">
-                <span className="detail-text">雪見荘</span>
+                <span className="detail-text">
+                  {data ? data.abbreviation : ""}
+                </span>
                 <br className="sp" />
                 {` E-MAIL : `}
-                <a href="mailto:info@sumple.co.jp">info@sumple.co.jp</a>　
+                <a href={`mailto:${data ? data.mail : ""}`}>
+                  {data ? data.mail : ""}
+                </a>
+                　
                 <br className="sp" />
-                TEL：<a href="tel:03-5488-7030">03-5488-7030</a>
+                TEL：<a href="tel:03-5488-7030">{data ? data.tel : ""}</a>
               </p>
             </dd>
           </dl>
@@ -78,4 +88,4 @@ const Reserved = () => {
   );
 };
 
-export default Reserved;
+export default withRouter(Reserved);

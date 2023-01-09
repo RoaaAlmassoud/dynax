@@ -13,8 +13,8 @@ import UserForm from "../components/user-form";
 const Home = ({ data }: any) => {
   const router = useRouter();
   const { token } = router.query;
-  let rememberToken= token?.toString();
- 
+  let rememberToken = token?.toString();
+
   let sortedData: any;
   let current;
   let firstCalendarItem;
@@ -67,10 +67,10 @@ const Home = ({ data }: any) => {
   const [info, setInfo] = useState({
     facilityName: "",
     usedDate: "",
-    fullUsedDate:"",
+    fullUsedDate: "",
     roomType: "",
     openings: 1,
-    email: ""
+    email: "",
   });
 
   const updateDate = (field: string, value: string) => {
@@ -84,7 +84,7 @@ const Home = ({ data }: any) => {
   };
 
   const getReservation = async () => {
-     localStorage.setItem("token", rememberToken ? rememberToken : "");
+    localStorage.setItem("token", rememberToken ? rememberToken : "");
     let reservationInformation = await AxiosApi.call(
       {},
       "reservation",
@@ -234,6 +234,8 @@ const Home = ({ data }: any) => {
     //     currentCheck();
     //   };
     // }
+
+    return () => localStorage.clear();
   }, []);
 
   return (

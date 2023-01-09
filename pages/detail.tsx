@@ -1,11 +1,30 @@
 import {Table, Button, Modal} from "react-bootstrap"
 import styles from  "../styles/Detail.module.css";
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
+import AxiosApi from "./api/axios-api";
 const Detail = () => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const getReservation = async () => {
+    let reservationInformation = await AxiosApi.call(
+      {},
+      "reservation",
+      "get",
+      ""
+    );
+
+    if(reservationInformation.data){
+      console.log('reservationInformation: ', reservationInformation.data)
+    }
+  }
+
+  useEffect(() => {
+    getReservation();
+    // return () => localStorage.clear()
+  }, [])
     return (    
     <section className={styles.detail}>
       <div className="inner">

@@ -1,13 +1,15 @@
 import { Form, ListGroup, Row, Col, Button } from "react-bootstrap";
 import React from "react";
 import { useState } from "react";
+import { useRouter } from "next/router";
 import AxiosApi from "../pages/api/axios-api";
 
 const UserForm = (props: any) => {
   let info = props.info;
+  const router = useRouter();
   const [validated, setValidated] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [showError, setShowError] = useState(false)
+  const [showError, setShowError] = useState(false);
   const [userForm, setUserForm] = useState({
     number_of_rooms: 1,
     first_name: "",
@@ -20,12 +22,12 @@ const UserForm = (props: any) => {
   });
   const handleChange = (event: any, field: string) => {
     let value: string = event.target.value;
-    if(field === "repeat_password"){
-        if(value !== userForm.password){
-            setShowError(true)
-        } else {
-            setShowError(false)
-        }
+    if (field === "repeat_password") {
+      if (value !== userForm.password) {
+        setShowError(true);
+      } else {
+        setShowError(false);
+      }
     }
     setUserForm({ ...userForm, [field]: value });
   };
@@ -46,6 +48,24 @@ const UserForm = (props: any) => {
         ""
       );
       if (response.data) {
+        let data = response.data;
+        if (data.reservation.code) {
+          router.push({
+            pathname: "/reserved",
+            query: {
+              code: data.reservation.code,
+              name: `${data.user.name}様`,
+              lottery:
+                data.reservation.lottery_status === 0
+                  ? "先着予約を受け付けました。"
+                  : "抽選申込を受け付けました。",
+              notes: data.facility.notes,
+              abbreviation: data.facility.abbreviation,
+              mail: data.facility.mail,
+              tel: data.facility.tel,
+            },
+          }, "/reserved");
+        }
         setLoading(false);
       }
     }
@@ -220,7 +240,7 @@ const UserForm = (props: any) => {
           <Form.Control
             type="password"
             required
-            className={`${showError? 'red-border': ''}`}
+            className={`${showError ? "red-border" : ""}`}
             placeholder="6文字以上"
             value={userForm.repeat_password}
             onChange={(event) => handleChange(event, "repeat_password")}

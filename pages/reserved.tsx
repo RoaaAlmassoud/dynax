@@ -6,7 +6,6 @@ import { withRouter } from "next/router";
 import { propTypes } from "react-bootstrap/esm/Image";
 
 const Reserved = (props: any) => {
-  const code = localStorage.getItem("code") ? localStorage.getItem("code") : "";
   let data = props.router ? (props.router ? props.router.query : {}) : {};
   const close = () => {
     window.close();

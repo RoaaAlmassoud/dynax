@@ -12,13 +12,13 @@ import { getDay, previousDate, nextDate } from "../utilis/helper";
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });
-const Home = ({ data }: any) => {
+const Home = ({ data, facility, names }: any) => {
   const size = WindowSize();
   let sortedData: any;
   let current;
   let firstCalendarItem;
   let lastCalendarItem;
- 
+
   if (data) {
     if (data.calendar) {
       sortedData = data.calendar.sort(
@@ -67,7 +67,6 @@ const Home = ({ data }: any) => {
 
   const [firstSectionSummary, setFirstSectionSummary] = useState(false);
   const [secondSectionSummary, setSecondSectionSummary] = useState(false);
-  
 
   const updateDate = (field: string, value: string) => {
     if (field === "month") {
@@ -121,13 +120,16 @@ const Home = ({ data }: any) => {
     if (operation) {
       if (operation === "pre-week") {
         startedIndex = data.calendar.indexOf(firstItem);
-        let startSlice = size.width > 640? startedIndex - 7: startedIndex - 7;
-        let endSlice = size.width > 640? startedIndex + 14: startedIndex +7;
-        newCalendar = data.calendar.slice(startSlice, endSlice);
+        let startSlice = size.width > 640 ? startedIndex - 7 : startedIndex - 7;
+        let endSlice = size.width > 640 ? startedIndex + 14 : startedIndex + 7;
+        newCalendar = data.calendar.slice(
+          startSlice < 0 ? 0 : startSlice,
+          startSlice < 0? endSlice+Math.abs(startSlice): endSlice
+        );
       } else if (operation === "next-week") {
         startedIndex = data.calendar.indexOf(firstItem);
-        let startSlice = size.width > 640? startedIndex + 7: startedIndex + 7;
-        let endSlice = size.width > 640? startedIndex + 27: startedIndex +20;
+        let startSlice = size.width > 640 ? startedIndex + 7 : startedIndex + 7;
+        let endSlice = size.width > 640 ? startedIndex + 28 : startedIndex + 20;
         newCalendar = data.calendar.slice(startSlice, endSlice);
       }
     } else {
@@ -251,24 +253,27 @@ const Home = ({ data }: any) => {
           <ul>
             <li>
               <a href="#date" id="nav1">
-                <span className="step-number">1</span>施設選択
+                <span className="step-number">1</span>
+                {"施設選択"}
               </a>
             </li>
             <li>
               <a href="#facilities" id="nav2">
-                <span className="step-number">2</span>日程選択
+                <span className="step-number">2</span>
+                {names ? names.section01 : "日程選択"}
               </a>
             </li>
             <li>
               <a href="#calendar" id="nav3">
-                <span className="step-number">3</span>基本情報登録
+                <span className="step-number">3</span>
+                {names ? names.section02 : "基本情報登録"}
               </a>
             </li>
-            <li>
+            {/* <li>
               <a href="#basic-information" id="nav4">
-                <span className="step-number">4</span>利用者登録
+                <span className="step-number">4</span>{names ? names.section03: "利用者登録"}
               </a>
-            </li>
+            </li> */}
           </ul>
           <p onClick={() => setOpen(!open)} className="nav-btn">
             　
@@ -286,7 +291,7 @@ const Home = ({ data }: any) => {
             <div className="inner">
               <h2>
                 <img src="/images/h2-icon1.svg" alt="施設選択" />
-                施設選択
+                {names ? names.section01 : "施設選択"}
               </h2>
               {firstSectionSummary ? (
                 <div className="summary-section">
@@ -322,7 +327,7 @@ const Home = ({ data }: any) => {
                           value="軽井沢"
                           checked
                         />
-                        軽井沢
+                        {facility ? facility.name : "軽井沢"}
                       </li>
                     </ul>
                   </form>
@@ -348,7 +353,7 @@ const Home = ({ data }: any) => {
           <div className="inner">
             <h2>
               <img src="images/h2-icon2.svg" alt="宿泊希望日" />
-              宿泊希望日
+              {names ? names.section02 : "基本情報登録"}
             </h2>
             {secondSectionSummary ? (
               <div className="summary-section">
@@ -374,22 +379,24 @@ const Home = ({ data }: any) => {
                 firstCalendarItem={firstItem}
                 lastCalendarItem={lastItem}
                 showSecondSummary={showSecondSummary}
+                names={names}
+                facility={facility}
               />
             ) : null}
           </div>
         </section>
 
-        <section className="fourth-section position-now" id="basic-information">
+        {/* <section className="fourth-section position-now" id="basic-information">
           <div className="inner">
             <h2>
               <img src="/images/h2-icon3.svg" alt="基本情報" />
-              基本情報
+              {names ? names.section03: "基本情報"}
             </h2>
             <div className="section-box">
               <UserForm />
             </div>
           </div>
-        </section>
+        </section> */}
       </main>
     </div>
   );
@@ -397,15 +404,27 @@ const Home = ({ data }: any) => {
 
 export default Home;
 
-
 export const getServerSideProps = async () => {
-  const response = await axios.get(
-    `https://arubaito.online/api/calendar?facility_id=1`,
-    { httpsAgent }
-  );
+  const facility = await axios.get(`https:arubaito.online/api/facilities`, {
+    httpsAgent,
+  });
+  const names = await axios.get(`https:arubaito.online/api/names`, {
+    httpsAgent,
+  });
+  let response;
+  if (facility.data) {
+    const facilityObject = facility.data.data[0];
+    response = await axios.get(
+      `https:arubaito.online/api/calendar?facility_id=${facilityObject.id}`,
+      { httpsAgent }
+    );
+  }
+
   return {
     props: {
-      data: response.data.data,
+      data: response ? response.data.data : {},
+      facility: facility.data.data[0],
+      names: names.data.data,
     },
   };
 };

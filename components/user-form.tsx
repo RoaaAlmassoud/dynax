@@ -6,10 +6,13 @@ import AxiosApi from "../pages/api/axios-api";
 
 const UserForm = (props: any) => {
   let info = props.info;
+  let rememberToken = props.rememberToken ? props.rememberToken : "";
   const router = useRouter();
   const [validated, setValidated] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  
   const [userForm, setUserForm] = useState({
     number_of_rooms: 1,
     first_name: "",
@@ -45,28 +48,36 @@ const UserForm = (props: any) => {
         userForm,
         `confirm-reservation`,
         "post",
-        ""
+        rememberToken ? rememberToken : ""
       );
       if (response.data) {
         let data = response.data;
+        localStorage.setItem("token", rememberToken ? rememberToken : "");
         if (data.reservation.code) {
-          router.push({
-            pathname: "/reserved",
-            query: {
-              code: data.reservation.code,
-              name: `${data.user.name}様`,
-              lottery:
-                data.reservation.lottery_status === 0
-                  ? "先着予約を受け付けました。"
-                  : "抽選申込を受け付けました。",
-              notes: data.facility.notes,
-              abbreviation: data.facility.abbreviation,
-              mail: data.facility.mail,
-              tel: data.facility.tel,
+          router.push(
+            {
+              pathname: "/reserved",
+              query: {
+                code: data.reservation.code,
+                name: `${data.user.name}様`,
+                lottery:
+                  data.reservation.lottery_status === 0
+                    ? "先着予約を受け付けました。"
+                    : "抽選申込を受け付けました。",
+                notes: data.facility.notes,
+                abbreviation: data.facility.abbreviation,
+                mail: data.facility.mail,
+                tel: data.facility.tel,
+              },
             },
-          }, "/reserved");
+            "/reserved"
+          );
         }
         setLoading(false);
+      } else {
+        if (response.message) {
+          setErrorMsg(response.message);
+        }
       }
     }
   };
@@ -252,6 +263,12 @@ const UserForm = (props: any) => {
           {isLoading ? "Processing" : "予約申込予約申込"}
         </Button>
       </Row>
+      {errorMsg ? (
+        <div className="error-section">
+          <img src="/images/warning.png" />
+          <h3>{`Error: ${errorMsg}`}</h3>
+        </div>
+      ) : null}
     </Form>
   );
 };

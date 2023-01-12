@@ -9,12 +9,12 @@ export default class AxiosApi {
     
     static ApiURL = "https://arubaito.online/api/";
     
-    static call = async (requestBody:any, path:string, method:Methods, header:string) => {
+    static call = async (requestBody:any, path:string, method:Methods, header?:string) => {
         let url = path ? `${this.ApiURL}${path}` : this.ApiURL;
         // let accessToken = localStorage.getItem('api_token');
         let headers = {
             "Content-Type": "application/json",
-            "remember-token":localStorage.getItem("token") ? localStorage.getItem("token") : ""
+            "remember-token":header?header:localStorage.getItem("token") ? localStorage.getItem("token") : ""
 
         };
 

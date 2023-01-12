@@ -489,6 +489,7 @@
     .third-section .calendar-section .calendar-table .calendar-body tr td.gray
   ) {
   background-color: #dddddd;
+  border: solid 1px #c6c4c4;
 }
 
 .main

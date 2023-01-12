@@ -16,6 +16,8 @@ const AcceptanceModal = forwardRef((props, ref) => {
   const [validated, setValidated] = useState(false);
   const [email, setEmail] = useState("");
   const [isLoading, setLoading] = useState(false);
+  const [agreement, setAgreement] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = async (event: any) => {
     const form = event.currentTarget;
@@ -32,11 +34,16 @@ const AcceptanceModal = forwardRef((props, ref) => {
           rsv_frame_ids: [daySelected],
         },
         `accept-conditions`,
-        "post",''
+        "post",
+        ""
       );
       if (response.data) {
         setLoading(false);
         openModal();
+      } else{
+        if (response.message) {
+          setErrorMsg(response.message);
+        }
       }
     }
   };
@@ -44,9 +51,10 @@ const AcceptanceModal = forwardRef((props, ref) => {
   const handleClose = () => {
     setShow(false);
   };
-  const handleShow = async (daySelected: number) => {
+  const handleShow = async (daySelected: number, agreement: string) => {
     setShow(true);
     setDaySelected(daySelected);
+    setAgreement(agreement)
   };
 
   const openModal = () => {
@@ -75,7 +83,7 @@ const AcceptanceModal = forwardRef((props, ref) => {
               className="mb-4"
               controlId="exampleForm.ControlTextarea1"
             >
-              <Form.Control as="textarea" rows={12} readOnly />
+              <Form.Control as="textarea" rows={12} readOnly value={agreement} />
             </Form.Group>
             <Form.Group
               className="email d-flex justify-content-center align-items-center mb-4"
@@ -90,11 +98,10 @@ const AcceptanceModal = forwardRef((props, ref) => {
                 onChange={(event) => setEmail(event.target.value)}
               />
             </Form.Group>
-            <Form.Group className="actions d-flex justify-content-center">
-              <Button className="me-3"
-              onClick={() => setEmail("")}
-              >
-                クリア</Button>
+            <Form.Group className="actions d-flex justify-content-center my-2">
+              <Button className="me-3" onClick={() => setEmail("")}>
+                クリア
+              </Button>
               <Button
                 type="submit"
                 className="py-2"
@@ -107,6 +114,12 @@ const AcceptanceModal = forwardRef((props, ref) => {
               </Button>
             </Form.Group>
           </Form>
+          {errorMsg ? (
+            <div className="error-section">
+              <img src="/images/warning.png" />
+              <h3>{`Error: ${errorMsg}`}</h3>
+            </div>
+          ) : null}
         </Modal.Body>
       </Modal>
       <WaitingModal ref={waitingRef} />

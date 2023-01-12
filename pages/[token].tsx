@@ -13,7 +13,7 @@ import UserForm from "../components/user-form";
 const Home = ({ data }: any) => {
   const router = useRouter();
   const { token } = router.query;
-  let rememberToken = token?.toString();
+  let rememberToken = token?token.toString(): "";
 
   let sortedData: any;
   let current;
@@ -84,12 +84,11 @@ const Home = ({ data }: any) => {
   };
 
   const getReservation = async () => {
-    localStorage.setItem("token", rememberToken ? rememberToken : "");
     let reservationInformation = await AxiosApi.call(
       {},
       "reservation",
       "get",
-      ""
+      rememberToken
     );
     if (reservationInformation.data) {
       let resData = reservationInformation.data.reservation.rsvdates[0];
@@ -235,7 +234,7 @@ const Home = ({ data }: any) => {
     //   };
     // }
 
-    return () => localStorage.clear();
+    // return () => localStorage.clear();
   }, []);
 
   return (
@@ -367,7 +366,7 @@ const Home = ({ data }: any) => {
               基本情報
             </h2>
             <div className="section-box">
-              <UserForm info={info} />
+              <UserForm info={info} rememberToken={rememberToken}/>
             </div>
           </div>
         </section>

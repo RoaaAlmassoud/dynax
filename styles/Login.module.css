@@ -23,26 +23,32 @@
 }
 
 .login :global(.login-container .login-form > div .form-label) {
-  width: 30%;
+  width: 32%;
   margin-bottom: 0;
 }
 
 .login :global(.login-container .login-form > div .form-control) {
-  width: 60%;
+  width: 58%;
   vertical-align: middle;
 }
 
 .login :global(.inner .link) {
   max-width: 720px;
-  margin: 0 auto 100px;
+  margin: 0 auto 20px;
 }
 
-.login :global(.inner .link .link1) {
+.login :global(.inner .link p) {
   color: var(--blue);
+  cursor: pointer;
 }
 
-.login :global(.inner .link .link1 img) {
+.login :global(.inner .link p img) {
   margin: 0 7px 4px 0;
+}
+
+.login :global(.was-validated .form-control.without-validation:valid) {
+  border-color: #ced4da;
+  background-image: none;
 }
 
 .login :global(.inner .home-btn) {
@@ -62,41 +68,45 @@
   margin: 0 5px 4px 0;
 }
 
+.login :global(.login-container .login-form input.red-border.form-control) {
+  border-color: #dc3545;
+}
+
 @media screen and (max-width: 640px) {
-    .login :global(.login-container) {
-        padding: 20px 15px;
-    }
+  .login :global(.login-container) {
+    padding: 20px 15px;
+  }
 
-    .login :global(.login-container .login-form){
-        margin-bottom: 0;
-    }
+  .login :global(.login-container .login-form) {
+    margin-bottom: 0;
+  }
 
-    .login :global(.login-container .login-form > div .form-label) {
-        width: 25%;
-    }
+  .login :global(.login-container .login-form > div .form-label) {
+    width: 25%;
+  }
 
-    .login :global(.login-container .login-form > div .form-control) {
-        width: 75%;
-    }
+  .login :global(.login-container .login-form > div .form-control) {
+    width: 75%;
+  }
 
-    .login :global(.login-container .login-form .actions) {
-        width: 60%;
-        margin: auto;
-        flex-wrap: wrap;
-    }
+  .login :global(.login-container .login-form .actions) {
+    width: 60%;
+    margin: auto;
+    flex-wrap: wrap;
+  }
 
-    .login :global(.login-container .login-form .actions button) {
-        width: 100%;
-        margin-right: 0 !important;
-        font-size: 16px;
-        padding: 9.5px 0;
-    }
+  .login :global(.login-container .login-form .actions button) {
+    width: 100%;
+    margin-right: 0 !important;
+    font-size: 16px;
+    padding: 9.5px 0;
+  }
 
-    .login :global(.login-container .login-form .actions button:first-child) {
-        order: 2;
-    }
+  .login :global(.login-container .login-form .actions button:first-child) {
+    order: 2;
+  }
 
-    .login :global(.login-container .login-form .actions button:last-child) {
-        margin-bottom: 10px;
-    }
+  .login :global(.login-container .login-form .actions button:last-child) {
+    margin-bottom: 10px;
+  }
 }

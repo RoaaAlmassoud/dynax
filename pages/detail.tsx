@@ -1,10 +1,28 @@
-import {Table, Button, Modal} from "react-bootstrap"
-import styles from  "../styles/Detail.module.css";
-import {useEffect, useState} from 'react';
+import { Table, Button, Modal } from "react-bootstrap";
+import styles from "../styles/Detail.module.css";
+import { useEffect, useState } from "react";
 import AxiosApi from "./api/axios-api";
+import { getDay } from "../utilis/helper";
+import { useRouter } from "next/router";
 const Detail = () => {
   const [show, setShow] = useState(false);
-
+  const [isLoading, setLoading] = useState(false);
+  const router = useRouter();
+  const [info, setInfo] = useState({
+    reservation: {
+      facility: { name: "" },
+      code: "",
+      date: "",
+      roomType: "",
+      numRooms: "",
+    },
+    user: {
+      name: "",
+      kana: "",
+      mail: "",
+      tel: "",
+    },
+  });
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -15,17 +33,49 @@ const Detail = () => {
       "get",
       ""
     );
-
-    if(reservationInformation.data){
-      console.log('reservationInformation: ', reservationInformation.data)
+    if (reservationInformation.data) {
+      let rsvdates = reservationInformation.data.reservation.rsvdates;
+      const usedDate = getDay(rsvdates[0].date);
+      const date = `${usedDate.year}年${usedDate.month + 1}月${
+        usedDate.dayNumber
+      }日 ${usedDate.dayNameFull}`;
+      const roomType = rsvdates[0].rsvroomtype.room_type.name;
+      const numRooms = rsvdates[0].rsvroomtype.rsv_num_rooms;
+      setInfo({
+        reservation: {
+          ...reservationInformation.data.reservation,
+          date: date,
+          roomType: roomType,
+          numRooms: numRooms,
+        },
+        user: reservationInformation.data.user,
+      });
     }
-  }
+  };
 
   useEffect(() => {
     getReservation();
     // return () => localStorage.clear()
-  }, [])
-    return (    
+  }, []);
+
+  const cancelReservation =async () => {
+    setLoading(true)
+    const response = await AxiosApi.call(
+      {},
+      "cancel-reservation",
+      "put",
+      ""
+    );
+   
+    if(response.data){
+      localStorage.clear()
+      router.push('/')
+    } else{
+
+    }
+  }
+
+  return (
     <section className={styles.detail}>
       <div className="inner">
         <h2>予約詳細</h2>
@@ -35,19 +85,27 @@ const Detail = () => {
             <tbody>
               <tr>
                 <th>施設</th>
-                <td>D保養所</td>
+                <td>
+                  {info
+                    ? info.reservation
+                      ? info.reservation.facility.name
+                      : ""
+                    : ""}
+                </td>
                 <th>予約番号</th>
-                <td>1002080002</td>
+                <td>
+                  {info ? (info.reservation ? info.reservation.code : "") : ""}
+                </td>
               </tr>
               <tr>
                 <th>利用日</th>
-                <td>2010年02月21日 日曜日</td>
+                <td>{info ? info.reservation.date : ""}</td>
               </tr>
               <tr>
                 <th>ゴース</th>
-                <td>来館見学 : 10:30</td>
+                <td>{info ? info.reservation.roomType : ""}</td>
                 <th>人数</th>
-                <td>3</td>
+                <td>{info ? info.reservation.numRooms : ""}</td>
               </tr>
             </tbody>
           </Table>
@@ -56,42 +114,44 @@ const Detail = () => {
             <tbody>
               <tr>
                 <th>氏名</th>
-                <td>山田 大郎</td>
+                <td>{info ? info.user.name : ""}</td>
                 <th>氏名フリガナ</th>
-                <td>ヤマダ タロウ</td>
+                <td>{info ? info.user.kana : ""}</td>
               </tr>
               <tr>
                 <th>メールアドレス</th>
-                <td>jun@dynax.co.jp</td>
+                <td>{info ? info.user.mail : ""}</td>
                 <th>電話番号</th>
-                <td>090-11-11</td>
+                <td>{info ? info.user.tel : ""}</td>
               </tr>
             </tbody>
           </Table>
           <div className="actions flexbox">
             <Button onClick={handleShow}>予約キャンセル</Button>
 
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>予約キャンセル</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>この予約をキャンセルしますが、よろしいですか？</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-          いいえ
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-          はい
-          </Button>
-        </Modal.Footer>
-      </Modal>
+            <Modal show={show} onHide={handleClose}>
+              <Modal.Header closeButton>
+                <Modal.Title>予約キャンセル</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                この予約をキャンセルしますが、よろしいですか？
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                  いいえ
+                </Button>
+                <Button variant="primary" onClick={() => cancelReservation()}>
+                  {isLoading ? "Processing" : "はい"}
+                </Button>
+              </Modal.Footer>
+            </Modal>
             <Button>予約変更</Button>
             <Button onClick={() => window.print()}>画面印刷</Button>
           </div>
         </div>
       </div>
     </section>
-     );
-}
- 
+  );
+};
+
 export default Detail;

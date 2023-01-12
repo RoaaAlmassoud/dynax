@@ -405,6 +405,12 @@ section .inner.under h2 {
   padding-top: 2px;
 }
 
+/* .was-validated .form-control:invalid,
+.was-validated .form-control:valid,
+.was-validated .form-select:valid:not([multiple]):not([size]) {
+  background-image: none;
+} */
+
 @media screen and (min-width: 1080px) {
   .calendar-submit {
     margin-left: calc((100vw - 1065px) / -2);

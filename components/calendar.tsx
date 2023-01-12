@@ -13,6 +13,8 @@ const Calendar = ({
   firstCalendarItem,
   lastCalendarItem,
   showSecondSummary,
+  names,
+  facility,
 }: any) => {
   const size = WindowSize();
   const [daySelected, setDaySelected] = useState(0);
@@ -31,8 +33,8 @@ const Calendar = ({
     : null;
 
   lastCalendarItem = currentCalendar.calendar
-      ? currentCalendar.calendar[currentCalendar.calendar.length - 1]
-      : null;
+    ? currentCalendar.calendar[currentCalendar.calendar.length - 1]
+    : null;
 
   let previousFormate = firstCalendarItem
     ? previousDate(firstCalendarItem.date)
@@ -70,15 +72,18 @@ const Calendar = ({
     : "";
 
   let modalRef = useRef<any>(null);
+ 
   const openModal = () => {
     // showSecondSummary();
     if (modalRef.current) {
       modalRef.current.daySelected = daySelected;
-      modalRef.current.handleShow(daySelected);
+      modalRef.current.handleShow(daySelected, facility? facility.agreement: "");
     }
   };
   const dayClicked = (day: any, frame: any) => {
-    setDaySelected(frame.id);
+    if (frame.openings !== 0) {
+      setDaySelected(daySelected === frame.id ? "" : frame.id);
+    }
   };
   const renderDay = (day: any, type: any) => {
     const dayData = getDay(day.date);
@@ -116,21 +121,18 @@ const Calendar = ({
         );
         return td;
         break;
-    
+
       case 1:
-           return (
-         <td key={unique()} className="gray">
-    
-         休
-         </td>
-       );
-       break;
+        return (
+          <td key={unique()} className="gray">
+            休
+          </td>
+        );
+        break;
       case 2:
       case 3:
-         return <td key={unique()} className="gray"></td>;
-         break;
-
-       
+        return <td key={unique()} className="gray"></td>;
+        break;
     }
   };
 
@@ -216,14 +218,18 @@ const Calendar = ({
             </Button>
           </div>
           <div className="calendar-section">
-            <h3>軽井沢</h3>
+            <h3>{facility ? facility.name : "軽井沢"}</h3>
             <Table className="calendar-table">
               <thead>
                 <tr>
                   {size.width > 640 ? (
                     <>
-                      <th className="room-type">部屋タイプ</th>
-                      <th className="room-number">部屋数</th>
+                      <th className="room-type">
+                        {names ? names.roomtype : "部屋タイプ"}
+                      </th>
+                      <th className="room-number">
+                        {names ? names.num_rooms : "部屋数"}
+                      </th>
                     </>
                   ) : null}
 
@@ -306,6 +312,7 @@ const Calendar = ({
               onClick={() => {
                 openModal();
               }}
+              disabled={!daySelected}
               type="button"
               className="btn btn-primary submit"
               data-bs-toggle="modal"

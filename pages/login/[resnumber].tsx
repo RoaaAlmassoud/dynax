@@ -11,6 +11,8 @@ export default function Login() {
   const [isLoading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [form, setForm] = useState("");
+  const [message, setMessage] = useState({ text: "", color: "" });
 
   const [loginForm, setLoginForm] = useState({
     reservation_code: "",
@@ -31,6 +33,7 @@ export default function Login() {
     });
   };
   const handleSubmit = async (event: any) => {
+    setForm("login");
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -42,7 +45,6 @@ export default function Login() {
       let response = await AxiosApi.call(loginForm, `user/login`, "post", "");
       setLoading(false);
       if (response.data) {
-        console.log("response: ", response);
         let data = response.data;
         localStorage.setItem("token", response.data.remember_token);
         router.push("/detail");
@@ -50,6 +52,28 @@ export default function Login() {
         if (response.message) {
           setErrorMsg(response.message);
         }
+      }
+    }
+  };
+
+  const submitForget = async () => {
+    setForm("forget");
+    setValidated(true);
+    let response = await AxiosApi.call(
+      { reservation_code: resnumber, email: loginForm.email },
+      `forget-password/first-step`,
+      "post",
+      ""
+    );
+    setLoading(false);
+    if (response.data) {
+      let data = response.data;
+      localStorage.clear();
+      setMessage({ text: "パスワード変更用のURLをご登録のメールアドレス宛に送信しました。", color: "" });
+      // router.push("/forget");
+    } else {
+      if (response.message) {
+        setMessage({ text: response.message, color: "red" });
       }
     }
   };
@@ -84,7 +108,8 @@ export default function Login() {
             <Form.Group>
               <Form.Label>パスワード</Form.Label>
               <Form.Control
-                required
+                required={form === "login"}
+                className={form !== "login" ? "without-validation" : ""}
                 type={"password"}
                 value={loginForm ? loginForm.password : loginForm}
                 onChange={(event) => handleChange(event, "password")}
@@ -110,19 +135,38 @@ export default function Login() {
           </Form>
           {errorMsg ? (
             <div className="error-section">
-              <img src="/images/warning-img.png" />
+              <img src="/images/warning.png" />
               <h3>{`Error: ${errorMsg}`}</h3>
             </div>
           ) : null}
         </div>
         <ul className="link flexbox">
-          <li>
-            <a href="#" className="link1">
+          <li onClick={() => submitForget()}>
+            <p>
               <img src="/images/arrow8.svg" alt="" />
               パスワードを忘れた場合はこちら
-            </a>
+            </p>
           </li>
         </ul>
+
+        {message.text ? (
+          <ul className="link flexbox">
+            <div className="error-section">
+              <img
+                src={
+                  message.color === "red"
+                    ? "/images/warning.png"
+                    : "/images/info.png"
+                }
+              />
+              <h3 style={{color: message.color === "red"? "red": 'black'}}>{`${
+                message.color === "red"
+                  ? `Error: ${message.text}`
+                  : `${message.text}`
+              }`}</h3>
+            </div>
+          </ul>
+        ) : null}
         <p className="home-btn">
           <Link href="/">
             <img src="/images/home.svg" alt="" />

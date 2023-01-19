@@ -111,7 +111,7 @@ export default function Login() {
                 required={form === "login"}
                 className={form !== "login" ? "without-validation" : ""}
                 type={"password"}
-                value={loginForm ? loginForm.password : loginForm}
+                value={loginForm ? loginForm.password : ''}
                 onChange={(event) => handleChange(event, "password")}
               />
             </Form.Group>

@@ -18,7 +18,9 @@ const Home = ({ data, facility, names }: any) => {
   let current;
   let firstCalendarItem;
   let lastCalendarItem;
-
+  // const [data, setData ] = useState({})
+  // const [facility, setFacility ] = useState({})
+  // const [names, setNames ] = useState({})
   if (data) {
     if (data.calendar) {
       sortedData = data.calendar.sort(
@@ -117,6 +119,7 @@ const Home = ({ data, facility, names }: any) => {
 
     let currentYear = month === 13 ? year + 1 : year;
     let currentMonth = month === 13 ? 1 : month;
+    
     if (operation) {
       if (operation === "pre-week") {
         startedIndex = data.calendar.indexOf(firstItem);
@@ -124,7 +127,7 @@ const Home = ({ data, facility, names }: any) => {
         let endSlice = size.width > 640 ? startedIndex + 14 : startedIndex + 7;
         newCalendar = data.calendar.slice(
           startSlice < 0 ? 0 : startSlice,
-          startSlice < 0? endSlice+Math.abs(startSlice): endSlice
+          startSlice < 0 ? endSlice + Math.abs(startSlice) : endSlice
         );
       } else if (operation === "next-week") {
         startedIndex = data.calendar.indexOf(firstItem);
@@ -404,18 +407,34 @@ const Home = ({ data, facility, names }: any) => {
 
 export default Home;
 
-export const getServerSideProps = async () => {
-  const facility = await axios.get(`https:arubaito.online/api/facilities`, {
-    httpsAgent,
-  });
-  const names = await axios.get(`https:arubaito.online/api/names`, {
-    httpsAgent,
-  });
+export const getStaticProps = async () => {
+  const facility = await axios.get(
+    // `https://hoyojo-new.dynax.co.jp/api/facilities`,
+      `https:arubaito.online/api/facilities`,
+    {
+      httpsAgent,
+    }
+  );
+  const names = await axios.get(
+    // `https://hoyojo-new.dynax.co.jp/api/names`,
+      `https:arubaito.online/api/names`,
+    {
+      httpsAgent,
+    }
+  );
   let response;
+  let facilityId = facility.data
+    ? facility.data.data
+      ? facility.data.data[0]
+        ? facility.data.data[0].id
+        : 1
+      : 1
+    : 1;
   if (facility.data) {
     const facilityObject = facility.data.data[0];
     response = await axios.get(
-      `https:arubaito.online/api/calendar?facility_id=${facilityObject.id}`,
+      // `https://hoyojo-new.dynax.co.jp/api/calendar?facility_id=${facilityId}`,
+        `https:arubaito.online/api/calendar?facility_id=${facilityObject.id}`,
       { httpsAgent }
     );
   }
@@ -423,7 +442,7 @@ export const getServerSideProps = async () => {
   return {
     props: {
       data: response ? response.data.data : {},
-      facility: facility.data.data[0],
+      facility: facility.data.data[0]?facility.data.data[0] :{},
       names: names.data.data,
     },
   };

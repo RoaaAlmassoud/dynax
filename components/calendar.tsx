@@ -4,6 +4,7 @@ import { propTypes } from "react-bootstrap/esm/Image";
 import AcceptanceModal from "../components/acceptance";
 import { getDay, previousDate, nextDate, unique } from "../utilis/helper";
 import WindowSize from "./window-size";
+import AxiosApi from "../pages/api/axios-api";
 const Calendar = ({
   date,
   data,
@@ -15,9 +16,14 @@ const Calendar = ({
   showSecondSummary,
   names,
   facility,
+  updateSummary,
+  info,
 }: any) => {
   const size = WindowSize();
   const [daySelected, setDaySelected] = useState(0);
+  const [isLoading, setLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState("");
+  const[infoData, setInfoData]= useState({})
   let sliceNumber = size.width > 640 ? 21 : 7;
   let currentCalendar = current
     ? current.calendar
@@ -72,17 +78,52 @@ const Calendar = ({
     : "";
 
   let modalRef = useRef<any>(null);
- 
-  const openModal = () => {
-    // showSecondSummary();
-    if (modalRef.current) {
-      modalRef.current.daySelected = daySelected;
-      modalRef.current.handleShow(daySelected, facility? facility.agreement: "");
+
+  const openModal = async () => {
+    setLoading(true);
+    if (localStorage.getItem("token")) {
+      let response = await AxiosApi.call(
+        {
+          rsv_frame_ids: [daySelected],
+        },
+        `accept-conditions-for-update`,
+        "post",
+        ""
+      );
+      setLoading(false);
+      if (response.data) {
+        updateSummary(infoData, daySelected);
+      }
+    } else {
+      if (modalRef.current) {
+        modalRef.current.daySelected = daySelected;
+        modalRef.current.handleShow(
+          daySelected,
+          facility ? facility.agreement : ""
+        );
+      }
     }
   };
   const dayClicked = (day: any, frame: any) => {
     if (frame.openings !== 0) {
       setDaySelected(daySelected === frame.id ? "" : frame.id);
+      let usedDate = getDay(day.date);
+      let roomType = data.room_types.find(
+        (a: any) => a.id === frame.roomtype_id
+      );
+      let infoData = {
+        ...info,
+        usedDate: `${usedDate.year}/${usedDate.month + 1}/${
+          usedDate.dayNumber
+        }`,
+        dateObject: {
+          year: usedDate.year,
+          month: usedDate.month + 1,
+          dayNumber: usedDate.dayNumber,
+        },
+        roomType: roomType.name,
+      };   
+      setInfoData(infoData)
     }
   };
   const renderDay = (day: any, type: any) => {
@@ -203,7 +244,7 @@ const Calendar = ({
             >
               {previousMonthText}
             </Button>
-            <p>日程は複数選択が可能です</p>
+            {/* <p>日程は複数選択が可能です</p> */}
             <Button
               className="next-btn"
               onClick={() => calenderOperation("next-month")}
@@ -318,7 +359,7 @@ const Calendar = ({
               data-bs-toggle="modal"
               data-bs-target="#exampleModal"
             >
-              予約へ進む
+              {}予約へ進む
             </button>
           </p>
           <AcceptanceModal ref={modalRef} />

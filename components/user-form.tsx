@@ -3,16 +3,20 @@ import React from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import AxiosApi from "../pages/api/axios-api";
+import { Methods } from "../pages/api/axios-api";
 
 const UserForm = (props: any) => {
   let info = props.info;
+  let reservation = props.reservation;
+  let type = props.type;
+  let daySelected = props.daySelected
   let rememberToken = props.rememberToken ? props.rememberToken : "";
   const router = useRouter();
   const [validated, setValidated] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  
+
   const [userForm, setUserForm] = useState({
     number_of_rooms: 1,
     first_name: "",
@@ -22,6 +26,7 @@ const UserForm = (props: any) => {
     phone_number: "",
     password: "",
     repeat_password: "",
+    new_rsv_frame_ids:[0]
   });
   const handleChange = (event: any, field: string) => {
     let value: string = event.target.value;
@@ -44,15 +49,26 @@ const UserForm = (props: any) => {
     } else {
       event.preventDefault();
       setLoading(true);
+      console.log("userForm: ", userForm, "router: ", router);
+      let url = "confirm-reservation";
+      let method:Methods= "post";
+      let tokenValue:string = router.query.token ? router.query.token.toString() : "";
+      if (localStorage.getItem("token")) {
+        url= "update-reservation";
+        method = "put";
+        tokenValue = localStorage.getItem("token")?localStorage.getItem("token"): tokenValue
+        userForm.new_rsv_frame_ids = [daySelected]
+      }
+      
       let response = await AxiosApi.call(
         userForm,
-        `confirm-reservation`,
-        "post",
-        rememberToken ? rememberToken : ""
+        url,
+        method,
+        tokenValue
       );
       if (response.data) {
         let data = response.data;
-        localStorage.setItem("token", rememberToken ? rememberToken : "");
+        localStorage.setItem("token", tokenValue);
         if (data.reservation.code) {
           router.push(
             {
@@ -168,14 +184,14 @@ const UserForm = (props: any) => {
           <Form.Control
             required
             placeholder="姓"
-            value={userForm.first_name}
-            onChange={(event) => handleChange(event, "first_name")}
+            value={reservation ? reservation.last_name : userForm.last_name}
+            onChange={(event) => handleChange(event, "last_name")}
           />
           <Form.Control
             required
             placeholder="名"
-            value={userForm.last_name}
-            onChange={(event) => handleChange(event, "last_name")}
+            value={reservation ? reservation.first_name : userForm.first_name}
+            onChange={(event) => handleChange(event, "first_name")}
           />
         </Form.Group>
         <Form.Group
@@ -187,14 +203,20 @@ const UserForm = (props: any) => {
           <Form.Control
             required
             placeholder="セイ"
-            value={userForm.first_name_kana}
-            onChange={(event) => handleChange(event, "first_name_kana")}
+            value={
+              reservation ? reservation.last_name_kana : userForm.last_name_kana
+            }
+            onChange={(event) => handleChange(event, "last_name_kana")}
           />
           <Form.Control
             required
             placeholder="メイ"
-            value={userForm.last_name_kana}
-            onChange={(event) => handleChange(event, "last_name_kana")}
+            value={
+              reservation
+                ? reservation.first_name_kana
+                : userForm.first_name_kana
+            }
+            onChange={(event) => handleChange(event, "first_name_kana")}
           />
         </Form.Group>
       </Row>
@@ -222,7 +244,9 @@ const UserForm = (props: any) => {
           <Form.Control
             required
             placeholder="090-1111-1111"
-            value={userForm.phone_number}
+            value={
+              reservation ? reservation.phone_number : userForm.phone_number
+            }
             onChange={(event) => handleChange(event, "phone_number")}
           />
         </Form.Group>
@@ -260,7 +284,7 @@ const UserForm = (props: any) => {
       </Row>
       <Row className="border-0">
         <Button type="submit">
-          {isLoading ? "Processing" : "予約申込予約申込"}
+          {isLoading ? "Processing" : type === "update" ? "Update" : "予約申込"}
         </Button>
       </Row>
       {errorMsg ? (

@@ -10,11 +10,12 @@ const Detail = () => {
   const router = useRouter();
   const [info, setInfo] = useState({
     reservation: {
-      facility: { name: "" },
+      facility: { name: "", change_days: 0 },
       code: "",
       date: "",
       roomType: "",
       numRooms: "",
+      updateDisabled: false
     },
     user: {
       name: "",
@@ -41,12 +42,17 @@ const Detail = () => {
       }日 ${usedDate.dayNameFull}`;
       const roomType = rsvdates[0].rsvroomtype.room_type.name;
       const numRooms = rsvdates[0].rsvroomtype.rsv_num_rooms;
+      const datesDiffer = new Date(rsvdates[0].date).getTime() - new Date().getTime()
+      const dayDiffer = datesDiffer / (1000 * 60 * 60 * 24);  
+      const updateDisabled = reservationInformation.data.reservation.facility.change_days > dayDiffer;
+    
       setInfo({
         reservation: {
           ...reservationInformation.data.reservation,
           date: date,
           roomType: roomType,
           numRooms: numRooms,
+          updateDisabled: updateDisabled
         },
         user: reservationInformation.data.user,
       });
@@ -58,22 +64,28 @@ const Detail = () => {
     // return () => localStorage.clear()
   }, []);
 
-  const cancelReservation =async () => {
-    setLoading(true)
-    const response = await AxiosApi.call(
-      {},
-      "cancel-reservation",
-      "put",
-      ""
-    );
-   
-    if(response.data){
-      localStorage.clear()
-      router.push('/')
-    } else{
+  const cancelReservation = async () => {
+    setLoading(true);
+    const response = await AxiosApi.call({}, "cancel-reservation", "put", "");
 
+    if (response.data) {
+      localStorage.clear();
+      router.push("/");
+    } else {
     }
-  }
+  };
+
+  const update = () => {
+     router.push(
+       {
+         pathname: `/${localStorage.getItem("token")}`,
+         query: {
+           type: "update",
+         },
+       },
+       `/${localStorage.getItem("token")}`
+     );
+  };
 
   return (
     <section className={styles.detail}>
@@ -145,7 +157,7 @@ const Detail = () => {
                 </Button>
               </Modal.Footer>
             </Modal>
-            <Button>予約変更</Button>
+            <Button disabled={info.reservation.updateDisabled} onClick={() => update()}>予約変更</Button>
             <Button onClick={() => window.print()}>画面印刷</Button>
           </div>
         </div>

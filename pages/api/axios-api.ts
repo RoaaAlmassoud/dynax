@@ -1,16 +1,19 @@
 import axios from 'axios';
 import * as https from "https";
 import {getResponseData} from '../../utilis/helper'
-type Methods = "head" | "options" | "put" | "post" | "patch" | "delete" | "get";
+export type Methods = "head" | "options" | "put" | "post" | "patch" | "delete" | "get";
 const httpsAgent =  new https.Agent({
     rejectUnauthorized: false,
   })
 export default class AxiosApi {
     
-    static ApiURL = "https://arubaito.online/api/";
+    static ApiURL = 
+    // "https://hoyojo-new.dynax.co.jp/api/"
+     "https:arubaito.online/api/";
     
     static call = async (requestBody:any, path:string, method:Methods, header?:string) => {
         let url = path ? `${this.ApiURL}${path}` : this.ApiURL;
+        console.log('header: ', header)
         // let accessToken = localStorage.getItem('api_token');
         let headers = {
             "Content-Type": "application/json",

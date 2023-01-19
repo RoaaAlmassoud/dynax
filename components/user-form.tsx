@@ -49,7 +49,6 @@ const UserForm = (props: any) => {
     } else {
       event.preventDefault();
       setLoading(true);
-      console.log("userForm: ", userForm, "router: ", router);
       let url = "confirm-reservation";
       let method:Methods= "post";
       let tokenValue:string = router.query.token ? router.query.token.toString() : "";

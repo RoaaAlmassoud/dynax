@@ -13,7 +13,7 @@ export default class AxiosApi {
     
     static call = async (requestBody:any, path:string, method:Methods, header?:string) => {
         let url = path ? `${this.ApiURL}${path}` : this.ApiURL;
-        console.log('header: ', header)
+        
         // let accessToken = localStorage.getItem('api_token');
         let headers = {
             "Content-Type": "application/json",

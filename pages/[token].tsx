@@ -20,12 +20,12 @@ const Home = (props: any) => {
 
   let sortedData: any;
   let current;
-  let firstCalendarItem = {};
-  let lastCalendarItem = {};
+  let firstCalendarItem = { date: new Date() };
+  let lastCalendarItem = { date: new Date() };
 
   const currentDate = new Date();
   const [open, setOpen] = useState(false);
-  const [currentCalendar, setCurrentCalendar] = useState(current);
+  const [currentCalendar, setCurrentCalendar] = useState({});
   const [date, setDate] = useState({
     year: currentDate.getFullYear(),
     month: currentDate.getMonth() + 1,
@@ -128,15 +128,17 @@ const Home = (props: any) => {
     year: number,
     month: number,
     day: number,
-    operation?: string
+    operation?: string,
+    dataObject?: {}
   ) => {
-    let newCalendar = [];
+    let newCalendar;
     let firstCalendarItem = firstItem,
       lastCalendarItem = lastItem,
       startedIndex: number;
 
     let currentYear = month === 13 ? year + 1 : year;
     let currentMonth = month === 13 ? 1 : month;
+
     if (operation) {
       if (operation === "pre-week") {
         startedIndex = data.calendar.indexOf(firstItem);
@@ -169,10 +171,12 @@ const Home = (props: any) => {
             );
           })
         : startDate;
+
       if (startDate) {
         startedIndex = data.calendar.findIndex((object: any) => {
           return object.id === startDate.id;
         });
+
         newCalendar = data.calendar.slice(startedIndex, startedIndex + 21);
       }
     }
@@ -208,7 +212,6 @@ const Home = (props: any) => {
 
   useEffect(() => {
     if (!router.isReady) return;
-    console.log("router: ", router);
     getCalendar();
   }, [router.isReady]);
 
@@ -246,9 +249,7 @@ const Home = (props: any) => {
         setFirstItem(firstCalendarItem);
         setLastItem(lastCalendarItem);
 
-        console.log("rememberToken: ", rememberToken);
         if (router.isReady) {
-          console.log("in rready: ", router.query.token);
           let tokenValue = router.query.token
             ? router.query.token.toString()
             : "";
@@ -291,21 +292,26 @@ const Home = (props: any) => {
               };
             }
             setInfo(info);
+
             if (Object.keys(reservation).length > 0) {
               setReservation(reservation);
               setShowCalendar(true);
               setShowBasic(false);
               setSecondSectionSummary(false);
+
               updateCalendar(
                 usedDate.year,
                 usedDate.month + 1,
-                usedDate.dayNumber
+                usedDate.dayNumber,
+                "",
+                data
               );
             } else {
               setShowCalendar(false);
               setSecondSectionSummary(true);
               setShowBasic(true);
             }
+
             setLoading(false);
           } else {
           }

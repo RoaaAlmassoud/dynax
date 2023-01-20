@@ -409,15 +409,15 @@ export default Home;
 
 export const getServerSideProps = async () => {
   const facility = await axios.get(
-    // `https://hoyojo-new.dynax.co.jp/api/facilities`,
-      `https:arubaito.online/api/facilities`,
+     `https://hoyojo-new.dynax.co.jp/api/facilities`,
+      // `https:arubaito.online/api/facilities`,
     {
       httpsAgent,
     }
   );
   const names = await axios.get(
-    // `https://hoyojo-new.dynax.co.jp/api/names`,
-      `https:arubaito.online/api/names`,
+     `https://hoyojo-new.dynax.co.jp/api/names`,
+      // `https:arubaito.online/api/names`,
     {
       httpsAgent,
     }
@@ -433,8 +433,8 @@ export const getServerSideProps = async () => {
   if (facility.data) {
     const facilityObject = facility.data.data[0];
     response = await axios.get(
-      // `https://hoyojo-new.dynax.co.jp/api/calendar?facility_id=${facilityId}`,
-        `https:arubaito.online/api/calendar?facility_id=${facilityObject.id}`,
+       `https://hoyojo-new.dynax.co.jp/api/calendar?facility_id=${facilityId}`,
+        // `https:arubaito.online/api/calendar?facility_id=${facilityObject.id}`,
       { httpsAgent }
     );
   }

@@ -8,8 +8,8 @@ const httpsAgent =  new https.Agent({
 export default class AxiosApi {
     
     static ApiURL = 
-    // "https://hoyojo-new.dynax.co.jp/api/"
-     "https:arubaito.online/api/";
+     "https://hoyojo-new.dynax.co.jp/api/"
+    //  "https:arubaito.online/api/";
     
     static call = async (requestBody:any, path:string, method:Methods, header?:string) => {
         let url = path ? `${this.ApiURL}${path}` : this.ApiURL;

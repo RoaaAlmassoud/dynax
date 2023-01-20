@@ -129,7 +129,7 @@ const Home = (props: any) => {
     month: number,
     day: number,
     operation?: string,
-    dataObject?: {}
+    dataObject?: {calendar: [], room_types:[] }
   ) => {
     let newCalendar;
     let firstCalendarItem = firstItem,
@@ -156,7 +156,8 @@ const Home = (props: any) => {
         newCalendar = data.calendar.slice(startSlice, endSlice);
       }
     } else {
-      let startDate = data.calendar.find((a: any) => {
+      let dataValues = dataObject.calendar?dataObject: data
+      let startDate = dataValues.calendar.find((a: any) => {
         return (
           new Date(a.date).getFullYear() === currentYear &&
           new Date(a.date).getMonth() + 1 === currentMonth &&
@@ -164,7 +165,7 @@ const Home = (props: any) => {
         );
       });
       startDate = !startDate
-        ? data.calendar.find((a: any) => {
+        ? dataValues.calendar.find((a: any) => {
             return (
               new Date(a.date).getFullYear() === currentYear &&
               new Date(a.date).getMonth() + 1 === currentMonth
@@ -173,11 +174,11 @@ const Home = (props: any) => {
         : startDate;
 
       if (startDate) {
-        startedIndex = data.calendar.findIndex((object: any) => {
+        startedIndex = dataValues.calendar.findIndex((object: any) => {
           return object.id === startDate.id;
         });
 
-        newCalendar = data.calendar.slice(startedIndex, startedIndex + 21);
+        newCalendar = dataValues.calendar.slice(startedIndex, startedIndex + 21);
       }
     }
     firstCalendarItem = newCalendar ? newCalendar[0] : {};
@@ -217,7 +218,7 @@ const Home = (props: any) => {
 
   const getCalendar = async () => {
     const response = await axios.get(
-      `https:arubaito.online/api/calendar?facility_id=1`
+      `https://hoyojo-new.dynax.co.jp/api/calendar?facility_id=1`
     );
     if (response) {
       let data = response.data.data;

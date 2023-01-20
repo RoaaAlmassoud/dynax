@@ -58,7 +58,6 @@ const UserForm = (props: any) => {
         tokenValue = localStorage.getItem("token")?localStorage.getItem("token"): tokenValue
         userForm.new_rsv_frame_ids = [daySelected]
       }
-      
       let response = await AxiosApi.call(
         userForm,
         url,
@@ -183,13 +182,13 @@ const UserForm = (props: any) => {
           <Form.Control
             required
             placeholder="姓"
-            value={reservation ? reservation.last_name : userForm.last_name}
+            value={userForm ? userForm.last_name : ''}
             onChange={(event) => handleChange(event, "last_name")}
           />
           <Form.Control
             required
             placeholder="名"
-            value={reservation ? reservation.first_name : userForm.first_name}
+            value={userForm ? userForm.first_name : ''}
             onChange={(event) => handleChange(event, "first_name")}
           />
         </Form.Group>
@@ -203,7 +202,7 @@ const UserForm = (props: any) => {
             required
             placeholder="セイ"
             value={
-              reservation ? reservation.last_name_kana : userForm.last_name_kana
+              userForm ? userForm.last_name_kana : ''
             }
             onChange={(event) => handleChange(event, "last_name_kana")}
           />
@@ -211,9 +210,9 @@ const UserForm = (props: any) => {
             required
             placeholder="メイ"
             value={
-              reservation
-                ? reservation.first_name_kana
-                : userForm.first_name_kana
+              userForm
+                ? userForm.first_name_kana
+                : ''
             }
             onChange={(event) => handleChange(event, "first_name_kana")}
           />
@@ -244,7 +243,7 @@ const UserForm = (props: any) => {
             required
             placeholder="090-1111-1111"
             value={
-              reservation ? reservation.phone_number : userForm.phone_number
+              userForm ? userForm.phone_number : ''
             }
             onChange={(event) => handleChange(event, "phone_number")}
           />

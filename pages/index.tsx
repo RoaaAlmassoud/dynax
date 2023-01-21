@@ -407,7 +407,7 @@ const Home = ({ data, facility, names }: any) => {
 
 export default Home;
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
   const facility = await axios.get(
      `https://hoyojo-new.dynax.co.jp/api/facilities`,
       // `https:arubaito.online/api/facilities`,

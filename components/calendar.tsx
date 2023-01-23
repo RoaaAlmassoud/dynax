@@ -23,7 +23,7 @@ const Calendar = ({
   const [daySelected, setDaySelected] = useState(0);
   const [isLoading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
-  const[infoData, setInfoData]= useState({})
+  const [infoData, setInfoData] = useState({});
   let sliceNumber = size.width > 640 ? 21 : 7;
   let currentCalendar = current
     ? current.calendar
@@ -82,6 +82,7 @@ const Calendar = ({
   const openModal = async () => {
     setLoading(true);
     if (localStorage.getItem("token")) {
+      // add status check
       let response = await AxiosApi.call(
         {
           rsv_frame_ids: [daySelected],
@@ -122,8 +123,13 @@ const Calendar = ({
           dayNumber: usedDate.dayNumber,
         },
         roomType: roomType.name,
-      };   
-      setInfoData(infoData)
+        fullUsedDate: `${usedDate.year}年${usedDate.month + 1}月${
+          usedDate.dayNumber
+        }日`,
+        number_of_rooms: 1,
+        totalRoomsNum: frame.openings,
+      };
+      setInfoData(infoData);
     }
   };
   const renderDay = (day: any, type: any) => {
@@ -188,6 +194,8 @@ const Calendar = ({
             ? "saturday"
             : dayData.dayName === "日"
             ? "sunday"
+            : day.date_type === 1
+            ? "red"
             : ""
         } ${dayBeforeText}`}
       >
@@ -259,7 +267,7 @@ const Calendar = ({
             </Button>
           </div>
           <div className="calendar-section">
-            <h3>{facility ? facility.name : "軽井沢"}</h3>
+            <h3>{facility ? facility.name : info ? info.facilityName : ""}</h3>
             <Table className="calendar-table">
               <thead>
                 <tr>

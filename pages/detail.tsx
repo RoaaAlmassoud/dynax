@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import AxiosApi from "./api/axios-api";
 import { getDay } from "../utilis/helper";
 import { useRouter } from "next/router";
-const Detail = () => {
+import { SlowBuffer } from "buffer";
+const Detail = ({ names }: any) => {
   const [show, setShow] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
@@ -15,7 +16,7 @@ const Detail = () => {
       date: "",
       roomType: "",
       numRooms: "",
-      updateDisabled: false
+      updateDisabled: false,
     },
     user: {
       name: "",
@@ -42,17 +43,20 @@ const Detail = () => {
       }日 ${usedDate.dayNameFull}`;
       const roomType = rsvdates[0].rsvroomtype.room_type.name;
       const numRooms = rsvdates[0].rsvroomtype.rsv_num_rooms;
-      const datesDiffer = new Date(rsvdates[0].date).getTime() - new Date().getTime()
-      const dayDiffer = datesDiffer / (1000 * 60 * 60 * 24);  
-      const updateDisabled = reservationInformation.data.reservation.facility.change_days > dayDiffer;
-    
+      const datesDiffer =
+        new Date(rsvdates[0].date).getTime() - new Date().getTime();
+      const dayDiffer = datesDiffer / (1000 * 60 * 60 * 24);
+      const updateDisabled =
+        reservationInformation.data.reservation.facility.change_days >
+        dayDiffer;
+
       setInfo({
         reservation: {
           ...reservationInformation.data.reservation,
           date: date,
           roomType: roomType,
           numRooms: numRooms,
-          updateDisabled: updateDisabled
+          updateDisabled: updateDisabled,
         },
         user: reservationInformation.data.user,
       });
@@ -69,22 +73,30 @@ const Detail = () => {
     const response = await AxiosApi.call({}, "cancel-reservation", "put", "");
 
     if (response.data) {
-      localStorage.clear();
-      router.push("/");
+       localStorage.clear();
+      router.push(
+        {
+          pathname: "/reserved",
+          query: {
+            title: names ? names.section12_cancel : "予約完了",
+          },
+        },
+        "/reserved"
+      );
     } else {
     }
   };
 
   const update = () => {
-     router.push(
-       {
-         pathname: `/${localStorage.getItem("token")}`,
-         query: {
-           type: "update",
-         },
-       },
-       `/${localStorage.getItem("token")}`
-     );
+    router.push(
+      {
+        pathname: `/${localStorage.getItem("token")}`,
+        query: {
+          type: "update",
+        },
+      },
+      `/${localStorage.getItem("token")}`
+    );
   };
 
   return (
@@ -96,7 +108,7 @@ const Detail = () => {
           <Table className="detail-table">
             <tbody>
               <tr>
-                <th>施設</th>
+                <th>{names ? names.facility : "施設"}</th>
                 <td>
                   {info
                     ? info.reservation
@@ -110,13 +122,13 @@ const Detail = () => {
                 </td>
               </tr>
               <tr>
-                <th>利用日</th>
+                <th>{names ? names.date : "利用日"}</th>
                 <td>{info ? info.reservation.date : ""}</td>
               </tr>
               <tr>
-                <th>ゴース</th>
+                <th>{names ? names.roomtype : "ゴース"}</th>
                 <td>{info ? info.reservation.roomType : ""}</td>
-                <th>人数</th>
+                <th>{names ? names.num_rooms : "人数"}</th>
                 <td>{info ? info.reservation.numRooms : ""}</td>
               </tr>
             </tbody>
@@ -157,7 +169,12 @@ const Detail = () => {
                 </Button>
               </Modal.Footer>
             </Modal>
-            <Button disabled={info.reservation.updateDisabled} onClick={() => update()}>予約変更</Button>
+            <Button
+              disabled={info.reservation.updateDisabled}
+              onClick={() => update()}
+            >
+              予約変更
+            </Button>
             <Button onClick={() => window.print()}>画面印刷</Button>
           </div>
         </div>

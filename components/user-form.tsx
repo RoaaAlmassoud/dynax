@@ -9,28 +9,29 @@ const UserForm = (props: any) => {
   let info = props.info;
   let reservation = props.reservation;
   let type = props.type;
-  let daySelected = props.daySelected
+  let daySelected = props.daySelected;
+  const names = props ? props.names : {};
   let rememberToken = props.rememberToken ? props.rememberToken : "";
   const router = useRouter();
   const [validated, setValidated] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-
   const [userForm, setUserForm] = useState({
-    number_of_rooms: 1,
-    first_name: "",
-    last_name: "",
-    first_name_kana: "",
-    last_name_kana: "",
-    phone_number: "",
+    number_of_rooms: info ? info.number_of_rooms : 1,
+    first_name: info ? info.first_name : "",
+    last_name: info ? info.last_name : "",
+    first_name_kana: info ? info.first_name_kana : "",
+    last_name_kana: info ? info.last_name_kana : "",
+    phone_number: info ? info.phone_number : "",
     password: "",
     repeat_password: "",
-    new_rsv_frame_ids:[0]
+    new_rsv_frame_ids: [0],
   });
   const handleChange = (event: any, field: string) => {
     let value: string = event.target.value;
     if (field === "repeat_password") {
+      setErrorMsg("");
       if (value !== userForm.password) {
         setShowError(true);
       } else {
@@ -42,28 +43,32 @@ const UserForm = (props: any) => {
 
   const handleSubmit = async (event: any) => {
     const form = event.currentTarget;
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() === false || showError) {
       event.preventDefault();
       event.stopPropagation();
       setValidated(true);
+      if (showError) {
+        setErrorMsg(
+          "Error:新しいパスワード、またはパスワード確認の入力が不正です。"
+        );
+      }
     } else {
       event.preventDefault();
       setLoading(true);
       let url = "confirm-reservation";
-      let method:Methods= "post";
-      let tokenValue:string = router.query.token ? router.query.token.toString() : "";
-      if (localStorage.getItem("token")) {
-        url= "update-reservation";
+      let method: Methods = "post";
+      let tokenValue: string = router.query.token
+        ? router.query.token.toString()
+        : "";
+      if (localStorage.getItem("token") && info.status === 7) {
+        url = "update-reservation";
         method = "put";
-        tokenValue = localStorage.getItem("token")?localStorage.getItem("token"): tokenValue
-        userForm.new_rsv_frame_ids = [daySelected]
+        tokenValue = localStorage.getItem("token")
+          ? localStorage.getItem("token")
+          : tokenValue;
+        userForm.new_rsv_frame_ids = daySelected? [daySelected]: [info.rsvId];
       }
-      let response = await AxiosApi.call(
-        userForm,
-        url,
-        method,
-        tokenValue
-      );
+      let response = await AxiosApi.call(userForm, url, method, tokenValue);
       if (response.data) {
         let data = response.data;
         localStorage.setItem("token", tokenValue);
@@ -82,6 +87,13 @@ const UserForm = (props: any) => {
                 abbreviation: data.facility.abbreviation,
                 mail: data.facility.mail,
                 tel: data.facility.tel,
+                title: info
+                  ? info.status === 0
+                    ? names.section12_new
+                    : info.status === 7
+                    ? names.section12_change
+                    : "予約完了"
+                  : "予約完了",
               },
             },
             "/reserved"
@@ -99,7 +111,7 @@ const UserForm = (props: any) => {
   const renderOpeningNumbers = () => {
     if (info) {
       let openingsNumber = [];
-      for (let i = 0; i < info.openings; i++) {
+      for (let i = 0; i < info.totalRoomsNum; i++) {
         openingsNumber.push(
           <option value={i + 1} selected={i + 1 === userForm.number_of_rooms}>
             {i + 1}
@@ -119,7 +131,9 @@ const UserForm = (props: any) => {
     >
       <Row>
         <Form.Group as={Col} className="pr-3" controlId="formPlaintextEmail">
-          <Form.Label className="key">施設</Form.Label>
+          <Form.Label className="key">
+            {names ? names.facility : "施設"}
+          </Form.Label>
           <Form.Control
             plaintext
             readOnly
@@ -128,7 +142,9 @@ const UserForm = (props: any) => {
           />
         </Form.Group>
         <Form.Group as={Col} className="pl-3" controlId="formPlaintextEmail">
-          <Form.Label className="key">宿泊日</Form.Label>
+          <Form.Label className="key">
+            {names ? names.date : "宿泊日"}
+          </Form.Label>
 
           <Form.Control
             plaintext
@@ -140,7 +156,9 @@ const UserForm = (props: any) => {
       </Row>
       <Row>
         <Form.Group as={Col} controlId="formPlaintextEmail" className="m-0">
-          <Form.Label className="key">コース</Form.Label>
+          <Form.Label className="key">
+            {names ? names.roomtype : "コース"}
+          </Form.Label>
           <Form.Control
             plaintext
             readOnly
@@ -156,11 +174,14 @@ const UserForm = (props: any) => {
       </Row>
       <Row>
         <Form.Group as={Col} className="m-0" controlId="formPlaintextEmail">
-          <Form.Label className="key">人数</Form.Label>
+          <Form.Label className="key">
+            {names ? names.num_rooms : "人数"}
+          </Form.Label>
           <Form.Select
             className="number-room-select"
             aria-label="Default select example"
             required
+            value={userForm ? userForm.number_of_rooms : 1}
             onChange={(event) => handleChange(event, "number_of_rooms")}
           >
             {info ? renderOpeningNumbers() : null}
@@ -178,17 +199,19 @@ const UserForm = (props: any) => {
           className="name-group"
           controlId="formPlaintextEmail"
         >
-          <Form.Label className="key">申込者氏名</Form.Label>
+          <Form.Label className="key">
+            {names ? names.user + "氏名" : "申込者氏名"}
+          </Form.Label>
           <Form.Control
             required
             placeholder="姓"
-            value={userForm ? userForm.last_name : ''}
+            value={userForm ? userForm.last_name : ""}
             onChange={(event) => handleChange(event, "last_name")}
           />
           <Form.Control
             required
             placeholder="名"
-            value={userForm ? userForm.first_name : ''}
+            value={userForm ? userForm.first_name : ""}
             onChange={(event) => handleChange(event, "first_name")}
           />
         </Form.Group>
@@ -201,19 +224,13 @@ const UserForm = (props: any) => {
           <Form.Control
             required
             placeholder="セイ"
-            value={
-              userForm ? userForm.last_name_kana : ''
-            }
+            value={userForm ? userForm.last_name_kana : ""}
             onChange={(event) => handleChange(event, "last_name_kana")}
           />
           <Form.Control
             required
             placeholder="メイ"
-            value={
-              userForm
-                ? userForm.first_name_kana
-                : ''
-            }
+            value={userForm ? userForm.first_name_kana : ""}
             onChange={(event) => handleChange(event, "first_name_kana")}
           />
         </Form.Group>
@@ -242,44 +259,48 @@ const UserForm = (props: any) => {
           <Form.Control
             required
             placeholder="090-1111-1111"
-            value={
-              userForm ? userForm.phone_number : ''
-            }
+            value={userForm ? userForm.phone_number : ""}
             onChange={(event) => handleChange(event, "phone_number")}
           />
         </Form.Group>
       </Row>
-      <Row>
-        <Form.Group
-          as={Col}
-          className="one-input"
-          controlId="formPlaintextEmail"
-        >
-          <Form.Label className="key">バスワード</Form.Label>
-          <Form.Control
-            required
-            type="password"
-            placeholder="6文字以上"
-            value={userForm.password}
-            onChange={(event) => handleChange(event, "password")}
-          />
-        </Form.Group>
-        <Form.Group
-          as={Col}
-          className="one-input"
-          controlId="formPlaintextEmail"
-        >
-          <Form.Label className="key">パスワード確認</Form.Label>
-          <Form.Control
-            type="password"
-            required
-            className={`${showError ? "red-border" : ""}`}
-            placeholder="6文字以上"
-            value={userForm.repeat_password}
-            onChange={(event) => handleChange(event, "repeat_password")}
-          />
-        </Form.Group>
-      </Row>
+      {/* {info ? (
+        info.status === 7 ? null : ( */}
+          <Row>
+            <Form.Group
+              as={Col}
+              className="one-input"
+              controlId="formPlaintextEmail"
+            >
+              <Form.Label className="key">バスワード</Form.Label>
+              <Form.Control
+                required
+                type="password"
+                placeholder="6文字以上"
+                value={userForm.password}
+                onChange={(event) => handleChange(event, "password")}
+              />
+            </Form.Group>
+
+            <Form.Group
+              as={Col}
+              className="one-input"
+              controlId="formPlaintextEmail"
+            >
+              <Form.Label className="key">パスワード確認</Form.Label>
+              <Form.Control
+                type="password"
+                required
+                className={`${showError ? "red-border" : ""}`}
+                placeholder="6文字以上"
+                value={userForm.repeat_password}
+                onChange={(event) => handleChange(event, "repeat_password")}
+              />
+            </Form.Group>
+          </Row>
+        {/* )
+      ) : null} */}
+
       <Row className="border-0">
         <Button type="submit">
           {isLoading ? "Processing" : type === "update" ? "Update" : "予約申込"}

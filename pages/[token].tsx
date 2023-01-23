@@ -14,6 +14,8 @@ import WindowSize from "../components/window-size";
 const Home = (props: any) => {
   const size = WindowSize();
   const router = useRouter();
+  const mounted = useRef(true);
+  const names = props ? props.names : {};
   const { token } = router.query;
   const { type } = router.query;
   let tokenData = token ? token.toString() : "";
@@ -62,7 +64,9 @@ const Home = (props: any) => {
     usedDate: "",
     fullUsedDate: "",
     roomType: "",
-    openings: 1,
+    openings: "",
+    totalRoomsNum: "",
+    number_of_rooms: "",
     email: "",
     dateObject: { year: 0, month: 0, dayNumber: 0 },
   });
@@ -129,7 +133,7 @@ const Home = (props: any) => {
     month: number,
     day: number,
     operation?: string,
-    dataObject?: {calendar: [], room_types:[] }
+    dataObject?: { calendar: []; room_types: [] }
   ) => {
     let newCalendar;
     let firstCalendarItem = firstItem,
@@ -156,7 +160,11 @@ const Home = (props: any) => {
         newCalendar = data.calendar.slice(startSlice, endSlice);
       }
     } else {
-      let dataValues = dataObject.calendar?dataObject: data
+      let dataValues = dataObject
+        ? dataObject.calendar
+          ? dataObject
+          : data
+        : data;
       let startDate = dataValues.calendar.find((a: any) => {
         return (
           new Date(a.date).getFullYear() === currentYear &&
@@ -178,7 +186,10 @@ const Home = (props: any) => {
           return object.id === startDate.id;
         });
 
-        newCalendar = dataValues.calendar.slice(startedIndex, startedIndex + 21);
+        newCalendar = dataValues.calendar.slice(
+          startedIndex,
+          startedIndex + 21
+        );
       }
     }
     firstCalendarItem = newCalendar ? newCalendar[0] : {};
@@ -213,47 +224,96 @@ const Home = (props: any) => {
 
   useEffect(() => {
     if (!router.isReady) return;
-    getCalendar();
+
+    if (mounted.current) {
+      let pageElement = document.getElementById("page-nav");
+      let navLink: any;
+      if (pageElement) navLink = pageElement.getElementsByTagName("a");
+      if (navLink) {
+        let contentsArr = new Array();
+        for (let i = 0; i < navLink?.length; i++) {
+          let targetContents = navLink[i].getAttribute("href")?.substring(1);
+          if (targetContents) {
+            let element =
+              targetContents && document.getElementById(targetContents)
+                ? document.getElementById(targetContents)
+                : null;
+            if (element) {
+              let targetContentsTop = element.offsetTop;
+              let targetContentsBottom =
+                targetContentsTop + element.offsetHeight - 1;
+              contentsArr[i] = [targetContentsTop, targetContentsBottom];
+            }
+          }
+        }
+
+        function currentCheck() {
+          let windowScrolltop = window.scrollY;
+          for (let i = 0; i < contentsArr.length; i++) {
+            if (
+              contentsArr[i][0] <= windowScrolltop &&
+              contentsArr[i][1] >= windowScrolltop
+            ) {
+              let activeElement = document.getElementsByClassName("active");
+              if (activeElement[0]) {
+                activeElement[0].classList.remove("active");
+              }
+              if (navLink[i]) {
+                navLink[i].classList.add("active");
+              }
+
+              i == contentsArr.length;
+            }
+          }
+        }
+        window.onscroll = function () {
+          currentCheck();
+        };
+      }
+      mounted.current = false;
+      getCalendar();
+    }
   }, [router.isReady]);
 
   const getCalendar = async () => {
-    const response = await axios.get(
-      `https://hoyojo-new.dynax.co.jp/api/calendar?facility_id=1`
-    );
-    if (response) {
-      let data = response.data.data;
-      if (data) {
-        if (data.calendar) {
-          sortedData = data.calendar.sort(
-            (objA: any, objB: any) =>
-              new Date(objA.date).getTime() - new Date(objB.date).getTime()
-          );
-        }
-        current = data
-          ? data.calendar
-            ? { ...data, calendar: data.calendar.slice(0, 21) }
-            : null
-          : null;
+    if (router.isReady) {
+      let tokenValue = router.query.token ? router.query.token.toString() : "";
+      const response = await AxiosApi.call(
+        {},
+        `calendar?facility_id=1`,
+        "get",
+        tokenValue
+      );
+      if (response) {
+        let data = response.data;
+        if (data) {
+          if (data.calendar) {
+            sortedData = data.calendar.sort(
+              (objA: any, objB: any) =>
+                new Date(objA.date).getTime() - new Date(objB.date).getTime()
+            );
+          }
+          current = data
+            ? data.calendar
+              ? { ...data, calendar: data.calendar.slice(0, 21) }
+              : null
+            : null;
 
-        firstCalendarItem = current
-          ? current.calendar
-            ? current.calendar[0]
-            : {}
-          : {};
-        lastCalendarItem = current
-          ? current.calendar
-            ? current.calendar[current.calendar.length - 1]
-            : {}
-          : {};
-        setData(data);
-        setCurrentCalendar(current);
-        setFirstItem(firstCalendarItem);
-        setLastItem(lastCalendarItem);
+          firstCalendarItem = current
+            ? current.calendar
+              ? current.calendar[0]
+              : {}
+            : {};
+          lastCalendarItem = current
+            ? current.calendar
+              ? current.calendar[current.calendar.length - 1]
+              : {}
+            : {};
+          setData(data);
+          setCurrentCalendar(current);
+          setFirstItem(firstCalendarItem);
+          setLastItem(lastCalendarItem);
 
-        if (router.isReady) {
-          let tokenValue = router.query.token
-            ? router.query.token.toString()
-            : "";
           let reservationInformation = await AxiosApi.call(
             {},
             "reservation",
@@ -264,8 +324,10 @@ const Home = (props: any) => {
             let resData = reservationInformation.data.reservation.rsvdates[0];
             let user = reservationInformation.data.user;
             let usedDate = getDay(resData.date);
+            let status = reservationInformation.data.reservation.status;
             let info = {
-              facilityName: "施設選択", //reservationInformation.data.reservation.facility.name
+              facilityName:
+                reservationInformation.data.reservation.facility.name,
               usedDate: `${usedDate.year}/${usedDate.month + 1}/${
                 usedDate.dayNumber
               }`,
@@ -279,7 +341,20 @@ const Home = (props: any) => {
               },
               roomType: resData.rsvroomtype.room_type.name,
               openings: resData.rsvFrames.openings,
+              number_of_rooms:resData.rsvroomtype.rsv_num_rooms,
+              totalRoomsNum:
+                status === 7
+                  ? resData.rsvFrames.openings +
+                    resData.rsvroomtype.rsv_num_rooms
+                  : resData.rsvFrames.openings,
               email: reservationInformation.data.user.mail,
+              status: status,
+              rsvId: resData.rsvFrames.id,
+              first_name: user.name ? user.name.split(" ")[1] : "",
+              last_name: user.name ? user.name.split(" ")[0] : "",
+              first_name_kana: user.kana ? user.kana.split(" ")[1] : "",
+              last_name_kana: user.kana ? user.kana.split(" ")[0] : "",
+              phone_number: user.tel,
             };
 
             let reservation = {};
@@ -293,7 +368,6 @@ const Home = (props: any) => {
               };
             }
             setInfo(info);
-
             if (Object.keys(reservation).length > 0) {
               setReservation(reservation);
               setShowCalendar(true);
@@ -317,6 +391,7 @@ const Home = (props: any) => {
           } else {
           }
         }
+      } else {
       }
     }
   };
@@ -356,103 +431,113 @@ const Home = (props: any) => {
           rel="stylesheet"
         ></link>
       </Head>
-      {!loading ? (
-        <main className={styles.main}>
-          <div className={`${open ? "open" : ""} page-nav pc`} id="page-nav">
-            <p className="nav-txt1">STEP</p>
-            <ul>
-              <li>
-                <a href="#date" id="nav1">
-                  <span className="step-number">1</span>施設選択
-                </a>
-              </li>
-              <li>
-                <a href="#facilities" id="nav2">
-                  <span className="step-number">2</span>日程選択
-                </a>
-              </li>
-              <li>
-                <a href="#calendar" id="nav3">
-                  <span className="step-number">3</span>基本情報登録
-                </a>
-              </li>
-              <li>
-                <a href="#basic-information" id="nav4">
-                  <span className="step-number">4</span>利用者登録
-                </a>
-              </li>
-            </ul>
-            <p onClick={() => setOpen(!open)} className="nav-btn">
-              　
-            </p>
-          </div>
-          {secondSectionSummary ? (
-            <section className="third-section position-now" id="calendar">
-              <div className="inner">
-                <div className="summary-section">
-                  <div className="summary-detail">
-                    <div>
-                      <p className="key">施設</p>
-                      <p className="value">{info.facilityName}</p>
-                      <p className="key">利用日</p>
-                      <p className="value">{info.usedDate}</p>
-                      <p className="key">コース</p>
-                      <p className="value">{info.roomType}</p>
+
+      <main className={styles.main}>
+        <div className={`${open ? "open" : ""} page-nav pc`} id="page-nav">
+          <p className="nav-txt1">STEP</p>
+          <ul>
+            <li>
+              <a href="#facilities" id="nav1">
+                <span className="step-number">1</span>
+                {names ? names.section01 : "日程選択"}
+              </a>
+            </li>
+            <li>
+              <a href="#calendar" id="nav2">
+                <span className="step-number">2</span>
+                {names ? names.section02 : "基本情報登録"}
+              </a>
+            </li>
+            <li>
+              <a href="#basic-information" id="nav3">
+                <span className="step-number">3</span>
+                {names ? names.section03 : "利用者登録"}
+              </a>
+            </li>
+          </ul>
+
+          <p onClick={() => setOpen(!open)} className="nav-btn">
+            　
+          </p>
+        </div>
+        {!loading ? (
+          <>
+            {secondSectionSummary ? (
+              <section className="third-section position-now" id="calendar">
+                <div className="inner">
+                  <h2>
+                    <img src="/images/h2-icon2.svg" alt="宿泊希望日" />
+                    {names ? names.section02 : "基本情報登録"}
+                  </h2>
+                  <div className="summary-section">
+                    <div className="summary-detail">
+                      <div>
+                        <p className="key">{names ? names.facility : "施設"}</p>
+                        <p className="value">{info.facilityName}</p>
+                        <p className="key">{names ? names.date : "利用日"}</p>
+                        <p className="value">{info.usedDate}</p>
+                        <p className="key">
+                          {names ? names.roomtype : "コース"}
+                        </p>
+                        <p className="value">{info.roomType}</p>
+                      </div>
+                      <Button onClick={() => renderCalendar()}>
+                        ここからやり直す
+                      </Button>
                     </div>
-                    <Button onClick={() => renderCalendar()}>
-                      ここからやり直す
-                    </Button>
                   </div>
                 </div>
-              </div>
-            </section>
-          ) : (
-            <section className="third-section position-now" id="calendar">
-              <div className="inner">
-                <h2>
-                  <img src="images/h2-icon2.svg" alt="宿泊希望日" />
-                  宿泊希望日
-                </h2>
+              </section>
+            ) : (
+              <section className="third-section position-now" id="calendar">
+                <div className="inner">
+                  <h2>
+                    <img src="/images/h2-icon2.svg" alt="宿泊希望日" />
+                    {names ? names.section02 : "基本情報登録"}
+                  </h2>
 
-                <Calendar
-                  date={date}
-                  current={currentCalendar}
-                  data={data}
-                  calendarDate={calendarDate}
-                  calendarOperation={calendarOperation}
-                  firstCalendarItem={firstItem}
-                  lastCalendarItem={lastItem}
-                  showSecondSummary={showSecondSummary}
-                  updateSummary={updateSummary}
-                  info={info}
-                />
-              </div>
-            </section>
-          )}
-          {showBasic ? (
-            <section
-              className="fourth-section position-now"
-              id="basic-information"
-            >
-              <div className="inner">
-                <h2>
-                  <img src="/images/h2-icon3.svg" alt="基本情報" />
-                  基本情報
-                </h2>
-                <div className="section-box">
-                  <UserForm
+                  <Calendar
+                    date={date}
+                    current={currentCalendar}
+                    data={data}
+                    calendarDate={calendarDate}
+                    calendarOperation={calendarOperation}
+                    firstCalendarItem={firstItem}
+                    lastCalendarItem={lastItem}
+                    showSecondSummary={showSecondSummary}
+                    updateSummary={updateSummary}
                     info={info}
-                    rememberToken={rememberToken}
-                    reservation={reservation}
-                    type={type}
-                    daySelected={daySelected}
+                    names={names}
                   />
                 </div>
-              </div>
-            </section>
-          ) : null}
-        </main>
-      ) : null}
+              </section>
+            )}
+            {showBasic ? (
+              <section
+                className="fourth-section position-now"
+                id="basic-information"
+              >
+                <div className="inner">
+                  <h2>
+                    <img src="/images/h2-icon3.svg" alt="基本情報" />
+                    {names ? names.section03 : "基本情報"}
+                  </h2>
+                  <div className="section-box">
+                    <UserForm
+                      info={info}
+                      rememberToken={rememberToken}
+                      reservation={reservation}
+                      type={type}
+                      daySelected={daySelected}
+                      names={names}
+                    />
+                  </div>
+                </div>
+              </section>
+            ) : null}
+          </>
+        ) : null}
+      </main>
     </div>
   );
 };

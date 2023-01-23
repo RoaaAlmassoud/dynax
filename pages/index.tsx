@@ -198,6 +198,7 @@ const Home = ({ data, facility, names }: any) => {
     if (pageElement) navLink = pageElement.getElementsByTagName("a");
     if (navLink) {
       let contentsArr = new Array();
+      
       for (let i = 0; i < navLink?.length; i++) {
         let targetContents = navLink[i].getAttribute("href")?.substring(1);
         if (targetContents) {
@@ -215,6 +216,7 @@ const Home = ({ data, facility, names }: any) => {
       }
       function currentCheck() {
         let windowScrolltop = window.scrollY;
+       
         for (let i = 0; i < contentsArr.length; i++) {
           if (
             contentsArr[i][0] <= windowScrolltop &&
@@ -255,20 +257,14 @@ const Home = ({ data, facility, names }: any) => {
           <p className="nav-txt1">STEP</p>
           <ul>
             <li>
-              <a href="#date" id="nav1">
+              <a href="#facilities" id="nav1">
                 <span className="step-number">1</span>
-                {"施設選択"}
-              </a>
-            </li>
-            <li>
-              <a href="#facilities" id="nav2">
-                <span className="step-number">2</span>
                 {names ? names.section01 : "日程選択"}
               </a>
             </li>
             <li>
-              <a href="#calendar" id="nav3">
-                <span className="step-number">3</span>
+              <a href="#calendar" id="nav2">
+                <span className="step-number">2</span>
                 {names ? names.section02 : "基本情報登録"}
               </a>
             </li>
@@ -319,7 +315,7 @@ const Home = ({ data, facility, names }: any) => {
                     <ul className="checkbox flexbox">
                       <li className="hotel-open checked">
                         <img
-                          src="images/img1.jpg"
+                          src="/images/img1.jpg"
                           alt=""
                           className="thumbnail"
                         />
@@ -337,7 +333,7 @@ const Home = ({ data, facility, names }: any) => {
                   <p className="next">
                     <a href="#sec3">
                       <img
-                        src="images/next.svg"
+                        src="/images/next.svg"
                         alt="次へ"
                         onClick={() => {
                           setFirstSectionSummary(true);
@@ -355,7 +351,7 @@ const Home = ({ data, facility, names }: any) => {
         <section className="third-section position-now" id="calendar">
           <div className="inner">
             <h2>
-              <img src="images/h2-icon2.svg" alt="宿泊希望日" />
+              <img src="/images/h2-icon2.svg" alt="宿泊希望日" />
               {names ? names.section02 : "基本情報登録"}
             </h2>
             {secondSectionSummary ? (
@@ -415,13 +411,13 @@ export const getStaticProps = async () => {
       httpsAgent,
     }
   );
-  const names = await axios.get(
-     `https://hoyojo-new.dynax.co.jp/api/names`,
-      // `https:arubaito.online/api/names`,
-    {
-      httpsAgent,
-    }
-  );
+  // const names = await axios.get(
+  //    `https://hoyojo-new.dynax.co.jp/api/names`,
+  //     // `https:arubaito.online/api/names`,
+  //   {
+  //     httpsAgent,
+  //   }
+  // );
   let response;
   let facilityId = facility.data
     ? facility.data.data
@@ -443,7 +439,7 @@ export const getStaticProps = async () => {
     props: {
       data: response ? response.data.data : {},
       facility: facility.data.data[0]?facility.data.data[0] :{},
-      names: names.data.data,
+      // names: names.data.data,
     },
   };
 };

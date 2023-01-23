@@ -433,7 +433,8 @@
   border-bottom-color: #005ac3;
 }
 
-.main :global(.third-section .calendar-section .calendar-table .day.sunday) {
+.main :global(.third-section .calendar-section .calendar-table .day.sunday),
+.main :global(.third-section .calendar-section .calendar-table .day.red){
   color: #d90000;
   border-bottom-color: #d90000;
 }

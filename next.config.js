@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   // distDir: 'build',
-  basePath: '/users/test',
+  // basePath: '/users/test',
   eslint: {
     ignoreDuringBuilds: true
   }

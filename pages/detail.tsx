@@ -17,6 +17,7 @@ const Detail = ({ names }: any) => {
       roomType: "",
       numRooms: "",
       updateDisabled: false,
+      lottery_status: 0,
     },
     user: {
       name: "",
@@ -71,14 +72,20 @@ const Detail = ({ names }: any) => {
   const cancelReservation = async () => {
     setLoading(true);
     const response = await AxiosApi.call({}, "cancel-reservation", "put", "");
-
     if (response.data) {
-       localStorage.clear();
+      localStorage.clear();
       router.push(
         {
           pathname: "/reserved",
           query: {
+            code: info.reservation.code,
+            name: `${info.user.name}様`,
+            lottery:
+              info.reservation.lottery_status === 0
+                ? "先着予約を受け付けました。"
+                : "抽選申込を受け付けました。",
             title: names ? names.section12_cancel : "予約完了",
+            type: "cancel",
           },
         },
         "/reserved"

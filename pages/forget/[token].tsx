@@ -23,6 +23,7 @@ export default function Forget() {
     let value: string = event.target.value;
     setErrorMsg("");
     if (field === "repeat_password") {
+      setErrorMsg("");
       if (value !== forgetForm.password) {
        
         setShowError(true);
@@ -37,10 +38,15 @@ export default function Forget() {
   };
   const handleSubmit = async (event: any) => {
     const form = event.currentTarget;
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() === false || showError) {
       event.preventDefault();
       event.stopPropagation();
       setValidated(true);
+      if (showError) {
+        setErrorMsg(
+          "新しいパスワード、またはパスワード確認の入力が不正です。"
+        );
+      }
     } else {
       event.preventDefault();
       setLoading(true);
@@ -54,8 +60,7 @@ export default function Forget() {
       setLoading(false);
       if (response.data) {
         let data = response.data;
-        // localStorage.setItem("token", response.data.remember_token);
-        router.push("/login");
+        router.push("/forget/completed");
       } else {
         if (response.message) {
           setErrorMsg(response.message);

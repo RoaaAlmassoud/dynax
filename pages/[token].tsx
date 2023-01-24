@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Form, ListGroup, Row, Col, Button } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 import styles from "../styles/Home.module.css";
 import { useEffect, useRef, useState } from "react";
 import DateForm from "../components/date-form";
@@ -59,6 +59,8 @@ const Home = (props: any) => {
     calendar: [],
   });
 
+  const [errorMsg, setErrorMsg] = useState("");
+
   const [info, setInfo] = useState({
     facilityName: "",
     usedDate: "",
@@ -70,6 +72,9 @@ const Home = (props: any) => {
     email: "",
     dateObject: { year: 0, month: 0, dayNumber: 0 },
   });
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const updateDate = (field: string, value: string) => {
     if (field === "month") {
@@ -80,49 +85,6 @@ const Home = (props: any) => {
       setDate({ ...date, [field]: parseInt(value) });
     }
   };
-
-  // const getReservation = async () => {
-  //   let reservationInformation = await AxiosApi.call(
-  //     {},
-  //     "reservation",
-  //     "get",
-  //     rememberToken
-  //   );
-  //   if (reservationInformation.data) {
-  //     let resData = reservationInformation.data.reservation.rsvdates[0];
-  //     let user = reservationInformation.data.user;
-  //     let usedDate = getDay(resData.date);
-  //     let info = {
-  //       facilityName: "施設選択", //reservationInformation.data.reservation.facility.name
-  //       usedDate: `${usedDate.year}/${usedDate.month + 1}/${
-  //         usedDate.dayNumber
-  //       }`,
-  //       fullUsedDate: `${usedDate.year}年${usedDate.month + 1}月${
-  //         usedDate.dayNumber
-  //       }日`,
-  //       roomType: resData.rsvroomtype.room_type.name,
-  //       openings: resData.rsvFrames.openings,
-  //       email: reservationInformation.data.user.mail,
-  //     };
-
-  //     let reservation = {};
-  //     if (type === "update") {
-  //       reservation = {
-  //         first_name: user.name.split(" ")[1],
-  //         last_name: user.name.split(" ")[0],
-  //         first_name_kana: user.kana.split(" ")[1],
-  //         last_name_kana: user.kana.split(" ")[0],
-  //         phone_number: user.tel,
-  //       };
-  //     }
-  //     setInfo(info);
-  //     if (reservation) {
-  //       setReservation(reservation);
-  //       updateCalendar(usedDate.year, usedDate.month + 1, usedDate.dayNumber);
-  //     }
-  //   } else {
-  //   }
-  // };
 
   const showSecondSummary = () => {
     setSecondSectionSummary(true);
@@ -222,56 +184,59 @@ const Home = (props: any) => {
     }
   };
 
+  const colorNav = () => {
+    let pageElement = document.getElementById("page-nav");
+    let navLink: any;
+    if (pageElement) navLink = pageElement.getElementsByTagName("a");
+    if (navLink) {
+      let contentsArr = new Array();
+      for (let i = 0; i < navLink?.length; i++) {
+        let targetContents = navLink[i].getAttribute("href")?.substring(1);
+        if (targetContents) {
+          let element =
+            targetContents && document.getElementById(targetContents)
+              ? document.getElementById(targetContents)
+              : null;
+
+          if (element) {
+            let targetContentsTop = element.offsetTop;
+            let targetContentsBottom =
+              targetContentsTop + element.offsetHeight - 1;
+            contentsArr[i] = [targetContentsTop, targetContentsBottom];
+          }
+        }
+      }
+      let windowScrolltop = window.scrollY;
+      for (let i = 0; i < contentsArr.length; i++) {
+        if (contentsArr[i]) {
+          if (
+            contentsArr[i][0] <= windowScrolltop &&
+            contentsArr[i][1] >= windowScrolltop
+          ) {
+            let activeElement = document.getElementsByClassName("active");
+            if (activeElement[0]) {
+              activeElement[0].classList.remove("active");
+            }
+            if (navLink[i]) {
+              navLink[i].classList.add("active");
+            }
+
+            i == contentsArr.length;
+          }
+        }
+      }
+    }
+  };
+
   useEffect(() => {
     if (!router.isReady) return;
 
     if (mounted.current) {
-      let pageElement = document.getElementById("page-nav");
-      let navLink: any;
-      if (pageElement) navLink = pageElement.getElementsByTagName("a");
-      if (navLink) {
-        let contentsArr = new Array();
-        for (let i = 0; i < navLink?.length; i++) {
-          let targetContents = navLink[i].getAttribute("href")?.substring(1);
-          if (targetContents) {
-            let element =
-              targetContents && document.getElementById(targetContents)
-                ? document.getElementById(targetContents)
-                : null;
-            if (element) {
-              let targetContentsTop = element.offsetTop;
-              let targetContentsBottom =
-                targetContentsTop + element.offsetHeight - 1;
-              contentsArr[i] = [targetContentsTop, targetContentsBottom];
-            }
-          }
-        }
-
-        function currentCheck() {
-          let windowScrolltop = window.scrollY;
-          for (let i = 0; i < contentsArr.length; i++) {
-            if (
-              contentsArr[i][0] <= windowScrolltop &&
-              contentsArr[i][1] >= windowScrolltop
-            ) {
-              let activeElement = document.getElementsByClassName("active");
-              if (activeElement[0]) {
-                activeElement[0].classList.remove("active");
-              }
-              if (navLink[i]) {
-                navLink[i].classList.add("active");
-              }
-
-              i == contentsArr.length;
-            }
-          }
-        }
-        window.onscroll = function () {
-          currentCheck();
-        };
-      }
-      mounted.current = false;
       getCalendar();
+      mounted.current = false;
+      window.onscroll = function () {
+        colorNav();
+      };
     }
   }, [router.isReady]);
 
@@ -320,6 +285,7 @@ const Home = (props: any) => {
             "get",
             tokenValue
           );
+
           if (reservationInformation.data) {
             let resData = reservationInformation.data.reservation.rsvdates[0];
             let user = reservationInformation.data.user;
@@ -341,7 +307,7 @@ const Home = (props: any) => {
               },
               roomType: resData.rsvroomtype.room_type.name,
               openings: resData.rsvFrames.openings,
-              number_of_rooms:resData.rsvroomtype.rsv_num_rooms,
+              number_of_rooms: resData.rsvroomtype.rsv_num_rooms,
               totalRoomsNum:
                 status === 7
                   ? resData.rsvFrames.openings +
@@ -389,9 +355,11 @@ const Home = (props: any) => {
 
             setLoading(false);
           } else {
+            setErrorMsg(reservationInformation.message);
           }
         }
       } else {
+        setErrorMsg(response.message);
       }
     }
   };
@@ -433,6 +401,12 @@ const Home = (props: any) => {
       </Head>
 
       <main className={styles.main}>
+        {errorMsg ? (
+          <div className="error-section">
+            <img src="/images/warning.png" />
+            <h3>{`Error: ${errorMsg}`}</h3>
+          </div>
+        ) : null}
         <div className={`${open ? "open" : ""} page-nav pc`} id="page-nav">
           <p className="nav-txt1">STEP</p>
           <ul>
@@ -481,9 +455,28 @@ const Home = (props: any) => {
                         </p>
                         <p className="value">{info.roomType}</p>
                       </div>
-                      <Button onClick={() => renderCalendar()}>
+                      <Button onClick={() => handleShow()}>
                         ここからやり直す
                       </Button>
+                      <Modal show={show} onHide={handleClose}>
+                        <Modal.Header closeButton>
+                          <Modal.Title>xxxx</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                          xxxx
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button variant="secondary" onClick={handleClose}>
+                            いいえ
+                          </Button>
+                          <Button
+                            variant="primary"
+                            onClick={() => renderCalendar()}
+                          >
+                            {"はい"}
+                          </Button>
+                        </Modal.Footer>
+                      </Modal>
                     </div>
                   </div>
                 </div>
@@ -543,14 +536,3 @@ const Home = (props: any) => {
 };
 
 export default Home;
-
-//  export const getStaticProps = async () => {
-//    const response = await axios.get(
-//      `https://arubaito.online/api/calendar?facility_id=1`
-//    );
-//    return {
-//      props: {
-//        data: response.data.data,
-//      },
-//    };
-//  };

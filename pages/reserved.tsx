@@ -21,6 +21,7 @@ const Reserved = (props: any) => {
       roomType: "",
       numRooms: "",
       updateDisabled: false,
+      lottery: "",
     },
     user: {
       name: "",
@@ -61,6 +62,20 @@ const Reserved = (props: any) => {
             updateDisabled: updateDisabled,
           },
           user: reservationInformation.data.user,
+        });
+      }
+    } else {
+      data;
+    }
+    {
+      if (data.type === "cancel") {
+        setInfo({
+          reservation: {
+            ...info.reservation,
+            code: data.code,
+            lottery: data.lottery,
+          },
+          user: { ...info.user, name: data.name },
         });
       }
     }
@@ -121,12 +136,16 @@ const Reserved = (props: any) => {
           </dl>
           <ul className="links flexbox">
             <li>
-              <a href="https://bonzuttner.co.jp/" target="_blank" className="link-item">
+              <a
+                href="https://bonzuttner.co.jp/"
+                target="_blank"
+                className="link-item"
+              >
                 <img src="/images/arrow8.svg" alt="" />
                 保養所案内はこちら
               </a>
             </li>
-            {info.reservation.code ? (
+            {info.reservation.code && data.type !== "cancel" ? (
               <li>
                 <a href="/detail" className="link-item">
                   <img src="/images/arrow8.svg" alt="" />
@@ -136,13 +155,11 @@ const Reserved = (props: any) => {
             ) : null}
           </ul>
           <ul className="buttons-section flexbox">
-            
-              <li>
-              {info.reservation.code ? (
+            <li>
+              {info.reservation.code && data.type !== "cancel" ? (
                 <Link href="/detail">予約内容の確認・印刷</Link>
-                ) : null}
-              </li>
-           
+              ) : null}
+            </li>
 
             <li>
               <Button variant="secondary" onClick={() => close()}>

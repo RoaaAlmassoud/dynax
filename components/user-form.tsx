@@ -264,8 +264,8 @@ const UserForm = (props: any) => {
           />
         </Form.Group>
       </Row>
-      {/* {info ? (
-        info.status === 7 ? null : ( */}
+       {info ? (
+        info.status === 7 ? null : ( 
           <Row>
             <Form.Group
               as={Col}
@@ -298,8 +298,8 @@ const UserForm = (props: any) => {
               />
             </Form.Group>
           </Row>
-        {/* )
-      ) : null} */}
+         )
+      ) : null} 
 
       <Row className="border-0">
         <Button type="submit">

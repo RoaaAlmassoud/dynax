@@ -18,6 +18,7 @@
   margin: 0;
   font-size: 28px;
   font-weight: 500;
+  cursor: pointer;
 }
 
 .container :global(.header .inner h1 img) {

@@ -10,6 +10,15 @@
   box-shadow: 0 0 5px rgb(0 0 0 / 10%);
 }
 
+.login :global(.login-container.forget-completed){
+  text-align: center;
+  height: 20vw;
+}
+
+.login :global(.login-container.forget-completed h3){
+  color: var(--blue);
+}
+
 .login :global(.login-container .login-form) {
   max-width: 430px;
   margin: 0 auto 20px;

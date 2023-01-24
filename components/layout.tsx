@@ -1,6 +1,8 @@
 import styles from "../styles/Home.module.css";
 import Head from "next/head";
+import { useRouter } from "next/router";
 export default function Layout({ children, displayName, displayHeader }: any) {
+  const router = useRouter()
   return (
     <div className={styles.container}>
       <Head>
@@ -11,7 +13,7 @@ export default function Layout({ children, displayName, displayHeader }: any) {
       </Head>
       <div className="header">
         <div className="inner flexbox">
-          <h1>
+          <h1 onClick={() => router.push('/')}>
             <img src="/images/logo.svg" alt="Dynax" />
             {`${displayName ? displayName : ""} ${
               displayHeader ? displayHeader : ""

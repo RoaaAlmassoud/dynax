@@ -81,7 +81,7 @@ const Calendar = ({
 
   const openModal = async () => {
     setLoading(true);
-    if (localStorage.getItem("token")) {
+    if (info && localStorage.getItem("token")) {
       // add status check
       let response = await AxiosApi.call(
         {

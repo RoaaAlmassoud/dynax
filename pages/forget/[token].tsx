@@ -113,7 +113,7 @@ export default function Forget() {
                 クリア
               </Button>
               <Button type="submit">
-                {isLoading ? "Processing" : "バスワード変更"}
+                {isLoading ? "Processing" : "パスワード変更"}
               </Button>
             </Form.Group>
           </Form>

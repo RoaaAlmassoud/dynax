@@ -69,6 +69,7 @@ const UserForm = (props: any) => {
         userForm.new_rsv_frame_ids = daySelected? [daySelected]: [info.rsvId];
       }
       let response = await AxiosApi.call(userForm, url, method, tokenValue);
+      setLoading(false);
       if (response.data) {
         let data = response.data;
         localStorage.setItem("token", tokenValue);
@@ -81,8 +82,8 @@ const UserForm = (props: any) => {
                 name: `${data.user.name}様`,
                 lottery:
                   data.reservation.lottery_status === 0
-                    ? "先着予約を受け付けました。"
-                    : "抽選申込を受け付けました。",
+                    ? "先着予約の変更を受け付けました。"
+                    : "抽選申込の変更を受け付けました。",
                 notes: data.facility.notes,
                 abbreviation: data.facility.abbreviation,
                 mail: data.facility.mail,
@@ -99,7 +100,6 @@ const UserForm = (props: any) => {
             "/reserved"
           );
         }
-        setLoading(false);
       } else {
         if (response.message) {
           setErrorMsg(response.message);

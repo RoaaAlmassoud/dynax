@@ -37,9 +37,8 @@ const AcceptanceModal = forwardRef((props, ref) => {
         "post",
         ""
       );
-      
+      setLoading(false);
       if (response.data) {
-        setLoading(false);
         openModal();
       } else{
         if (response.message) {

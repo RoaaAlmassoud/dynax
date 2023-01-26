@@ -82,8 +82,8 @@ const Detail = ({ names }: any) => {
             name: `${info.user.name}様`,
             lottery:
               info.reservation.lottery_status === 0
-                ? "先着予約を受け付けました。"
-                : "抽選申込を受け付けました。",
+                ? "先着予約の変更を受け付けました。"
+                : "抽選申込の変更を受け付けました。",
             title: names ? names.section12_cancel : "予約完了",
             type: "cancel",
           },

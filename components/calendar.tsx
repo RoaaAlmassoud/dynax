@@ -190,12 +190,12 @@ const Calendar = ({
       <th
         key={unique()}
         className={`day ${
+          day.date_type === 1?
+          "red":
           dayData.dayName === "土"
             ? "saturday"
             : dayData.dayName === "日"
             ? "sunday"
-            : day.date_type === 1
-            ? "red"
             : ""
         } ${dayBeforeText}`}
       >

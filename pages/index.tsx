@@ -331,7 +331,7 @@ const Home = ({ data, facility, names }: any) => {
                     </ul>
                   </form>
                   <p className="next">
-                    <a href="#sec3">
+                    <a href="#calendar">
                       <img
                         src="/images/next.svg"
                         alt="次へ"

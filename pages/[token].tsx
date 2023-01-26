@@ -365,6 +365,7 @@ const Home = (props: any) => {
   };
 
   const renderCalendar = () => {
+    handleClose()
     setShowCalendar(!showCalendar);
     setShowBasic(!showBasic);
     setSecondSectionSummary(!secondSectionSummary);
@@ -462,9 +463,7 @@ const Home = (props: any) => {
                         <Modal.Header closeButton>
                           <Modal.Title>xxxx</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body>
-                          xxxx
-                        </Modal.Body>
+                        <Modal.Body>xxxx</Modal.Body>
                         <Modal.Footer>
                           <Button variant="secondary" onClick={handleClose}>
                             いいえ
@@ -501,6 +500,7 @@ const Home = (props: any) => {
                     updateSummary={updateSummary}
                     info={info}
                     names={names}
+                    facility={props.facilityData}
                   />
                 </div>
               </section>
@@ -536,3 +536,4 @@ const Home = (props: any) => {
 };
 
 export default Home;
+

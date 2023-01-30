@@ -116,7 +116,7 @@ const AcceptanceModal = forwardRef((props, ref) => {
           </Form>
           {errorMsg ? (
             <div className="error-section">
-              <img src="/images/warning.png" />
+              <img src={`${process.env.IMAGE_URL}/images/warning.png`} />
               <h3>{`Error: ${errorMsg}`}</h3>
             </div>
           ) : null}

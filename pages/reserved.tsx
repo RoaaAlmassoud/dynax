@@ -141,14 +141,14 @@ const Reserved = (props: any) => {
                 target="_blank"
                 className="link-item"
               >
-                <img src="/images/arrow8.svg" alt="" />
+                <img src={`${process.env.IMAGE_URL}/images/arrow8.svg`} alt="" />
                 保養所案内はこちら
               </a>
             </li>
             {info.reservation.code && data.type !== "cancel" ? (
               <li>
                 <a href="/detail" className="link-item">
-                  <img src="/images/arrow8.svg" alt="" />
+                  <img src={`${process.env.IMAGE_URL}/images/arrow8.svg`} alt="" />
                   ご予約の内容の変更はこちら
                 </a>
               </li>

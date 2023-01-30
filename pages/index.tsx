@@ -12,7 +12,7 @@ import { getDay, previousDate, nextDate } from "../utilis/helper";
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });
-const Home = ({ data, facility, names }: any) => {
+const Home = ({ data, facility, names, customer }: any) => {
   const size = WindowSize();
   let sortedData: any;
   let current;
@@ -119,7 +119,7 @@ const Home = ({ data, facility, names }: any) => {
 
     let currentYear = month === 13 ? year + 1 : year;
     let currentMonth = month === 13 ? 1 : month;
-    
+
     if (operation) {
       if (operation === "pre-week") {
         startedIndex = data.calendar.indexOf(firstItem);
@@ -198,7 +198,7 @@ const Home = ({ data, facility, names }: any) => {
     if (pageElement) navLink = pageElement.getElementsByTagName("a");
     if (navLink) {
       let contentsArr = new Array();
-      
+
       for (let i = 0; i < navLink?.length; i++) {
         let targetContents = navLink[i].getAttribute("href")?.substring(1);
         if (targetContents) {
@@ -216,21 +216,23 @@ const Home = ({ data, facility, names }: any) => {
       }
       function currentCheck() {
         let windowScrolltop = window.scrollY;
-       
-        for (let i = 0; i < contentsArr.length; i++) {
-          if (
-            contentsArr[i][0] <= windowScrolltop &&
-            contentsArr[i][1] >= windowScrolltop
-          ) {
-            let activeElement = document.getElementsByClassName("active");
-            if (activeElement[0]) {
-              activeElement[0].classList.remove("active");
-            }
-            if (navLink[i]) {
-              navLink[i].classList.add("active");
-            }
 
-            i == contentsArr.length;
+        for (let i = 0; i < contentsArr.length; i++) {
+          if (contentsArr[i]) {
+            if (
+              contentsArr[i][0] <= windowScrolltop &&
+              contentsArr[i][1] >= windowScrolltop
+            ) {
+              let activeElement = document.getElementsByClassName("active");
+              if (activeElement[0]) {
+                activeElement[0].classList.remove("active");
+              }
+              if (navLink[i]) {
+                navLink[i].classList.add("active");
+              }
+
+              i == contentsArr.length;
+            }
           }
         }
       }
@@ -278,18 +280,19 @@ const Home = ({ data, facility, names }: any) => {
             　
           </p>
         </div>
-        {firstSectionSummary || secondSectionSummary ? null : (
+        {firstSectionSummary ||
+        secondSectionSummary ? null : customer.section01_skipped ? null : (
           <section className="first-section" id="date">
             <div className="inner">
               <DateForm date={date} updateDate={updateDate} />
             </div>
           </section>
         )}
-        {secondSectionSummary ? null : (
+        {secondSectionSummary ? null : customer.section01_skipped ? null : (
           <section className="second-section position-now" id="facilities">
             <div className="inner">
               <h2>
-                <img src="/images/h2-icon1.svg" alt="施設選択" />
+                <img src={`${process.env.IMAGE_URL}/images/h2-icon1.svg`} alt="施設選択" />
                 {names ? names.section01 : "施設選択"}
               </h2>
               {firstSectionSummary ? (
@@ -315,7 +318,7 @@ const Home = ({ data, facility, names }: any) => {
                     <ul className="checkbox flexbox">
                       <li className="hotel-open checked">
                         <img
-                          src="/images/img1.jpg"
+                          src={`${process.env.IMAGE_URL}/images/img1.jpg`}
                           alt=""
                           className="thumbnail"
                         />
@@ -333,7 +336,7 @@ const Home = ({ data, facility, names }: any) => {
                   <p className="next">
                     <a href="#calendar">
                       <img
-                        src="/images/next.svg"
+                        src={`${process.env.IMAGE_URL}/images/next.svg`}
                         alt="次へ"
                         onClick={() => {
                           setFirstSectionSummary(true);
@@ -351,7 +354,7 @@ const Home = ({ data, facility, names }: any) => {
         <section className="third-section position-now" id="calendar">
           <div className="inner">
             <h2>
-              <img src="/images/h2-icon2.svg" alt="宿泊希望日" />
+              <img src={`${process.env.IMAGE_URL}/images/h2-icon2.svg`} alt="宿泊希望日" />
               {names ? names.section02 : "基本情報登録"}
             </h2>
             {secondSectionSummary ? (
@@ -404,9 +407,12 @@ const Home = ({ data, facility, names }: any) => {
 export default Home;
 
 export const getStaticProps = async () => {
+  const apiUrl = process.env.API_URL;
   const facility = await axios.get(
-     `https://hoyojo-new.dynax.co.jp/api/facilities`,
-      // `https:arubaito.online/api/facilities`,
+
+     `${apiUrl}facilities`,
+    // `https://hoyojo-new.dynax.co.jp/api/facilities`,
+    //  `https://arubaito.online/api/facilities`,
     {
       httpsAgent,
     }
@@ -429,8 +435,9 @@ export const getStaticProps = async () => {
   if (facility.data) {
     const facilityObject = facility.data.data[0];
     response = await axios.get(
-       `https://hoyojo-new.dynax.co.jp/api/calendar?facility_id=${facilityId}`,
-        // `https:arubaito.online/api/calendar?facility_id=${facilityObject.id}`,
+      `${apiUrl}calendar?facility_id=${facilityId}`,
+      // `https://hoyojo-new.dynax.co.jp/api/calendar?facility_id=${facilityId}`,
+      // `https:arubaito.online/api/calendar?facility_id=${facilityObject.id}`,
       { httpsAgent }
     );
   }
@@ -438,7 +445,7 @@ export const getStaticProps = async () => {
   return {
     props: {
       data: response ? response.data.data : {},
-      facility: facility.data.data[0]?facility.data.data[0] :{},
+      facility: facility.data.data[0] ? facility.data.data[0] : {},
       // names: names.data.data,
     },
   };

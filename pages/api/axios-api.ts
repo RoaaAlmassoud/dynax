@@ -5,10 +5,15 @@ export type Methods = "head" | "options" | "put" | "post" | "patch" | "delete" |
 const httpsAgent =  new https.Agent({
     rejectUnauthorized: false,
   })
+  const imageUrl = process.env.IMAGE_URL ? process.env.IMAGE_URL : "";
+  const apiUrl = process.env.API_URL;
 export default class AxiosApi {
+
+    
     
     static ApiURL = 
-     "https://hoyojo-new.dynax.co.jp/api/"
+    apiUrl
+    //  "https://hoyojo-new.dynax.co.jp/api/"
     //  "https:arubaito.online/api/";
     
     static call = async (requestBody:any, path:string, method:Methods, header?:string) => {
@@ -26,7 +31,8 @@ export default class AxiosApi {
         //     headers['api-token'] = `${accessToken}`
         // }
         try {
-            const response = await axios[method](url
+            const response = await axios[method](
+                url
                 , method === 'get' ? {
                         headers: headers,
                         timeout: 1200000
@@ -35,7 +41,8 @@ export default class AxiosApi {
                             headers: headers,
                             data: requestBody
                         }
-                        : requestBody, {
+                        : requestBody,
+                         {
                     headers: headers,
                     timeout: 1200000, 
                      httpsAgent: httpsAgent,

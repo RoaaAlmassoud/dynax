@@ -21,6 +21,11 @@
   cursor: pointer;
 }
 
+.container :global(.header .inner h1 span) {
+  font-size: 18px;
+  font-weight: 500;
+}
+
 .container :global(.header .inner h1 img) {
   max-width: 138px;
   margin-right: 20px;

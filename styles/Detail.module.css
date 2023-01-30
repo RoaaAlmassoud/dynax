@@ -44,17 +44,21 @@
   border-right: solid 10px #fff;
 }
 
-.detail :global(.actions button:first-child) {
+.detail :global(.actions div){
+  width: 33%;
+}
+
+.detail :global(.actions button.cancel-btn) {
   width: 220px;
   background-color: var(--orange);
 }
 
-.detail :global(.actions button:nth-child(2)) {
+.detail :global(.actions button.update-btn) {
   width: 220px;
   background-color: #9cbc59;
 }
 
-.detail :global(.actions button:last-child) {
+.detail :global(.actions button.print-btn) {
   width: 100px;
   background-color: var(--gray);
 }

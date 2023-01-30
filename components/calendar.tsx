@@ -5,6 +5,7 @@ import AcceptanceModal from "../components/acceptance";
 import { getDay, previousDate, nextDate, unique } from "../utilis/helper";
 import WindowSize from "./window-size";
 import AxiosApi from "../pages/api/axios-api";
+import { type } from "os";
 const Calendar = ({
   date,
   data,
@@ -24,6 +25,7 @@ const Calendar = ({
   const [isLoading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [infoData, setInfoData] = useState({});
+  const [firstHeader, setFirstHeader] = useState(null);
   let sliceNumber = size.width > 640 ? 21 : 7;
   let currentCalendar = current
     ? current.calendar
@@ -220,6 +222,9 @@ const Calendar = ({
 
   const checkDay = (day: any, index: number): string => {
     let withIndex = index === 0 || day.dayNumber === 1;
+    if(withIndex){
+      
+    }
     return withIndex ? "with-before" : "";
   };
   return (

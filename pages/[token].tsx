@@ -404,7 +404,7 @@ const Home = (props: any) => {
       <main className={styles.main}>
         {errorMsg ? (
           <div className="error-section">
-            <img src="/images/warning.png" />
+            <img src={`${process.env.IMAGE_URL}/images/warning.png`} />
             <h3>{`Error: ${errorMsg}`}</h3>
           </div>
         ) : null}
@@ -441,7 +441,7 @@ const Home = (props: any) => {
               <section className="third-section position-now" id="calendar">
                 <div className="inner">
                   <h2>
-                    <img src="/images/h2-icon2.svg" alt="宿泊希望日" />
+                    <img src={`${process.env.IMAGE_URL}/images/h2-icon2.svg`} alt="宿泊希望日" />
                     {names ? names.section02 : "基本情報登録"}
                   </h2>
                   <div className="summary-section">
@@ -461,9 +461,9 @@ const Home = (props: any) => {
                       </Button>
                       <Modal show={show} onHide={handleClose}>
                         <Modal.Header closeButton>
-                          <Modal.Title>xxxx</Modal.Title>
+                          <Modal.Title>前に戻る</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body>xxxx</Modal.Body>
+                        <Modal.Body>「はい」を押すと選択した情報が取り消されますがよろしいですか？</Modal.Body>
                         <Modal.Footer>
                           <Button variant="secondary" onClick={handleClose}>
                             いいえ
@@ -484,7 +484,7 @@ const Home = (props: any) => {
               <section className="third-section position-now" id="calendar">
                 <div className="inner">
                   <h2>
-                    <img src="/images/h2-icon2.svg" alt="宿泊希望日" />
+                    <img src={`${process.env.IMAGE_URL}/images/h2-icon2.svg`} alt="宿泊希望日" />
                     {names ? names.section02 : "基本情報登録"}
                   </h2>
 
@@ -512,7 +512,7 @@ const Home = (props: any) => {
               >
                 <div className="inner">
                   <h2>
-                    <img src="/images/h2-icon3.svg" alt="基本情報" />
+                    <img src={`${process.env.IMAGE_URL}/images/h2-icon3.svg`} alt="基本情報" />
                     {names ? names.section03 : "基本情報"}
                   </h2>
                   <div className="section-box">

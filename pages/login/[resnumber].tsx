@@ -135,7 +135,7 @@ export default function Login() {
           </Form>
           {errorMsg ? (
             <div className="error-section">
-              <img src="/images/warning.png" />
+              <img src={`${process.env.IMAGE_URL}/images/warning.png`} />
               <h3>{`Error: ${errorMsg}`}</h3>
             </div>
           ) : null}
@@ -143,7 +143,7 @@ export default function Login() {
         <ul className="link flexbox">
           <li onClick={() => submitForget()}>
             <p>
-              <img src="/images/arrow8.svg" alt="" />
+              <img src={`${process.env.IMAGE_URL}/images/arrow8.svg`} alt="" />
               パスワードを忘れた場合はこちら
             </p>
           </li>
@@ -155,8 +155,8 @@ export default function Login() {
               <img
                 src={
                   message.color === "red"
-                    ? "/images/warning.png"
-                    : "/images/info.png"
+                    ? `${process.env.IMAGE_URL}/images/warning.png`
+                    : `${process.env.IMAGE_URL}/images/info.png`
                 }
               />
               <h3 style={{color: message.color === "red"? "red": 'black'}}>{`${
@@ -169,7 +169,7 @@ export default function Login() {
         ) : null}
         <p className="home-btn">
           <Link href="/">
-            <img src="/images/home.svg" alt="" />
+            <img src={`${process.env.IMAGE_URL}/images/home.svg`} alt="" />
             トップページに戻る
           </Link>
         </p>

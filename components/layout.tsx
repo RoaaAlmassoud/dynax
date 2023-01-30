@@ -1,8 +1,13 @@
 import styles from "../styles/Home.module.css";
 import Head from "next/head";
 import { useRouter } from "next/router";
-export default function Layout({ children, displayName, displayHeader }: any) {
-  const router = useRouter()
+export default function Layout({
+  children,
+  displayName,
+  displayHeader,
+  customer,
+}: any) {
+  const router = useRouter();
   return (
     <div className={styles.container}>
       <Head>
@@ -13,11 +18,12 @@ export default function Layout({ children, displayName, displayHeader }: any) {
       </Head>
       <div className="header">
         <div className="inner flexbox">
-          <h1 onClick={() => router.push('/')}>
-            <img src="/images/logo.svg" alt="Dynax" />
-            {`${displayName ? displayName : ""} ${
-              displayHeader ? displayHeader : ""
-            }`}
+          <h1 onClick={() => router.push("/")}>
+            <img src={`${process.env.IMAGE_URL}/images/logo.svg`} alt="Dynax" />
+            {`${displayName ? displayName : ""}
+             
+             `}
+             <span>{displayHeader ? displayHeader : ""}</span>
             {/* 保養所予約システム */}
           </h1>
           {/* <div className="header-user dropdown">
@@ -50,7 +56,7 @@ export default function Layout({ children, displayName, displayHeader }: any) {
         <p className="copy">Copyright &copy;2022 保養所予約システム</p>
         <p className="totop">
           <a href="#">
-            <img src="/images/totop.svg" alt="TOP" />
+            <img src={`${process.env.IMAGE_URL}/images/totop.svg`} alt="TOP" />
           </a>
         </p>
       </footer>

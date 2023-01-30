@@ -4,6 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import AxiosApi from "../pages/api/axios-api";
 import { Methods } from "../pages/api/axios-api";
+import axios from "axios";
+import * as https from "https";
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false,
+});
 
 const UserForm = (props: any) => {
   let info = props.info;
@@ -13,6 +18,8 @@ const UserForm = (props: any) => {
   const names = props ? props.names : {};
   let rememberToken = props.rememberToken ? props.rememberToken : "";
   const router = useRouter();
+
+  let isUpdate = localStorage.getItem("token") && info.status === 7;
   const [validated, setValidated] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -60,13 +67,13 @@ const UserForm = (props: any) => {
       let tokenValue: string = router.query.token
         ? router.query.token.toString()
         : "";
-      if (localStorage.getItem("token") && info.status === 7) {
+      if (isUpdate) {
         url = "update-reservation";
         method = "put";
         tokenValue = localStorage.getItem("token")
           ? localStorage.getItem("token")
           : tokenValue;
-        userForm.new_rsv_frame_ids = daySelected? [daySelected]: [info.rsvId];
+        userForm.new_rsv_frame_ids = daySelected ? [daySelected] : [info.rsvId];
       }
       let response = await AxiosApi.call(userForm, url, method, tokenValue);
       setLoading(false);
@@ -80,10 +87,13 @@ const UserForm = (props: any) => {
               query: {
                 code: data.reservation.code,
                 name: `${data.user.name}様`,
-                lottery:
-                  data.reservation.lottery_status === 0
-                    ? "先着予約の変更を受け付けました。"
-                    : "抽選申込の変更を受け付けました。",
+                lottery: !isUpdate
+                  ? data.reservation.lottery_status === 0
+                    ? "先着予約を受け付けました。"
+                    : "抽選申込を受け付けました。"
+                  : data.reservation.lottery_status === 0
+                  ? "先着予約の変更を受け付けました。"
+                  : "抽選申込の変更を受け付けました。",
                 notes: data.facility.notes,
                 abbreviation: data.facility.abbreviation,
                 mail: data.facility.mail,
@@ -120,6 +130,53 @@ const UserForm = (props: any) => {
       }
       return openingsNumber;
     }
+  };
+
+  const handleKana = async (field: string, value:string) => {
+    const headers = {
+      "Content-Type": "application/json",
+      "User-Agent":
+        "Yahoo AppID: dj00aiZpPUtWaEp6OFRNdzhkUiZzPWNvbnN1bWVyc2VjcmV0Jng9YTk-",
+    };
+    type response ={
+      "id": "",
+      "jsonrpc": "",
+      "result": {
+          "word": [
+              {
+                  "furigana": "",
+                  "roman": "",
+                  "surface": ""
+              }
+          ]
+      }
+  }
+    const furiganaResponse:response = await axios.post(
+      `https://jlp.yahooapis.jp/FuriganaService/V2/furigana`,
+      {
+        id: "1234-1",
+        jsonrpc: "2.0",
+        method: "jlp.furiganaservice.furigana",
+        params: {
+          q: value,
+          grade: 1,
+        },
+      },
+      {
+        headers: headers,
+        httpsAgent,
+      }
+    );
+
+    if(furiganaResponse){
+      console.log('furiganaResponse: ', furiganaResponse)
+      const furiganaText = furiganaResponse.result? furiganaResponse.result.word[0]?
+      furiganaResponse.result.word[0].furigana?furiganaResponse.result.word[0].furigana:"":"":""
+    
+      if(furiganaText){
+        setUserForm({ ...userForm, [field]: furiganaText });
+      }
+    } 
   };
 
   return (
@@ -207,12 +264,17 @@ const UserForm = (props: any) => {
             placeholder="姓"
             value={userForm ? userForm.last_name : ""}
             onChange={(event) => handleChange(event, "last_name")}
+            onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+              handleKana("last_name_kana", e.target.value);
+            }}
           />
           <Form.Control
             required
             placeholder="名"
             value={userForm ? userForm.first_name : ""}
             onChange={(event) => handleChange(event, "first_name")}
+            onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+              handleKana("first_name_kana", e.target.value);}}
           />
         </Form.Group>
         <Form.Group
@@ -264,8 +326,8 @@ const UserForm = (props: any) => {
           />
         </Form.Group>
       </Row>
-       {info ? (
-        info.status === 7 ? null : ( 
+      {info ? (
+        info.status === 7 ? null : (
           <Row>
             <Form.Group
               as={Col}
@@ -298,8 +360,8 @@ const UserForm = (props: any) => {
               />
             </Form.Group>
           </Row>
-         )
-      ) : null} 
+        )
+      ) : null}
 
       <Row className="border-0">
         <Button type="submit">
@@ -308,7 +370,7 @@ const UserForm = (props: any) => {
       </Row>
       {errorMsg ? (
         <div className="error-section">
-          <img src="/images/warning.png" />
+          <img src={`${process.env.IMAGE_URL}/images/warning.png`} />
           <h3>{`Error: ${errorMsg}`}</h3>
         </div>
       ) : null}

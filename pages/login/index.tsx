@@ -11,7 +11,6 @@ export default function Login() {
   const [errorMsg, setErrorMsg] = useState("");
   const [form, setForm] = useState("");
   const [message, setMessage] = useState({ text: "", color: "" });
-
   const [loginForm, setLoginForm] = useState({
     reservation_code: "",
     email: "",
@@ -100,7 +99,7 @@ export default function Login() {
           </Form>
           {errorMsg ? (
             <div className="error-section">
-              <img src="/images/warning.png" />
+              <img src={`${process.env.IMAGE_URL}/images/warning.png`} />
               <h3>{`Error: ${errorMsg}`}</h3>
             </div>
           ) : null}
@@ -108,14 +107,14 @@ export default function Login() {
         <ul className="link flexbox">
           <li>
             <a href="#" className="link1">
-              <img src="/images/arrow8.svg" alt="" />
+              <img src={`${process.env.IMAGE_URL}/images/arrow8.svg`} alt="" />
               パスワードを忘れた場合はこちら
             </a>
           </li>
         </ul>
         <p className="home-btn">
           <Link href="/">
-            <img src="/images/home.svg" alt="" />
+            <img src={`${process.env.IMAGE_URL}/images/home.svg`} alt="" />
             トップページに戻る
           </Link>
         </p>

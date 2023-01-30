@@ -5,18 +5,23 @@ import AxiosApi from "./api/axios-api";
 import { getDay } from "../utilis/helper";
 import { useRouter } from "next/router";
 import { SlowBuffer } from "buffer";
-const Detail = ({ names }: any) => {
+const Detail = ({ names, facilityData }: any) => {
   const [show, setShow] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
   const [info, setInfo] = useState({
     reservation: {
-      facility: { name: "", change_days: 0 },
+      facility: {
+        name: "",
+        change_days: facilityData ? facilityData.change_days : 0,
+        cancel_days: facilityData ? facilityData.cancel_days : 0,
+      },
       code: "",
       date: "",
       roomType: "",
       numRooms: "",
       updateDisabled: false,
+      cancelDisabled: false,
       lottery_status: 0,
     },
     user: {
@@ -47,10 +52,10 @@ const Detail = ({ names }: any) => {
       const datesDiffer =
         new Date(rsvdates[0].date).getTime() - new Date().getTime();
       const dayDiffer = datesDiffer / (1000 * 60 * 60 * 24);
-      const updateDisabled =
-        reservationInformation.data.reservation.facility.change_days >
-        dayDiffer;
 
+      const updateDisabled = info.reservation.facility.change_days > dayDiffer;
+      const cancelDisabled = info.reservation.facility.cancel_days > dayDiffer;
+     
       setInfo({
         reservation: {
           ...reservationInformation.data.reservation,
@@ -58,6 +63,7 @@ const Detail = ({ names }: any) => {
           roomType: roomType,
           numRooms: numRooms,
           updateDisabled: updateDisabled,
+          cancelDisabled: cancelDisabled,
         },
         user: reservationInformation.data.user,
       });
@@ -82,8 +88,8 @@ const Detail = ({ names }: any) => {
             name: `${info.user.name}様`,
             lottery:
               info.reservation.lottery_status === 0
-                ? "先着予約の変更を受け付けました。"
-                : "抽選申込の変更を受け付けました。",
+                ? "先着予約のキャンセルを受け付けました"
+                : "抽選予約のキャンセルを受け付けました",
             title: names ? names.section12_cancel : "予約完了",
             type: "cancel",
           },
@@ -158,8 +164,13 @@ const Detail = ({ names }: any) => {
             </tbody>
           </Table>
           <div className="actions flexbox">
-            <Button onClick={handleShow}>予約キャンセル</Button>
-
+            {info.reservation.cancelDisabled ? null : (
+              <div>
+                <Button className="cancel-btn" onClick={handleShow}>
+                  予約キャンセル
+                </Button>
+              </div>
+            )}
             <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
                 <Modal.Title>予約キャンセル</Modal.Title>
@@ -176,13 +187,18 @@ const Detail = ({ names }: any) => {
                 </Button>
               </Modal.Footer>
             </Modal>
-            <Button
-              disabled={info.reservation.updateDisabled}
-              onClick={() => update()}
-            >
-              予約変更
-            </Button>
-            <Button onClick={() => window.print()}>画面印刷</Button>
+            {info.reservation.updateDisabled ? null : (
+              <div className="text-center">
+                <Button className="update-btn" onClick={() => update()}>
+                  予約変更
+                </Button>
+              </div>
+            )}
+            <div className="text-end">
+              <Button className="print-btn" onClick={() => window.print()}>
+                画面印刷
+              </Button>
+            </div>
           </div>
         </div>
       </div>

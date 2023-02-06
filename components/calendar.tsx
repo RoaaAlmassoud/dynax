@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { propTypes } from "react-bootstrap/esm/Image";
 import AcceptanceModal from "../components/acceptance";
@@ -20,6 +20,7 @@ const Calendar = ({
   updateSummary,
   info,
 }: any) => {
+  const mounted = useRef(true);
   const size = WindowSize();
   const [daySelected, setDaySelected] = useState(0);
   const [isLoading, setLoading] = useState(false);
@@ -27,6 +28,7 @@ const Calendar = ({
   const [infoData, setInfoData] = useState({});
   const [firstHeader, setFirstHeader] = useState(null);
   let sliceNumber = size.width > 640 ? 21 : 7;
+ 
   let currentCalendar = current
     ? current.calendar
       ? { ...current, calendar: current.calendar.slice(0, sliceNumber) }
@@ -93,6 +95,8 @@ const Calendar = ({
         "post",
         ""
       );
+
+      console.log('daySelected: ', daySelected)
       setLoading(false);
       if (response.data) {
         updateSummary(infoData, daySelected);
@@ -136,52 +140,57 @@ const Calendar = ({
   };
   const renderDay = (day: any, type: any) => {
     const dayData = getDay(day.date);
-    switch (day.status_type) {
-      case 0:
-        const availableNumber = day.rsv_frames.find(
-          (a: any) => a.roomtype_id === type.id
-        );
+    try {
+      switch (day.status_type) {
+        case 0:
+          let color = "blue";
+          const availableNumber = day.rsv_frames.find(
+            (a: any) => a.roomtype_id === type.id
+          );
 
-        let color = "blue";
-        if (availableNumber.openings === type.num_rooms) {
-          color = "pale blue";
-        } else {
-          let rate = (availableNumber.fixed_number / type.num_rooms) * 100;
-          if (rate > 0 && rate < 49) {
-            color = "pale blue";
-          } else if (rate >= 50 && rate <= 99) {
-            color = "blue";
-          } else {
-            color = "deep blue";
-          }
-        }
+           if (availableNumber) {
+            if (availableNumber.openings === type.num_rooms) {
+              color = "pale blue";
+            } else {
+              let rate = (availableNumber.fixed_number / type.num_rooms) * 100;
+              if (rate > 0 && rate < 49) {
+                color = "pale blue";
+              } else if (rate >= 50 && rate <= 99) {
+                color = "blue";
+              } else {
+                color = "deep blue";
+              }
+             }
 
-        let td = (
-          <td
-            key={unique()}
-            className={`${color} ${availableNumber.id} ${
-              daySelected === availableNumber.id ? "selected" : ""
-            }
+            let td = (
+              <td
+                key={unique()}
+                className={`${color} ${availableNumber.id} ${
+                  daySelected === availableNumber.id ? "selected" : ""
+                }
         ${availableNumber.openings === 0 ? "disabled" : ""}`}
-            onClick={() => dayClicked(day, availableNumber)}
-          >
-            {availableNumber.openings}
-          </td>
-        );
-        return td;
-        break;
+                onClick={() => dayClicked(day, availableNumber)}
+              >
+                {availableNumber.openings}
+              </td>
+            );
+            return td;
+          }
+          break;
 
-      case 1:
-        return (
-          <td key={unique()} className="gray">
-            休
-          </td>
-        );
-        break;
-      case 2:
-      case 3:
-        return <td key={unique()} className="gray"></td>;
-        break;
+        case 1:
+          return (
+            <td key={unique()} className="gray">
+              休
+            </td>
+          );
+          break;
+        case 2:
+        case 3:
+          return <td key={unique()} className="gray"></td>;
+          break;
+      }
+    } catch (err) {
     }
   };
 
@@ -192,9 +201,9 @@ const Calendar = ({
       <th
         key={unique()}
         className={`day ${
-          day.date_type === 1?
-          "red":
-          dayData.dayName === "土"
+          day.date_type === 1
+            ? "red"
+            : dayData.dayName === "土"
             ? "saturday"
             : dayData.dayName === "日"
             ? "sunday"
@@ -220,10 +229,15 @@ const Calendar = ({
     calendarOperation(operation);
   };
 
+  useEffect(() => {
+    if (mounted.current && currentCalendar) {
+      mounted.current = false;
+    }
+  }, []);
+
   const checkDay = (day: any, index: number): string => {
     let withIndex = index === 0 || day.dayNumber === 1;
-    if(withIndex){
-      
+    if (withIndex) {
     }
     return withIndex ? "with-before" : "";
   };
@@ -271,62 +285,46 @@ const Calendar = ({
               {nextMonthText}
             </Button>
           </div>
+
           <div className="calendar-section">
             <h3>{facility ? facility.name : info ? info.facilityName : ""}</h3>
-            <Table className="calendar-table">
-              <thead>
-                <tr>
-                  {size.width > 640 ? (
-                    <>
-                      <th className="room-type">
-                        {names ? names.roomtype : "部屋タイプ"}
-                      </th>
-                      <th className="room-number">
-                        {names ? names.num_rooms : "部屋数"}
-                      </th>
-                    </>
-                  ) : null}
+           
+              <Table className="calendar-table">
+                <thead>
+                  <tr>
+                    {size.width > 640 ? (
+                      <>
+                        <th className="room-type">
+                          {names ? names.roomtype : "部屋タイプ"}
+                        </th>
+                        <th className="room-number">
+                          {names ? names.num_rooms : "部屋数"}
+                        </th>
+                      </>
+                    ) : null}
 
-                  {data
-                    ? data.calendar
-                      ? currentCalendar.calendar
-                        ? currentCalendar.calendar.map(
-                            (day: any, index: number) => {
-                              return renderTableHeader(day, index);
-                            }
-                          )
+                    {data
+                      ? data.calendar
+                        ? currentCalendar.calendar
+                          ? currentCalendar.calendar.map(
+                              (day: any, index: number) => {
+                                return renderTableHeader(day, index);
+                              }
+                            )
+                          : null
                         : null
-                      : null
-                    : null}
-                </tr>
-              </thead>
-              <tbody className="calendar-body">
-                {data
-                  ? data.room_types
-                    ? data.room_types.map((type: any) => {
-                        if (size.width > 640)
-                          return (
-                            <tr key={unique()}>
-                              <td>{type.name}</td>
-                              <td>{type.num_rooms}</td>
-                              {currentCalendar.calendar
-                                ? currentCalendar.calendar.map((day: any) => {
-                                    let t = getDay(day.date);
-                                    return renderDay(day, type);
-                                  })
-                                : null}
-                            </tr>
-                          );
-                        else
-                          return (
-                            <>
-                              <tr key={unique()} className={"type-row"}>
-                                <td colSpan={4}>{type.name}</td>
-                                <td
-                                  colSpan={3}
-                                >{`部屋数：${type.num_rooms}部屋`}</td>
-                              </tr>
-                              <tr key={unique()} className={"opening-number"}>
+                      : null}
+                  </tr>
+                </thead>
+                <tbody className="calendar-body">
+                  {data
+                    ? data.room_types
+                      ? data.room_types.map((type: any) => {
+                          if (size.width > 640)
+                            return (
+                              <tr key={unique()}>
+                                <td>{type.name}</td>
+                                <td>{type.num_rooms}</td>
                                 {currentCalendar.calendar
                                   ? currentCalendar.calendar.map((day: any) => {
                                       let t = getDay(day.date);
@@ -334,13 +332,34 @@ const Calendar = ({
                                     })
                                   : null}
                               </tr>
-                            </>
-                          );
-                      })
-                    : null
-                  : null}
-              </tbody>
-            </Table>
+                            );
+                          else
+                            return (
+                              <>
+                                <tr key={unique()} className={"type-row"}>
+                                  <td colSpan={4}>{type.name}</td>
+                                  <td
+                                    colSpan={3}
+                                  >{`部屋数：${type.num_rooms}部屋`}</td>
+                                </tr>
+                                <tr key={unique()} className={"opening-number"}>
+                                  {currentCalendar.calendar
+                                    ? currentCalendar.calendar.map(
+                                        (day: any) => {
+                                          let t = getDay(day.date);
+                                          return renderDay(day, type);
+                                        }
+                                      )
+                                    : null}
+                                </tr>
+                              </>
+                            );
+                        })
+                      : null
+                    : null}
+                </tbody>
+              </Table>
+           
             <div className="flexbox switch-week">
               <Button
                 className="previous-btn"
@@ -361,6 +380,7 @@ const Calendar = ({
               </Button>
             </div>
           </div>
+
           <p className="calendar-submit submit">
             <button
               onClick={() => {

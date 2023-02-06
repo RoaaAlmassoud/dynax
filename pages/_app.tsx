@@ -20,7 +20,7 @@ export default function App({ Component, pageProps }: AppProps) {
       getData();
       mounted.current = false;
     }
-  });
+  },[]);
   const getData = async () => {
     const response = await AxiosApi.call({}, `customer`, "get", "");
     

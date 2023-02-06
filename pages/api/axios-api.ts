@@ -7,6 +7,7 @@ const httpsAgent =  new https.Agent({
   })
   const imageUrl = process.env.IMAGE_URL ? process.env.IMAGE_URL : "";
   const apiUrl = process.env.API_URL;
+
 export default class AxiosApi {
 
     

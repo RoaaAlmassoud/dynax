@@ -13,11 +13,14 @@ const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });
 const Home = ({ data, facility, names, customer }: any) => {
+  console.log('data: ', data)
   const size = WindowSize();
+  const mounted = useRef(true);
   let sortedData: any;
   let current;
   let firstCalendarItem;
   let lastCalendarItem;
+  let sliceNumber = size.width > 640 ? 21 : 7;
   // const [data, setData ] = useState({})
   // const [facility, setFacility ] = useState({})
   // const [names, setNames ] = useState({})
@@ -28,11 +31,12 @@ const Home = ({ data, facility, names, customer }: any) => {
           new Date(objA.date).getTime() - new Date(objB.date).getTime()
       );
     }
+    
     current = data
       ? data.calendar
         ? {
             ...data,
-            // calendar: data.calendar.slice(0, sliceNumber)
+              calendar: data.calendar.slice(0, sliceNumber)
           }
         : null
       : null;
@@ -176,7 +180,9 @@ const Home = ({ data, facility, names, customer }: any) => {
         );
         break;
       case "next-month":
+        console.log('lastItem: ', lastItem)
         let nextMonth = nextDate(lastItem.date);
+        console.log('nextMonth: ', nextMonth)
         let nextMonthNum =
           getDay(firstItem.date).month === getDay(lastItem.date).month
             ? nextMonth.nextMonth + 1
@@ -193,52 +199,55 @@ const Home = ({ data, facility, names, customer }: any) => {
   };
 
   useEffect(() => {
-    let pageElement = document.getElementById("page-nav");
-    let navLink: any;
-    if (pageElement) navLink = pageElement.getElementsByTagName("a");
-    if (navLink) {
-      let contentsArr = new Array();
+     let pageElement = document.getElementById("page-nav");
+     let navLink: any;
+     if (pageElement) navLink = pageElement.getElementsByTagName("a");
+     if (navLink) {
+       let contentsArr = new Array();
 
-      for (let i = 0; i < navLink?.length; i++) {
-        let targetContents = navLink[i].getAttribute("href")?.substring(1);
-        if (targetContents) {
-          let element =
-            targetContents && document.getElementById(targetContents)
-              ? document.getElementById(targetContents)
-              : null;
-          if (element) {
-            let targetContentsTop = element.offsetTop;
-            let targetContentsBottom =
-              targetContentsTop + element.offsetHeight - 1;
-            contentsArr[i] = [targetContentsTop, targetContentsBottom];
-          }
-        }
-      }
-      function currentCheck() {
-        let windowScrolltop = window.scrollY;
+       for (let i = 0; i < navLink?.length; i++) {
+         let targetContents = navLink[i].getAttribute("href")?.substring(1);
+         if (targetContents) {
+           let element =
+             targetContents && document.getElementById(targetContents)
+               ? document.getElementById(targetContents)
+               : null;
+           if (element) {
+             let targetContentsTop = element.offsetTop;
+             let targetContentsBottom =
+               targetContentsTop + element.offsetHeight - 1;
+             contentsArr[i] = [targetContentsTop, targetContentsBottom];
+           }
+         }
+       }
+       function currentCheck() {
+         let windowScrolltop = window.scrollY;
 
-        for (let i = 0; i < contentsArr.length; i++) {
-          if (contentsArr[i]) {
-            if (
-              contentsArr[i][0] <= windowScrolltop &&
-              contentsArr[i][1] >= windowScrolltop
-            ) {
-              let activeElement = document.getElementsByClassName("active");
-              if (activeElement[0]) {
-                activeElement[0].classList.remove("active");
-              }
-              if (navLink[i]) {
-                navLink[i].classList.add("active");
-              }
+         for (let i = 0; i < contentsArr.length; i++) {
+           if (contentsArr[i]) {
+             if (
+               contentsArr[i][0] <= windowScrolltop &&
+               contentsArr[i][1] >= windowScrolltop
+             ) {
+               let activeElement = document.getElementsByClassName("active");
+               if (activeElement[0]) {
+                 activeElement[0].classList.remove("active");
+               }
+               if (navLink[i]) {
+                 navLink[i].classList.add("active");
+               }
 
-              i == contentsArr.length;
-            }
-          }
-        }
-      }
-      window.onscroll = function () {
-        currentCheck();
-      };
+               i == contentsArr.length;
+             }
+           }
+         }
+       }
+       window.onscroll = function () {
+         currentCheck();
+       };
+    if (data && mounted.current) {
+      mounted.current = false;
+       }
     }
   }, []);
 
@@ -292,7 +301,10 @@ const Home = ({ data, facility, names, customer }: any) => {
           <section className="second-section position-now" id="facilities">
             <div className="inner">
               <h2>
-                <img src={`${process.env.IMAGE_URL}/images/h2-icon1.svg`} alt="施設選択" />
+                <img
+                  src={`${process.env.IMAGE_URL}/images/h2-icon1.svg`}
+                  alt="施設選択"
+                />
                 {names ? names.section01 : "施設選択"}
               </h2>
               {firstSectionSummary ? (
@@ -305,7 +317,7 @@ const Home = ({ data, facility, names, customer }: any) => {
                     <Button
                       onClick={() => {
                         setFirstSectionSummary(false);
-                        // updateCalendar(date.year, date.month, date.day);
+                        //  updateCalendar(date.year, date.month, date.day);
                       }}
                     >
                       ここからやり直す
@@ -354,7 +366,10 @@ const Home = ({ data, facility, names, customer }: any) => {
         <section className="third-section position-now" id="calendar">
           <div className="inner">
             <h2>
-              <img src={`${process.env.IMAGE_URL}/images/h2-icon2.svg`} alt="宿泊希望日" />
+              <img
+                src={`${process.env.IMAGE_URL}/images/h2-icon2.svg`}
+                alt="宿泊希望日"
+              />
               {names ? names.section02 : "基本情報登録"}
             </h2>
             {secondSectionSummary ? (
@@ -409,8 +424,7 @@ export default Home;
 export const getStaticProps = async () => {
   const apiUrl = process.env.API_URL;
   const facility = await axios.get(
-
-     `${apiUrl}facilities`,
+    `${apiUrl}facilities`,
     // `https://hoyojo-new.dynax.co.jp/api/facilities`,
     //  `https://arubaito.online/api/facilities`,
     {

@@ -132,51 +132,58 @@ const UserForm = (props: any) => {
     }
   };
 
-  const handleKana = async (field: string, value:string) => {
+  const handleKana = async (field: string, value: string) => {
     const headers = {
       "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
       "User-Agent":
         "Yahoo AppID: dj00aiZpPUtWaEp6OFRNdzhkUiZzPWNvbnN1bWVyc2VjcmV0Jng9YTk-",
     };
-    type response ={
-      "id": "",
-      "jsonrpc": "",
-      "result": {
-          "word": [
-              {
-                  "furigana": "",
-                  "roman": "",
-                  "surface": ""
-              }
-          ]
-      }
-  }
-    const furiganaResponse:response = await axios.post(
-      `https://jlp.yahooapis.jp/FuriganaService/V2/furigana`,
-      {
-        id: "1234-1",
-        jsonrpc: "2.0",
-        method: "jlp.furiganaservice.furigana",
-        params: {
-          q: value,
-          grade: 1,
+    type response = {
+      id: "";
+      jsonrpc: "";
+      result: {
+        word: [
+          {
+            furigana: "";
+            roman: "";
+            surface: "";
+          }
+        ];
+      };
+    };
+    let furiganaResponse: any;
+    try {
+      furiganaResponse = await axios.post(
+        `https://jlp.yahooapis.jp/FuriganaService/V2/furigana`,
+        {
+          id: "1234-1",
+          jsonrpc: "2.0",
+          method: "jlp.furiganaservice.furigana",
+          params: {
+            q: value,
+            grade: 1,
+          },
         },
-      },
-      {
-        headers: headers,
-        httpsAgent,
-      }
-    );
+        {
+          headers: headers,
+          httpsAgent,
+        }
+      );
+    } catch (e) {}
+    if (furiganaResponse) {
+      const furiganaText = furiganaResponse.result
+        ? furiganaResponse.result.word[0]
+          ? furiganaResponse.result.word[0].furigana
+            ? furiganaResponse.result.word[0].furigana
+            : ""
+          : ""
+        : "";
 
-    if(furiganaResponse){
-      console.log('furiganaResponse: ', furiganaResponse)
-      const furiganaText = furiganaResponse.result? furiganaResponse.result.word[0]?
-      furiganaResponse.result.word[0].furigana?furiganaResponse.result.word[0].furigana:"":"":""
-    
-      if(furiganaText){
+      if (furiganaText) {
         setUserForm({ ...userForm, [field]: furiganaText });
       }
-    } 
+    }
   };
 
   return (
@@ -274,7 +281,8 @@ const UserForm = (props: any) => {
             value={userForm ? userForm.first_name : ""}
             onChange={(event) => handleChange(event, "first_name")}
             onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
-              handleKana("first_name_kana", e.target.value);}}
+              handleKana("first_name_kana", e.target.value);
+            }}
           />
         </Form.Group>
         <Form.Group

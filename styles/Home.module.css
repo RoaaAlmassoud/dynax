@@ -434,6 +434,17 @@
   font-weight: 600;
 }
 
+.main
+  :global(
+    .third-section
+      .calendar-section
+      .calendar-table
+      .day.with-before.hide
+      .header-text
+  ) {
+    display: none;
+  }
+
 .main :global(.third-section .calendar-section .calendar-table .day.saturday) {
   color: #005ac3;
   border-bottom-color: #005ac3;
@@ -685,6 +696,10 @@
   .container :global(.header .inner h1) {
     align-items: center;
     font-size: 3.5vw;
+  }
+
+  .container :global(.header .inner h1 span) {
+    font-size: 2.5vw;
   }
 
   .container :global(.header .inner h1 img) {

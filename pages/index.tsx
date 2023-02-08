@@ -13,7 +13,6 @@ const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });
 const Home = ({ data, facility, names, customer }: any) => {
-  console.log('data: ', data)
   const size = WindowSize();
   const mounted = useRef(true);
   let sortedData: any;
@@ -180,9 +179,7 @@ const Home = ({ data, facility, names, customer }: any) => {
         );
         break;
       case "next-month":
-        console.log('lastItem: ', lastItem)
         let nextMonth = nextDate(lastItem.date);
-        console.log('nextMonth: ', nextMonth)
         let nextMonthNum =
           getDay(firstItem.date).month === getDay(lastItem.date).month
             ? nextMonth.nextMonth + 1

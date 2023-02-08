@@ -373,7 +373,7 @@ const UserForm = (props: any) => {
 
       <Row className="border-0">
         <Button type="submit">
-          {isLoading ? "Processing" : type === "update" ? "Update" : "予約申込"}
+          {isLoading ? "Processing" : type === "update" ? "予約変更" : "予約申込"}
         </Button>
       </Row>
       {errorMsg ? (

@@ -59,23 +59,26 @@ export default function Login() {
   const submitForget = async () => {
     setForm("forget");
     setValidated(true);
-    let response = await AxiosApi.call(
-      { reservation_code: resnumber, email: loginForm.email },
-      `forget-password/first-step`,
-      "post",
-      ""
-    );
-    setLoading(false);
-    if (response.data) {
-      let data = response.data;
-      localStorage.clear();
-      setMessage({ text: "パスワード変更用のURLをご登録のメールアドレス宛に送信しました。", color: "" });
-      // router.push("/forget");
-    } else {
-      if (response.message) {
-        setMessage({ text: response.message, color: "red" });
+    if(loginForm.email){
+      let response = await AxiosApi.call(
+        { reservation_code: resnumber, email: loginForm.email },
+        `forget-password/first-step`,
+        "post",
+        ""
+      );
+      setLoading(false);
+      if (response.data) {
+        let data = response.data;
+        localStorage.clear();
+        setMessage({ text: "パスワード変更用のURLをご登録のメールアドレス宛に送信しました。", color: "" });
+        // router.push("/forget");
+      } else {
+        if (response.message) {
+          setMessage({ text: response.message, color: "red" });
+        }
       }
     }
+    
   };
   return (
     <section className={styles.login}>

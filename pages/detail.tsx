@@ -188,13 +188,13 @@ const Detail = ({ names, facilityData }: any) => {
               </Modal.Footer>
             </Modal>
             {info.reservation.updateDisabled ? null : (
-              <div className="text-center">
+              <div className={`${info.reservation.cancelDisabled? 'text-start': 'text-center'}`}>
                 <Button className="update-btn" onClick={() => update()}>
                   予約変更
                 </Button>
               </div>
             )}
-            <div className="text-end">
+            <div className={`text-end ${info.reservation.updateDisabled && info.reservation.cancelDisabled? 'full': ''}`}>
               <Button className="print-btn" onClick={() => window.print()}>
                 画面印刷
               </Button>

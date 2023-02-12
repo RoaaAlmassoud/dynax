@@ -239,17 +239,11 @@ const Calendar = ({
     let withIndex = index === 0 || day.dayNumber === 1;
     if (withIndex) {
       if (firstHeader.current) {
-        if(index === 1 || index === 2 ){
-           withIndex = false;
-          // let element = document.getElementById("with-before 0")
-          // if(element){
-          //   element.classList.add('hide')
-          // }
+        if ([1, 2, 19, 20].includes(index)) {
+          withIndex = false;
         }
-         
       } else {
         firstHeader.current = index;
-        console.log('in else: /n','firstHeader: ',firstHeader.current,  'index: ',index)
       }
     }
     return withIndex ? `with-before ${index}` : "";

@@ -12,7 +12,7 @@ import { getDay, previousDate, nextDate } from "../utilis/helper";
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });
-const Home = ({ data, facility, names, customer }: any) => {
+const Home = ({ data, facility, names, customer, apiUrl }: any) => {
   const size = WindowSize();
   const mounted = useRef(true);
   let sortedData: any;
@@ -287,13 +287,15 @@ const Home = ({ data, facility, names, customer }: any) => {
           </p>
         </div>
         {firstSectionSummary ||
-        secondSectionSummary ? null : customer.section01_skipped ? null : (
+        secondSectionSummary ? null : 
+         customer.section01_skipped ? null : (
           <section className="first-section" id="date">
             <div className="inner">
               <DateForm date={date} updateDate={updateDate} />
             </div>
           </section>
-        )}
+       )
+        }
         {secondSectionSummary ? null : customer.section01_skipped ? null : (
           <section className="second-section position-now" id="facilities">
             <div className="inner">

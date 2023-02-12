@@ -13,6 +13,7 @@ const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });
 const Home = ({ data, facility, names, customer, apiUrl }: any) => {
+  console.log('data: ', data)
   const size = WindowSize();
   const mounted = useRef(true);
   let sortedData: any;

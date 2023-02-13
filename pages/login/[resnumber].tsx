@@ -26,6 +26,7 @@ export default function Login() {
   const handleChange = (event: any, field: string) => {
     let value: string = event.target.value;
     setErrorMsg("");
+    setMessage({text: "", color: "" })
     setLoginForm({
       ...loginForm,
       [field]: value,

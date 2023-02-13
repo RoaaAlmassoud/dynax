@@ -13,6 +13,7 @@ const Detail = ({ names, facilityData }: any) => {
     reservation: {
       facility: {
         name: "",
+        abbreviation:'',
         change_days: facilityData ? facilityData.change_days : 0,
         cancel_days: facilityData ? facilityData.cancel_days : 0,
       },

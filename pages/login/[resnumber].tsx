@@ -77,6 +77,8 @@ export default function Login() {
           setMessage({ text: response.message, color: "red" });
         }
       }
+    } else {
+      setMessage({ text:"Error: メールアドレスを入力してください。", color: "red"});
     }
     
   };
@@ -164,7 +166,7 @@ export default function Login() {
               />
               <h3 style={{color: message.color === "red"? "red": 'black'}}>{`${
                 message.color === "red"
-                  ? `Error: ${message.text}`
+                  ? `${message.text}`
                   : `${message.text}`
               }`}</h3>
             </div>

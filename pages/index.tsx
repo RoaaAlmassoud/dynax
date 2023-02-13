@@ -421,7 +421,8 @@ const Home = ({ data, facility, names, customer, apiUrl }: any) => {
 
 export default Home;
 
-export const getStaticProps = async () => {
+
+export const getServerSideProps = async () => {
   const apiUrl = process.env.API_URL;
   const facility = await axios.get(
     `${apiUrl}facilities`,

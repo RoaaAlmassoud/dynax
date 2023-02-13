@@ -293,7 +293,7 @@ const Home = (props: any) => {
             let status = reservationInformation.data.reservation.status;
             let info = {
               facilityName:
-                reservationInformation.data.reservation.facility.name,
+                reservationInformation.data.reservation.facility.abbreviation,
               usedDate: `${usedDate.year}/${usedDate.month + 1}/${
                 usedDate.dayNumber
               }`,

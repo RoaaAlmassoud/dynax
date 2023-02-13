@@ -294,7 +294,7 @@ const Calendar = ({
           </div>
 
           <div className="calendar-section">
-            <h3>{facility ? facility.name : info ? info.facilityName : ""}</h3>
+            <h3>{facility ? facility.abbreviation : info ? info.facilityName : ""}</h3>
 
             <Table className="calendar-table">
               <thead>

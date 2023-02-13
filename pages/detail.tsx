@@ -125,7 +125,7 @@ const Detail = ({ names, facilityData }: any) => {
                 <td>
                   {info
                     ? info.reservation
-                      ? info.reservation.facility.name
+                      ? info.reservation.facility.abbreviation
                       : ""
                     : ""}
                 </td>

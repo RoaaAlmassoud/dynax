@@ -4,7 +4,7 @@ const nextConfig = {
   swcMinify: true,
   // distDir: 'build',
   // basePath: '/users/test',
- basePath: '/users/bonz',
+//  basePath: '/users/bonz',
 eslint: {
     ignoreDuringBuilds: true
   },

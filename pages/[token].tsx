@@ -308,6 +308,7 @@ const Home = (props: any) => {
               roomType: resData.rsvroomtype.room_type.name,
               openings: resData.rsvFrames.openings,
               number_of_rooms: resData.rsvroomtype.rsv_num_rooms,
+              origin_number_of_rooms: resData.rsvroomtype.rsv_num_rooms, 
               totalRoomsNum:
                 status === 7
                   ? resData.rsvFrames.openings +

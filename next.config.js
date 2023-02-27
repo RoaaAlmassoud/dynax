@@ -15,3 +15,10 @@ eslint: {
 }
 
 module.exports = nextConfig
+
+
+
+
+
+
+

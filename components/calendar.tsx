@@ -132,7 +132,7 @@ const Calendar = ({
         fullUsedDate: `${usedDate.year}年${usedDate.month + 1}月${
           usedDate.dayNumber
         }日`,
-        number_of_rooms: 1,
+        number_of_rooms: info?frame.id === info.rsvId? info.origin_number_of_rooms:1:1,
         totalRoomsNum: frame.openings,
       };
       setInfoData(infoData);

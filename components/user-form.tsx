@@ -22,7 +22,7 @@ const UserForm = (props: any) => {
   let isUpdate = localStorage.getItem("token") && info.status === 7;
   const [validated, setValidated] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [showError, setShowError] = useState(false);
+  const [showError, setShowError] = useState({field: ""});
   const [errorMsg, setErrorMsg] = useState("");
   const [userForm, setUserForm] = useState({
     number_of_rooms: info ? info.number_of_rooms : 1,
@@ -37,12 +37,19 @@ const UserForm = (props: any) => {
   });
   const handleChange = (event: any, field: string) => {
     let value: string = event.target.value;
+    if(field === "phone_number"){
+      const reg = /^\d{2}(?:-\d{4}-\d{4}|\d{8}|\d-\d{3,4}-\d{4})$/i
+      setShowError({field:""});
+      if(!reg.test(value)){
+        setShowError({field:"phone_number"});
+      }
+    }
     if (field === "repeat_password") {
       setErrorMsg("");
       if (value !== userForm.password) {
-        setShowError(true);
+        setShowError({field: "repeat_password"});
       } else {
-        setShowError(false);
+        setShowError({field: ""});
       }
     }
     setUserForm({ ...userForm, [field]: value });
@@ -50,13 +57,13 @@ const UserForm = (props: any) => {
 
   const handleSubmit = async (event: any) => {
     const form = event.currentTarget;
-    if (form.checkValidity() === false || showError) {
+    if (form.checkValidity() === false || showError.field) {
       event.preventDefault();
       event.stopPropagation();
       setValidated(true);
-      if (showError) {
+      if (showError.field === "repeat_password") {
         setErrorMsg(
-          "Error:新しいパスワード、またはパスワード確認の入力が不正です。"
+          "新しいパスワード、またはパスワード確認の入力が不正です。"
         );
       }
     } else {
@@ -133,57 +140,57 @@ const UserForm = (props: any) => {
   };
 
   const handleKana = async (field: string, value: string) => {
-    const headers = {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "User-Agent":
-        "Yahoo AppID: dj00aiZpPUtWaEp6OFRNdzhkUiZzPWNvbnN1bWVyc2VjcmV0Jng9YTk-",
-    };
-    type response = {
-      id: "";
-      jsonrpc: "";
-      result: {
-        word: [
-          {
-            furigana: "";
-            roman: "";
-            surface: "";
-          }
-        ];
-      };
-    };
-    let furiganaResponse: any;
-    try {
-      furiganaResponse = await axios.post(
-        `https://jlp.yahooapis.jp/FuriganaService/V2/furigana`,
-        {
-          id: "1234-1",
-          jsonrpc: "2.0",
-          method: "jlp.furiganaservice.furigana",
-          params: {
-            q: value,
-            grade: 1,
-          },
-        },
-        {
-          headers: headers,
-          httpsAgent,
-        }
-      );
-    } catch (e) {}
-    if (furiganaResponse) {
-      const furiganaText = furiganaResponse.result
-        ? furiganaResponse.result.word[0]
-          ? furiganaResponse.result.word[0].furigana
-            ? furiganaResponse.result.word[0].furigana
-            : ""
-          : ""
-        : "";
+    // // const headers = {
+    // //   "Content-Type": "application/json",
+    // //   "User-Agent": "Yahoo AppID: dj00aiZpPUtWaEp6OFRNdzhkUiZzPWNvbnN1bWVyc2VjcmV0Jng9YTk-",
+    // // };
+    // // type response = {
+    // //   id: "";
+    // //   jsonrpc: "";
+    // //   result: {
+    // //     word: [
+    // //       {
+    // //         furigana: "";
+    // //         roman: "";
+    // //         surface: "";
+    // //       }
+    // //     ];
+    // //   };
+    // // };
+    // // let furiganaResponse: any;
+    // // try {
+    // //   furiganaResponse = await axios.post(
+    // //     `https://jlp.yahooapis.jp/FuriganaService/V2/furigana`,
+    // //     {
+    // //       id: "1234-1",
+    // //       jsonrpc: "2.0",
+    // //       method: "jlp.furiganaservice.furigana",
+    // //       params: {
+    // //         q: value,
+    // //         grade: 1,
+    // //       },
+    // //     },
+    // //     {
+    // //       headers: headers,
+    // //       httpsAgent,
+    // //     }
+    // //   );
+    // // } catch (e) {
+    // //   console.log('e: ', e)
+    // // }
+    // // if (furiganaResponse) {
+    // //   const furiganaText = furiganaResponse.result
+    // //     ? furiganaResponse.result.word[0]
+    // //       ? furiganaResponse.result.word[0].furigana
+    // //         ? furiganaResponse.result.word[0].furigana
+    // //         : ""
+    // //       : ""
+    // //     : "";
 
-      if (furiganaText) {
-        setUserForm({ ...userForm, [field]: furiganaText });
-      }
-    }
+    // //   if (furiganaText) {
+    // //     setUserForm({ ...userForm, [field]: furiganaText });
+    // //   }
+    // // }
   };
 
   return (
@@ -329,6 +336,7 @@ const UserForm = (props: any) => {
           <Form.Control
             required
             placeholder="090-1111-1111"
+            className={`${showError.field === "phone_number" ? "red-border" : ""}`}
             value={userForm ? userForm.phone_number : ""}
             onChange={(event) => handleChange(event, "phone_number")}
           />
@@ -361,7 +369,7 @@ const UserForm = (props: any) => {
               <Form.Control
                 type="password"
                 required
-                className={`${showError ? "red-border" : ""}`}
+                className={`${showError.field === 'repeat_password' ? "red-border" : ""}`}
                 placeholder="6文字以上"
                 value={userForm.repeat_password}
                 onChange={(event) => handleChange(event, "repeat_password")}

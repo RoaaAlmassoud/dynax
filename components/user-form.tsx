@@ -38,7 +38,8 @@ const UserForm = (props: any) => {
   const handleChange = (event: any, field: string) => {
     let value: string = event.target.value;
     if(field === "phone_number"){
-      const reg = /^\d{2}(?:-\d{4}-\d{4}|\d{8}|\d-\d{3,4}-\d{4})$/i
+      // const reg = /^\d{2}(?:-\d{4}-\d{4}|\d{8}|\d-\d{3,4}-\d{4})$/i
+      const reg = /^0[0-9]{1,4}-[0-9]{1,4}-[0-9]{3,4}|^0[0-9]{9,10}$/i
       setShowError({field:""});
       if(!reg.test(value)){
         setShowError({field:"phone_number"});

@@ -54,6 +54,7 @@ const Detail = ({ names, facilityData }: any) => {
         new Date(rsvdates[0].date).getTime() - new Date().getTime();
       const dayDiffer = datesDiffer / (1000 * 60 * 60 * 24);
 
+      
       const updateDisabled = info.reservation.facility.change_days > dayDiffer;
       const cancelDisabled = info.reservation.facility.cancel_days > dayDiffer;
      

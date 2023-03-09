@@ -50,13 +50,13 @@ const Detail = ({ names, facilityData }: any) => {
       }日 ${usedDate.dayNameFull}`;
       const roomType = rsvdates[0].rsvroomtype.room_type.name;
       const numRooms = rsvdates[0].rsvroomtype.rsv_num_rooms;
-      const datesDiffer =
-        new Date(rsvdates[0].date).getTime() - new Date().getTime();
-      const dayDiffer = datesDiffer / (1000 * 60 * 60 * 24);
+      
+       const datesDiffer = new Date(rsvdates[0].date).getDate() - new Date().getDate();
+      
+      const updateDisabled = info.reservation.facility.change_days >= datesDiffer;
+      const cancelDisabled = info.reservation.facility.cancel_days >= datesDiffer;
 
       
-      const updateDisabled = info.reservation.facility.change_days > dayDiffer;
-      const cancelDisabled = info.reservation.facility.cancel_days > dayDiffer;
      
       setInfo({
         reservation: {

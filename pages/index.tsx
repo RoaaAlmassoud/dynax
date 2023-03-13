@@ -156,7 +156,7 @@ const Home = ({ data, facility, names, customer, apiUrl }: any) => {
         : startDate;
       if (startDate) {
         startedIndex = data.calendar.findIndex((object: any) => {
-          return object.id === startDate.id;
+          return object.date === startDate.date;
         });
         newCalendar = data.calendar.slice(startedIndex, startedIndex + 21);
       }

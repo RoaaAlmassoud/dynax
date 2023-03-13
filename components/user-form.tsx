@@ -22,7 +22,7 @@ const UserForm = (props: any) => {
   let isUpdate = localStorage.getItem("token") && info.status === 7;
   const [validated, setValidated] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [showError, setShowError] = useState({field: ""});
+  const [showError, setShowError] = useState({ field: "" });
   const [errorMsg, setErrorMsg] = useState("");
   const [userForm, setUserForm] = useState({
     number_of_rooms: info ? info.number_of_rooms : 1,
@@ -37,23 +37,24 @@ const UserForm = (props: any) => {
   });
   const handleChange = (event: any, field: string) => {
     let value: string = event.target.value;
-    if(field === "phone_number"){
+    if (field === "phone_number") {
       // const reg = /^\d{2}(?:-\d{4}-\d{4}|\d{8}|\d-\d{3,4}-\d{4})$/i
-      const reg = /^0[0-9]{1,4}-[0-9]{1,4}-[0-9]{3,4}|^0[0-9]{9,10}$/i
-      setShowError({field:""});
-      if(!reg.test(value)){
-        setShowError({field:"phone_number"});
+      const reg = /^0[0-9]{1,4}-[0-9]{1,4}-[0-9]{3,4}|^0[0-9]{9,10}$/i;
+      setShowError({ field: "" });
+      if (!reg.test(value)) {
+        setShowError({ field: "phone_number" });
       }
-    }
-    if (field === "repeat_password") {
-      setErrorMsg("");
-      if (value !== userForm.password) {
-        setShowError({field: "repeat_password"});
-      } else {
-        setShowError({field: ""});
+    } else {
+      if (field === "repeat_password") {
+        setErrorMsg("");
+        if (value !== userForm.password) {
+          setShowError({ field: "repeat_password" });
+        } else {
+          setShowError({ field: "" });
+        }
       }
+      setUserForm({ ...userForm, [field]: value });
     }
-    setUserForm({ ...userForm, [field]: value });
   };
 
   const handleSubmit = async (event: any) => {
@@ -63,9 +64,7 @@ const UserForm = (props: any) => {
       event.stopPropagation();
       setValidated(true);
       if (showError.field === "repeat_password") {
-        setErrorMsg(
-          "新しいパスワード、またはパスワード確認の入力が不正です。"
-        );
+        setErrorMsg("新しいパスワード、またはパスワード確認の入力が不正です。");
       }
     } else {
       event.preventDefault();
@@ -140,6 +139,12 @@ const UserForm = (props: any) => {
     }
   };
 
+  const handleKeyPressed = (event:any) => {
+    if ((event.which < 48 || event.which > 57) && event.which !== 45) {
+      event.preventDefault();
+    }
+  } 
+
   const handleKana = async (field: string, value: string) => {
     // // const headers = {
     // //   "Content-Type": "application/json",
@@ -187,7 +192,6 @@ const UserForm = (props: any) => {
     // //         : ""
     // //       : ""
     // //     : "";
-
     // //   if (furiganaText) {
     // //     setUserForm({ ...userForm, [field]: furiganaText });
     // //   }
@@ -337,9 +341,12 @@ const UserForm = (props: any) => {
           <Form.Control
             required
             placeholder="090-1111-1111"
-            className={`${showError.field === "phone_number" ? "red-border" : ""}`}
+            className={`${
+              showError.field === "phone_number" ? "red-border" : ""
+            }`}
             value={userForm ? userForm.phone_number : ""}
             onChange={(event) => handleChange(event, "phone_number")}
+            onKeyPress ={(event) => handleKeyPressed(event)}
           />
         </Form.Group>
       </Row>
@@ -370,7 +377,9 @@ const UserForm = (props: any) => {
               <Form.Control
                 type="password"
                 required
-                className={`${showError.field === 'repeat_password' ? "red-border" : ""}`}
+                className={`${
+                  showError.field === "repeat_password" ? "red-border" : ""
+                }`}
                 placeholder="6文字以上"
                 value={userForm.repeat_password}
                 onChange={(event) => handleChange(event, "repeat_password")}

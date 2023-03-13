@@ -145,7 +145,7 @@ const Home = (props: any) => {
 
       if (startDate) {
         startedIndex = dataValues.calendar.findIndex((object: any) => {
-          return object.id === startDate.id;
+          return object.date === startDate.date;
         });
 
         newCalendar = dataValues.calendar.slice(
@@ -172,8 +172,14 @@ const Home = (props: any) => {
         );
         break;
       case "next-month":
+        console.log('lastItem: ', lastItem)
         let nextMonth = nextDate(lastItem.date);
-        updateCalendar(nextMonth.nextYear, nextMonth.nextMonth, 1);
+        let nextMonthNum =
+          getDay(firstItem.date).month === getDay(lastItem.date).month
+            ? nextMonth.nextMonth + 1
+            : nextMonth.nextMonth;
+        console.log('nextMonth: ', nextMonth, 'nextMonthNum: ', nextMonthNum)
+        updateCalendar(nextMonth.nextYear, nextMonthNum, 1);
         break;
       case "pre-week":
         updateCalendar(date.year, date.month, date.day, "pre-week");

@@ -44,17 +44,16 @@ const UserForm = (props: any) => {
       if (!reg.test(value)) {
         setShowError({ field: "phone_number" });
       }
-    } else {
-      if (field === "repeat_password") {
-        setErrorMsg("");
-        if (value !== userForm.password) {
-          setShowError({ field: "repeat_password" });
-        } else {
-          setShowError({ field: "" });
-        }
-      }
-      setUserForm({ ...userForm, [field]: value });
     }
+    if (field === "repeat_password") {
+      setErrorMsg("");
+      if (value !== userForm.password) {
+        setShowError({ field: "repeat_password" });
+      } else {
+        setShowError({ field: "" });
+      }
+    }
+    setUserForm({ ...userForm, [field]: value });
   };
 
   const handleSubmit = async (event: any) => {
@@ -139,11 +138,11 @@ const UserForm = (props: any) => {
     }
   };
 
-  const handleKeyPressed = (event:any) => {
+  const handleKeyPressed = (event: any) => {
     if ((event.which < 48 || event.which > 57) && event.which !== 45) {
       event.preventDefault();
     }
-  } 
+  };
 
   const handleKana = async (field: string, value: string) => {
     // // const headers = {
@@ -346,7 +345,7 @@ const UserForm = (props: any) => {
             }`}
             value={userForm ? userForm.phone_number : ""}
             onChange={(event) => handleChange(event, "phone_number")}
-            onKeyPress ={(event) => handleKeyPressed(event)}
+            onKeyPress={(event) => handleKeyPressed(event)}
           />
         </Form.Group>
       </Row>

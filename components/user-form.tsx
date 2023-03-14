@@ -22,7 +22,7 @@ const UserForm = (props: any) => {
   let isUpdate = localStorage.getItem("token") && info.status === 7;
   const [validated, setValidated] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [showError, setShowError] = useState({ field: "" });
+  const [showError, setShowError] = useState({phone_number: '', repeat_password: ''});
   const [errorMsg, setErrorMsg] = useState("");
   const [userForm, setUserForm] = useState({
     number_of_rooms: info ? info.number_of_rooms : 1,
@@ -39,89 +39,90 @@ const UserForm = (props: any) => {
     let value: string = event.target.value;
     if (field === "phone_number") {
       // const reg = /^\d{2}(?:-\d{4}-\d{4}|\d{8}|\d-\d{3,4}-\d{4})$/i
-      const reg = /^0[0-9]{1,4}-[0-9]{1,4}-[0-9]{3,4}|^0[0-9]{9,10}$/i;
-      setShowError({ field: "" });
+      const reg = /(^(0[0-9]{1,4}-[0-9]{1,4}-[0-9]{3,4})|(0[0-9]{9,10}))$/i;
+      setShowError({...showError, 'phone_number': ''});
       if (!reg.test(value)) {
-        setShowError({ field: "phone_number" });
+        setShowError({...showError, "phone_number": 'error'});
       }
     }
     if (field === "repeat_password") {
       setErrorMsg("");
       if (value !== userForm.password) {
-        setShowError({ field: "repeat_password" });
+        setShowError({...showError,"repeat_password": 'error' });
       } else {
-        setShowError({ field: "" });
+        setShowError({...showError, "repeat_password": "" });
       }
     }
+
     setUserForm({ ...userForm, [field]: value });
   };
 
   const handleSubmit = async (event: any) => {
     const form = event.currentTarget;
-    if (form.checkValidity() === false || showError.field) {
-      event.preventDefault();
-      event.stopPropagation();
-      setValidated(true);
-      if (showError.field === "repeat_password") {
-        setErrorMsg("新しいパスワード、またはパスワード確認の入力が不正です。");
-      }
-    } else {
-      event.preventDefault();
-      setLoading(true);
-      let url = "confirm-reservation";
-      let method: Methods = "post";
-      let tokenValue: string = router.query.token
-        ? router.query.token.toString()
-        : "";
-      if (isUpdate) {
-        url = "update-reservation";
-        method = "put";
-        tokenValue = localStorage.getItem("token")
-          ? localStorage.getItem("token")
-          : tokenValue;
-        userForm.new_rsv_frame_ids = daySelected ? [daySelected] : [info.rsvId];
-      }
-      let response = await AxiosApi.call(userForm, url, method, tokenValue);
-      setLoading(false);
-      if (response.data) {
-        let data = response.data;
-        localStorage.setItem("token", tokenValue);
-        if (data.reservation.code) {
-          router.push(
-            {
-              pathname: "/reserved",
-              query: {
-                code: data.reservation.code,
-                name: `${data.user.name}様`,
-                lottery: !isUpdate
-                  ? data.reservation.lottery_status === 0
-                    ? "先着予約を受け付けました。"
-                    : "抽選申込を受け付けました。"
-                  : data.reservation.lottery_status === 0
-                  ? "先着予約の変更を受け付けました。"
-                  : "抽選申込の変更を受け付けました。",
-                notes: data.facility.notes,
-                abbreviation: data.facility.abbreviation,
-                mail: data.facility.mail,
-                tel: data.facility.tel,
-                title: info
-                  ? info.status === 0
-                    ? names.section12_new
-                    : info.status === 7
-                    ? names.section12_change
-                    : "予約完了"
-                  : "予約完了",
-              },
-            },
-            "/reserved"
-          );
-        }
-      } else {
-        if (response.message) {
-          setErrorMsg(response.message);
-        }
-      }
-    }
+     if (form.checkValidity() === false || showError.repeat_password || showError.phone_number) {
+       event.preventDefault();
+       event.stopPropagation();
+       setValidated(true);
+       if (showError.repeat_password === "error") {
+         setErrorMsg("新しいパスワード、またはパスワード確認の入力が不正です。");
+       }
+     } else {
+       event.preventDefault();
+       setLoading(true);
+       let url = "confirm-reservation";
+       let method: Methods = "post";
+       let tokenValue: string = router.query.token
+         ? router.query.token.toString()
+         : "";
+       if (isUpdate) {
+         url = "update-reservation";
+         method = "put";
+         tokenValue = localStorage.getItem("token")
+           ? localStorage.getItem("token")
+           : tokenValue;
+         userForm.new_rsv_frame_ids = daySelected ? [daySelected] : [info.rsvId];
+       }
+       let response = await AxiosApi.call(userForm, url, method, tokenValue);
+       setLoading(false);
+       if (response.data) {
+         let data = response.data;
+         localStorage.setItem("token", tokenValue);
+         if (data.reservation.code) {
+           router.push(
+             {
+               pathname: "/reserved",
+               query: {
+                 code: data.reservation.code,
+                 name: `${data.user.name}様`,
+                 lottery: !isUpdate
+                   ? data.reservation.lottery_status === 0
+                     ? "先着予約を受け付けました。"
+                     : "抽選申込を受け付けました。"
+                   : data.reservation.lottery_status === 0
+                   ? "先着予約の変更を受け付けました。"
+                   : "抽選申込の変更を受け付けました。",
+                 notes: data.facility.notes,
+                 abbreviation: data.facility.abbreviation,
+                 mail: data.facility.mail,
+                 tel: data.facility.tel,
+                 title: info
+                   ? info.status === 0
+                     ? names.section12_new
+                     : info.status === 7
+                     ? names.section12_change
+                     : "予約完了"
+                   : "予約完了",
+               },
+             },
+             "/reserved"
+           );
+         }
+       } else {
+         if (response.message) {
+           setErrorMsg(response.message);
+         }
+       }
+     }
   };
 
   const renderOpeningNumbers = () => {
@@ -341,7 +342,7 @@ const UserForm = (props: any) => {
             required
             placeholder="090-1111-1111"
             className={`${
-              showError.field === "phone_number" ? "red-border" : ""
+              showError.phone_number === "error" ? "red-border" : ""
             }`}
             value={userForm ? userForm.phone_number : ""}
             onChange={(event) => handleChange(event, "phone_number")}
@@ -377,7 +378,7 @@ const UserForm = (props: any) => {
                 type="password"
                 required
                 className={`${
-                  showError.field === "repeat_password" ? "red-border" : ""
+                  showError.repeat_password === "error" ? "red-border" : ""
                 }`}
                 placeholder="6文字以上"
                 value={userForm.repeat_password}

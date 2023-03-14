@@ -13,7 +13,7 @@ const Detail = ({ names, facilityData }: any) => {
     reservation: {
       facility: {
         name: "",
-        abbreviation:'',
+        abbreviation: "",
         change_days: facilityData ? facilityData.change_days : 0,
         cancel_days: facilityData ? facilityData.cancel_days : 0,
       },
@@ -50,14 +50,22 @@ const Detail = ({ names, facilityData }: any) => {
       }日 ${usedDate.dayNameFull}`;
       const roomType = rsvdates[0].rsvroomtype.room_type.name;
       const numRooms = rsvdates[0].rsvroomtype.rsv_num_rooms;
-      
-       const datesDiffer = new Date(rsvdates[0].date).getDate() - new Date().getDate();
-      
-      const updateDisabled = info.reservation.facility.change_days >= datesDiffer;
-      const cancelDisabled = info.reservation.facility.cancel_days >= datesDiffer;
 
-      
+      const resDate = getDay(rsvdates[0].date);
+      const currentDate = getDay(new Date());
      
+      const datesDiffer =
+        new Date(rsvdates[0].date).getDate() - new Date().getDate();
+
+      const updateDisabled =
+        resDate.month > currentDate.month
+          ? false
+          : info.reservation.facility.change_days >= datesDiffer;
+      const cancelDisabled =
+        resDate.month > currentDate.month
+          ? false
+          : info.reservation.facility.cancel_days >= datesDiffer;
+
       setInfo({
         reservation: {
           ...reservationInformation.data.reservation,
@@ -190,13 +198,24 @@ const Detail = ({ names, facilityData }: any) => {
               </Modal.Footer>
             </Modal>
             {info.reservation.updateDisabled ? null : (
-              <div className={`${info.reservation.cancelDisabled? 'text-start': 'text-center'}`}>
+              <div
+                className={`${
+                  info.reservation.cancelDisabled ? "text-start" : "text-center"
+                }`}
+              >
                 <Button className="update-btn" onClick={() => update()}>
                   予約変更
                 </Button>
               </div>
             )}
-            <div className={`text-end ${info.reservation.updateDisabled && info.reservation.cancelDisabled? 'full': ''}`}>
+            <div
+              className={`text-end ${
+                info.reservation.updateDisabled &&
+                info.reservation.cancelDisabled
+                  ? "full"
+                  : ""
+              }`}
+            >
               <Button className="print-btn" onClick={() => window.print()}>
                 画面印刷
               </Button>

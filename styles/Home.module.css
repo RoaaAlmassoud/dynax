@@ -434,6 +434,18 @@
   font-weight: 600;
 }
 
+
+.main
+  :global(
+    .third-section
+      .calendar-section
+      .calendar-table
+      .day.with-before
+      .header-text.black
+  ) {
+    color: black;
+  }
+
 .main
   :global(
     .third-section

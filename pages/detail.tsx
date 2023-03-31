@@ -5,6 +5,7 @@ import AxiosApi from "./api/axios-api";
 import { getDay } from "../utilis/helper";
 import { useRouter } from "next/router";
 import { SlowBuffer } from "buffer";
+import _ from "lodash";
 const Detail = ({ names, facilityData }: any) => {
   const [show, setShow] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -53,16 +54,22 @@ const Detail = ({ names, facilityData }: any) => {
 
       const resDate = getDay(rsvdates[0].date);
       const currentDate = getDay(new Date());
-     
+
+      const sameDate = _.isEqual(resDate, currentDate);
+
       const datesDiffer =
         new Date(rsvdates[0].date).getDate() - new Date().getDate();
 
       const updateDisabled =
         resDate.month > currentDate.month
           ? false
+          : sameDate && info.reservation.facility.change_days === 0
+          ? false
           : info.reservation.facility.change_days >= datesDiffer;
       const cancelDisabled =
         resDate.month > currentDate.month
+          ? false
+          : sameDate && info.reservation.facility.change_days === 0
           ? false
           : info.reservation.facility.cancel_days >= datesDiffer;
 

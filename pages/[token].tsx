@@ -172,13 +172,11 @@ const Home = (props: any) => {
         );
         break;
       case "next-month":
-        console.log('lastItem: ', lastItem)
         let nextMonth = nextDate(lastItem.date);
         let nextMonthNum =
           getDay(firstItem.date).month === getDay(lastItem.date).month
             ? nextMonth.nextMonth + 1
             : nextMonth.nextMonth;
-        console.log('nextMonth: ', nextMonth, 'nextMonthNum: ', nextMonthNum)
         updateCalendar(nextMonth.nextYear, nextMonthNum, 1);
         break;
       case "pre-week":

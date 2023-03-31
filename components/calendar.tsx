@@ -140,6 +140,7 @@ const Calendar = ({
   };
   const renderDay = (day: any, type: any) => {
     const dayData = getDay(day.date);
+    
     try {
       switch (day.status_type) {
         case 0:
@@ -158,6 +159,7 @@ const Calendar = ({
               } else if (rate >= 50 && rate <= 99) {
                 color = "blue";
               } else {
+                console.log('in else, : ', rate)
                 color = "deep blue";
               }
             }
@@ -212,7 +214,7 @@ const Calendar = ({
       >
         {dayBeforeText ? (
           size.width > 640 ? (
-            <div className="header-text">{`${dayData.year}年${
+            <div className={`${dayData.dayNumber === 1? 'black':  ''} header-text`}>{`${dayData.year}年${
               dayData.month + 1
             }月`}</div>
           ) : (

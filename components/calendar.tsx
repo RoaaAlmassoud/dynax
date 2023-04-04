@@ -150,16 +150,15 @@ const Calendar = ({
           );
 
           if (availableNumber) {
-            if (availableNumber.openings === type.num_rooms) {
+            if (availableNumber.openings === availableNumber.num_frames) {
               color = "pale blue";
             } else {
-              let rate = (availableNumber.fixed_number / type.num_rooms) * 100;
-              if (rate > 0 && rate < 49) {
+              let rate = (availableNumber.fixed_number / availableNumber.num_frames) * 100;
+              if (rate >= 0 && rate < 49) {
                 color = "pale blue";
               } else if (rate >= 50 && rate <= 99) {
                 color = "blue";
               } else {
-                console.log('in else, : ', rate)
                 color = "deep blue";
               }
             }
@@ -214,7 +213,7 @@ const Calendar = ({
       >
         {dayBeforeText ? (
           size.width > 640 ? (
-            <div className={`${dayData.dayNumber === 1? 'black':  ''} header-text`}>{`${dayData.year}年${
+            <div className={`${dayData.dayNumber === 1 || index === 0? 'black':  ''} header-text`}>{`${dayData.year}年${
               dayData.month + 1
             }月`}</div>
           ) : (

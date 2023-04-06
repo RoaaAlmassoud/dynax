@@ -154,7 +154,7 @@ const Calendar = ({
               color = "pale blue";
             } else {
               let rate = (availableNumber.fixed_number / availableNumber.num_frames) * 100;
-              if (rate >= 0 && rate < 49) {
+              if (rate >= 0 && rate < 50) {
                 color = "pale blue";
               } else if (rate >= 50 && rate <= 99) {
                 color = "blue";

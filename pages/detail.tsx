@@ -65,13 +65,13 @@ const Detail = ({ names, facilityData }: any) => {
           ? false
           : sameDate && info.reservation.facility.change_days === 0
           ? false
-          : info.reservation.facility.change_days >= datesDiffer;
+          : info.reservation.facility.change_days > datesDiffer;
       const cancelDisabled =
         resDate.month > currentDate.month
           ? false
           : sameDate && info.reservation.facility.cancel_days === 0
           ? false
-          : info.reservation.facility.cancel_days >= datesDiffer;
+          : info.reservation.facility.cancel_days > datesDiffer;
 
       setInfo({
         reservation: {
